@@ -1,0 +1,16 @@
+Kategorien,,,d
+id,author,content,followup
+a,,"$a, denk dir eine Kategorie aus und beginn!",
+b,a,"Kategorie: Automarken. $a, du beginnst!",
+c,a,"Kategorie: Weihnachtslieder. $a, du beginnst!",
+d,a,"Kategorie: Spielekonsolen. $a, du beginnst!",
+e,a,"Kategorie: Apfelsorten. $a, du beginnst!",
+f,a,"Kategorie: Wasserflaschenmarken. $a, du beginnst!",
+g,a,"Kategorie: Computerteile. $a, du beginnst!",
+h,a,"Kategorie: Die sieben Zwerge von Schneewittchen. $a, du beginnst!",
+i,a,"Kategorie: Berühmte Mathematiker. $a, du beginnst!",
+j,a,"Kategorie: Berühmte Physiker. $a, du beginnst!",
+k,a,"Kategorie: Dinge, die man zum Campen mitbringt. $a, du beginnst!",
+l,a,"Kategorie: Ex-Partner von $a. $b, du beginnst!",
+m,a,"Kategorie: Adjektive, die zu $a passen. $b, du beginnst!",
+n,a,"Kategorie: Kleidungsstücke, die $a anhat. $b, du beginnst!",

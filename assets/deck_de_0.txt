@@ -1,0 +1,6 @@
+# 
+/4
+0|Marcel|Card content.|
+1|Marcel|Some card content.|
+2|Marcel|Some rule.|Rule annihilated.
+3|Marcel|$a, be happy!|$a, you can stop now.

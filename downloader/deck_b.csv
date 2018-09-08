@@ -1,0 +1,14 @@
+Masterdrink,,,b
+id,author,content,followup
+a,,"$a, mische eine Zutat zum Masterdrink!",
+b,,"$a, mische 2 Zutaten zum Masterdrink!",
+c,,"$a, mische 3 Zutaten zum Masterdrink!",
+d,,"$a und $b, fügt jeweils eine Zutat zum Masterdrink hinzu!",
+e,,"$a, trink einen Schluck vom Masterdrink!",
+f,,"$a, trink 2 Schlucke vom Masterdrink!",
+g,,"$a, trink 3 Schlucke vom Masterdrink!",
+h,,"$a, bestimme eine Person, die einen Schluck vom Masterdrink trinkt!",
+i,,"$a, bestimme eine Person, die 2 Schlucke vom Masterdrink trinkt!",
+j,,"$a, bestimme zwei Personen, die jeweils 2 Schlucke vom Masterdrink trinken!",
+k,,"$a, exe den Masterdrink!",
+l,,"$a, ab jetzt kontrollierst du, was zum Masterdrink hinzugefügt werden darf.","$a, du kontrollierst nicht mehr die Zutaten für den Masterdrink."

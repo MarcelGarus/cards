@@ -1,0 +1,33 @@
+name: cards
+description: A card game.
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.0.0-dev.68.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  hex: '^0.1.1'
+  rxdart: ^0.18.0
+  shared_preferences: ^0.4.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+
+  fonts:
+    - family: Bitter
+      fonts:
+        - asset: fonts/Bitter-Regular.ttf
+    - family: Assistant
+      fonts:
+        - asset: fonts/Assistant-ExtraBold.ttf
+
+  assets:
+    - assets/
+    - graphics/

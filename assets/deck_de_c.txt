@@ -1,0 +1,38 @@
+# Deck c: Never have I ever
+/36
+a|Marcel|$a, wenn du ein Körperteil verlieren müsstest, welches wäre es?|
+b|Marcel|$a, wenn du dir selber einen Spitznamen geben könntest, welchen würdest du wählen?|
+c|Marcel|$a, wann hast du zuletzt jemanden geküsst?|
+d|Marcel|$a, wenn du an einen vergangenen Tag deines Lebens reisen könntest, welchen würdest du wählen und was würdest du dir sagen?|
+e|Marcel|$a, erzähl ein Geheimnis, das du noch keinem anvertraut hast.|
+f|Marcel|$a, was war die längste Zeit, die du jemals am Stück wachgeblieben bist?|
+g|Marcel|$a, wenn du unendlich viel Geld hättest, was würdest du dir zuerst kaufen?|
+h|Marcel|$a, mit wem hattest du deinen ersten Kuss?|
+i|Marcel|$a, wenn du einem Mitspieler eine Million Euro geben könntest, wer würde sie bekommen?|
+j|Marcel|$a, nenne eine Eigenschaft von $b, die dich nervt.|
+k|Marcel|$a, wenn du nur für einen Tag allwissend wärst, danach aber wieder alles vergessen würdest, was würdest du den Tag lang machen?|
+l|Marcel|$a, von wem in der Runde würdest du dich am ehesten küssen lassen?|
+m|Marcel|$a, welches Tier würdest du am ehesten für einen Tag sein wollen?|
+n|Marcel|$a, welche drei Dinge würdest du auf eine einsame Insel mitnehmen?|
+q|Marcel|$a, was hast du zuletzt geträumt?|
+r|Marcel|$a, welchen Beruf würdest du im Mittelalter ausüben?|
+s|Marcel|$a, was magst du an $b?|
+t|Marcel|$a, welches deiner Körperteile würdest du gerne größer machen?|
+u|Marcel|$a, was würdest du tun, wenn du für einen Tag unsichtbar wärst?|
+v|Marcel|$a, was ist deine schlimmste Eigenschaft?|
+w|Marcel|$a, was ist dein Lieblingsbuch?|
+x|Marcel|$a, was ist dein Lieblingsort?|
+y|Marcel|$a, was ist deine Lieblingsserie?|
+z|Marcel|$a, was ist deine Lieblingsfarbe?|
+ab|Marcel|$a, welchen Lehrer findest du am heißesten?|
+ac|Marcel|$a, wen aus der Runde hast du dir schonmal nackt vorgestellt?|
+ad|Marcel|$a, wo war dein erster Kuss?|
+ae|Marcel|$a, wann war dein letzter Hangover?|
+af|Marcel|$a, wer aus der Runde, glaubst du, wird später am meisten verdienen?|
+ag|Marcel|$a, was ist das Dümmste, was du je getan hast?|
+ah|Marcel|$a, wenn du eine beliebige Person auf der Welt einmal küssen könntest, wen würdest du wählen?|
+ai|Marcel|$a, wie viele Jungen und Mädchen hast du schon geküsst?|
+aj|Marcel|$a, hast du dich oder würdest du dich jemals einer Schönheits-OP unterziehen?|
+ak|Marcel|$a, mit wem hier würdest du am liebsten für eine Woche das Leben tauschen?|
+al|Marcel|$a, wo rasierst du dich überall?|
+am|Marcel|$a, wovor hast du am meisten Angst?|

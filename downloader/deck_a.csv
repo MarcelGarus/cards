@@ -1,0 +1,26 @@
+Bottoms up,,,a
+id,author,content,followup
+a,,"$a, trink 2 Schlucke!",
+b,,"$a, trink 3 Schlucke!",
+c,,"$a und $b, trinkt jeweils 2 Schlucke!",
+d,,"$a und $b, trinkt jeweils 3 Schlucke!",
+e,,"$a, verteile einen Schluck!",
+f,,"$a, verteile 2 Schlucke!",
+g,,"$a, verteile 3 Schlucke!",
+h,,"$a, gib 2 Schlucke an einen Person!",
+id,,"$a und $b, verteilt je einen Schluck!",
+j,,"$a und $b, verteilt je zwei Schlucke!",
+k,,"$a und $b, verteilt je drei Schlucke!",
+l,,"$a und $b, einigt euch auf eine Person, die 3 Schlucke trinkt!",
+m,,"$a und $b, ihr seid Trinkpartner!","$a und $b, ihr seid keine Trinkpartner mehr!"
+n,,Prost! Alle trinken einen Schluck!,
+o,,Stoßt gemeinsam an!,
+p,,"$a, exe dein Glas!",
+q,a,"$a, ab jetzt kümmerst du dich ums Nachfüllen!","$a, danke für's Nachfüllen! Du kannst jetzt aufhören."
+r,,"$a, du bekommst einen Gutschein: Musst du trinken, darfst du deine Schlucke einmalig an einen Spieler deiner Wahl abgeben.",
+s,,"$a, du bekommst einen Gutschein: Musst du trinken, darfst du deine Schlucke einmalig an $b abgeben.",
+t,,"$a, trink ab jetzt immer einen Schluck mehr!","$a, du musst nicht mehr einen Schluck mehr trinken."
+u,,"$a, trink ab jetzt immer doppelt so viel!","$a, du musst nicht mehr doppelt so viel trinken."
+v,,"$a, du musst ab jetzt immer trinken, wenn $b trinkt, aber nicht umgekehrt.","$a, du musst nicht mehr trinken, wenn $b trinkt."
+w,a,Spreizt ab jetzt beim Trinken immer den kleinen Finger ab! Ansonsten trinkt einen Schluck extra!,Euer kleiner Finger kann sich beim Trinken wieder ausruhen.
+x,a,"Ab jetzt dürft ihr nur dann trinken, wenn ihr auch trinken müsst. Ansonsten gibt's noch einen Schluck extra!",Ihr dürft auch wieder freiwillig trinken.

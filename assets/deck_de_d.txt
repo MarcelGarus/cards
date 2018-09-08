@@ -1,0 +1,16 @@
+# Deck d: Kategorien
+/14
+a||$a, denk dir eine Kategorie aus und beginn!|
+b|Marcel|Kategorie: Automarken. $a, du beginnst!|
+c|Marcel|Kategorie: Weihnachtslieder. $a, du beginnst!|
+d|Marcel|Kategorie: Spielekonsolen. $a, du beginnst!|
+e|Marcel|Kategorie: Apfelsorten. $a, du beginnst!|
+f|Marcel|Kategorie: Wasserflaschenmarken. $a, du beginnst!|
+g|Marcel|Kategorie: Computerteile. $a, du beginnst!|
+h|Marcel|Kategorie: Die sieben Zwerge von Schneewittchen. $a, du beginnst!|
+i|Marcel|Kategorie: Berühmte Mathematiker. $a, du beginnst!|
+j|Marcel|Kategorie: Berühmte Physiker. $a, du beginnst!|
+k|Marcel|Kategorie: Dinge, die man zum Campen mitbringt. $a, du beginnst!|
+l|Marcel|Kategorie: Ex-Partner von $a. $b, du beginnst!|
+m|Marcel|Kategorie: Adjektive, die zu $a passen. $b, du beginnst!|
+n|Marcel|Kategorie: Kleidungsstücke, die $a anhat. $b, du beginnst!|

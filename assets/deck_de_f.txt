@@ -1,0 +1,4 @@
+# Deck f: Fragedame
+/2
+a||$a, du bist ab jetzt die Fragedame.|
+b||$a, du wirst Daumenkönig.|
