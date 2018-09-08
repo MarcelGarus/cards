@@ -119,7 +119,7 @@ abstract class ResourceManager {
       id: deck.id + '-' + parts[0],
       author: parts[1],
       content: _insertNames(parts[2], players),
-      annihilation: _insertNames(parts[3], players),
+      followup: _insertNames(parts[3], players),
       color: deck.color
     );
   }

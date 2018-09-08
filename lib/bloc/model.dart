@@ -15,7 +15,7 @@ class ContentCard extends Card {
     @required this.id,
     this.author,
     @required this.content,
-    this.annihilation,
+    this.followup,
     @required this.color
   }) :
       assert(id != null),
@@ -25,10 +25,10 @@ class ContentCard extends Card {
   final String id;
   final String author;
   final String content;
-  final String annihilation;
+  final String followup;
   final String color;
 
-  bool get hasAnnihilation => annihilation.length > 0;
+  bool get hasAnnihilation => followup.length > 0;
 
   String toString() => 'Card #$id: "$content" by $author';
 }

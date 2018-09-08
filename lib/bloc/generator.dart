@@ -16,8 +16,8 @@ class _Annihilation {
   ContentCard getCard() => ContentCard(
     id: originalCard.id,
     author: originalCard.author,
-    content: originalCard.annihilation,
-    annihilation: '',
+    content: originalCard.followup,
+    followup: '',
     color: originalCard.color
   );
 }

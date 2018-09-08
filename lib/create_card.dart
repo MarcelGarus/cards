@@ -8,6 +8,41 @@ class CreateCardScreen extends StatefulWidget {
 class _CreateCardScreenState extends State<CreateCardScreen> {
   @override
   Widget build(BuildContext context) {
+    final contentInput = TextField(
+      autofocus: true,
+      maxLines: 3,
+      keyboardType: TextInputType.text,
+      decoration: InputDecoration(
+        border: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.red)
+        ),
+        fillColor: Colors.white,
+        labelText: 'Card content',
+        labelStyle: TextStyle(color: Colors.white),
+      ),
+      style: TextStyle(color: Colors.white),
+    );
+
+    final followupInput = TextField(
+      maxLines: 3,
+      keyboardType: TextInputType.text,
+      decoration: InputDecoration(
+        border: OutlineInputBorder(),
+        labelText: 'Followup',
+        labelStyle: TextStyle(color: Colors.white)
+      ),
+      style: TextStyle(color: Colors.white),
+    );
+
+    final authorInput = TextField(
+      decoration: InputDecoration(
+        border: OutlineInputBorder(),
+        labelText: 'Author',
+        labelStyle: TextStyle(color: Colors.white)
+      ),
+      style: TextStyle(color: Colors.white),
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Create card'),
@@ -23,26 +58,25 @@ class _CreateCardScreenState extends State<CreateCardScreen> {
           children: [
             Guidelines(),
             Padding(
-              padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
-              child: TextField(
-                autofocus: true,
-                maxLines: 10,
-                keyboardType: TextInputType.text,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Card content'
-                ),
-              ),
+              padding: EdgeInsets.all(16.0),
+              child: Material(
+                elevation: 4.0,
+                color: Colors.black,
+                borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                child: Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Column(
+                    children: <Widget>[
+                      contentInput,
+                      SizedBox(height: 8.0),
+                      followupInput,
+                      SizedBox(height: 8.0),
+                      authorInput
+                    ],
+                  )
+                )
+              )
             ),
-            Row(
-              children: <Widget>[
-                Checkbox(
-                  value: true,
-                  onChanged: (value) {},
-                ),
-                Text('Has followup')
-              ],
-            )
           ]
         )
       ),
@@ -106,7 +140,7 @@ class _GuidelinesState extends State<Guidelines> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(16.0),
+      padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
       child: ExpansionPanelList(
         expansionCallback: expansionCallback,
         children: guidelines.map((guideline) {
