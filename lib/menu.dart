@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'create_card.dart';
+import 'created_cards.dart';
 
 class Menu extends StatelessWidget {
   @override
@@ -15,7 +17,24 @@ class Menu extends StatelessWidget {
         ListTile(
           leading: Icon(Icons.add, color: Colors.black),
           title: Text('Write a card'),
-          onTap: () {},
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) {
+                return CreateCardScreen();
+              }
+            ));
+          },
+        ),
+        ListTile(
+          leading: Icon(Icons.wb_iridescent, color: Colors.black),
+          title: Text('My cards'),
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) {
+                return CardListScreen();
+              }
+            ));
+          },
         ),
         ListTile(
           leading: Icon(Icons.feedback, color: Colors.black),
@@ -37,7 +56,5 @@ class Menu extends StatelessWidget {
         child: column
       )
     );
-    
-     
   }
 }

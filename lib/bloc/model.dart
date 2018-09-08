@@ -13,15 +13,13 @@ class IntroductionCard extends Card {
 class ContentCard extends Card {
   ContentCard({
     @required this.id,
-    @required this.author,
+    this.author,
     @required this.content,
-    @required this.annihilation,
+    this.annihilation,
     @required this.color
   }) :
       assert(id != null),
-      assert(author != null),
       assert(content != null),
-      assert(annihilation != null),
       assert(color != null);
 
   final String id;

@@ -155,6 +155,5 @@ class _FittedTextState extends State<FittedText> {
         return textStyle.copyWith(fontSize: fontSize - 4);
       }
     }
-    //return widget.style.copyWith(fontSize: 40.0);
   }
 }
