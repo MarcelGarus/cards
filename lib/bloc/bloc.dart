@@ -15,6 +15,7 @@ class Bloc {
     return inherited?.bloc;
   }
 
+  static const version = '0.0.1';
   static const _cardBufferSize = 3;
 
 

@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'bloc/model.dart';
+import 'edit_card.dart';
 
 class CardListScreen extends StatefulWidget {
   @override
@@ -40,9 +41,15 @@ class _CardListScreenState extends State<CardListScreen> {
           children: cards.map((card) {
             return Padding(
               padding: EdgeInsets.all(16.0),
-              child: InlineCard(
+              child: CardListItem(
                 card: card,
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) {
+                      return EditCardScreen(card: card);
+                    }
+                  ));
+                },
               )
             );
           }).toList()
@@ -52,8 +59,8 @@ class _CardListScreenState extends State<CardListScreen> {
   }
 }
 
-class InlineCard extends StatelessWidget {
-  InlineCard({
+class CardListItem extends StatelessWidget {
+  CardListItem({
     @required this.card,
     this.onTap
   });
