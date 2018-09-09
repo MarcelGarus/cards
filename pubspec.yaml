@@ -29,5 +29,5 @@ flutter:
         - asset: fonts/Assistant-ExtraBold.ttf
 
   assets:
-    - assets/
+    - assets/de/
     - graphics/

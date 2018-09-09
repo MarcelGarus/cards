@@ -1,5 +1,5 @@
 version: 20180417
-de:
+decks:
   - id: 'a'
     name: Trinken
     color: '#ffc107'

@@ -9,19 +9,29 @@ import 'raw_card.dart';
 
 void main() => runApp(CardsGame());
 
-class CardsGame extends StatelessWidget {
+class CardsGame extends StatefulWidget {
+  @override
+  _CardsGameState createState() => _CardsGameState();
+}
+
+class _CardsGameState extends State<CardsGame> {
+  final Bloc bloc = Bloc();
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Cards',
-      theme: ThemeData(
-        backgroundColor: Colors.white,
-        primaryColor: Colors.black,
-        accentColor: Colors.amber,
-        fontFamily: 'Assistant',
-        primarySwatch: Colors.blue,
-      ),
-      home: BlocProvider(child: MainPage()),
+    return BlocProvider(
+      bloc: bloc,
+      child: MaterialApp(
+        title: 'Cards',
+        theme: ThemeData(
+          backgroundColor: Colors.white,
+          primaryColor: Colors.black,
+          accentColor: Colors.amber,
+          fontFamily: 'Assistant',
+          primarySwatch: Colors.blue,
+        ),
+        home: MainPage(),
+      )
     );
   }
 }
@@ -221,7 +231,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   /// Builds the bottom part.
   Widget _buildBottomPart(BuildContext context) {
     final fab = StreamBuilder(
-      stream: Bloc.of(context).isConfigurationValid,
+      stream: Bloc.of(context).canStart,
       builder: (context, snapshot) => _buildFab(context, snapshot.data ?? false)
     );
     return Stack(
@@ -243,10 +253,11 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     );
   }
 
-  /// Displays a FAB if the configuration is valid, otherwise just an
+  /// Displays a FAB if the game can start, otherwise just an
   /// instructive message.
-  Widget _buildFab(BuildContext context, bool isConfigurationValid) {
-    if (isConfigurationValid) {
+  Widget _buildFab(BuildContext context, bool canStart) {
+    print('Can start? $canStart');
+    if (canStart) {
       return FloatingActionButton.extended(
         icon: Image.asset('graphics/style192.png', width: 24.0, height: 24.0),
         label: Text('Start playing',
@@ -262,7 +273,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
           color: Colors.black,
           child: StreamBuilder(
-            stream: Bloc.of(context).configurationMessageText,
+            stream: Bloc.of(context).configurationMessage,
             builder: (context, snapshot) {
               return Text(snapshot.data ?? '',
                 style: TextStyle(color: Colors.white)

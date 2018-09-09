@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yaml/yaml.dart';
@@ -33,21 +33,26 @@ abstract class ResourceManager {
   }
 
   /// Returns a list of all decks of a given language.
-  static Future<List<Deck>> getDecks({
-    @required String language
-  }) async {
-    assert(language != null);
+  static Future<List<Deck>> getDecks(Locale locale) async {
+    assert(locale != null);
+    final root = 'assets/${locale.languageCode}';
+    final filename = '$root/decks.yaml';
 
-    print('Loading yaml.');
+    print('Loading $filename.');
     final decks = <Deck>[];
-    final decksFile = loadYaml(await rootBundle.loadString('assets/decks.yaml'));
+    var file;
+    try {
+      file = loadYaml(await rootBundle.loadString(filename));
+    } catch (e) {
+      print('Warning: $e. Is the file or directory added in the pubspec.yaml?');
+    }
 
-    print('Loading decks of version ${decksFile['version']}.');
+    print('Loading decks of version ${file['version']}.');
 
-    for (final deck in decksFile[language] ?? []) {
+    for (final deck in file['decks'] ?? []) {
       decks.add(Deck(
         id: deck['id'],
-        file: 'assets/deck_$language\_${deck['id'] ?? 'id'}.txt',
+        file: '$root/deck_${deck['id'] ?? 'id'}.txt',
         name: deck['name'] ?? '<no name>',
         coverImage: deck['image'] ?? '',
         color: deck['color'] ?? '<color>',
@@ -103,7 +108,7 @@ abstract class ResourceManager {
     final parts = line.split('|');
 
     if (parts.length != 4) {
-      print('Card is corrupt: There are ${parts.length} parts: $line.');
+      print('Warning: Card is corrupt: There are ${parts.length} parts: $line.');
       return null; // await pickCard(decks, players);
     }
 

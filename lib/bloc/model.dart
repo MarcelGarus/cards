@@ -76,5 +76,21 @@ class Deck {
 
   bool get hasIntroduction => introduction != null;
 
+  bool operator ==(dynamic other) {
+    if (other is! Deck)
+      return false;
+    final Deck typedOther = other;
+    return id == typedOther.id &&
+           file == typedOther.file &&
+           name == typedOther.name &&
+           coverImage == typedOther.coverImage &&
+           color == typedOther.color &&
+           description == typedOther.description &&
+           probability == typedOther.probability &&
+           introduction == typedOther.introduction &&
+           isUnlocked == typedOther.isUnlocked &&
+           isSelected == typedOther.isSelected;
+  }
+
   String toString() => '(\'$name\' with description \'$description\' has color $color. See file $file)';
 }
