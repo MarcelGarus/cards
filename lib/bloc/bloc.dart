@@ -5,11 +5,17 @@ import 'generator.dart';
 import 'model.dart';
 import 'resource_manager.dart';
 
+
+/// Is the gateway between Flutter Widgets and actual business logic, hence the
+/// name.
 class Bloc {
   Bloc() {
     _initialize();
   }
 
+
+  /// Using this method, any widget in the tree below a BlocProvider can get
+  /// access to the bloc.
   static Bloc of(BuildContext context) {
     final BlocProvider inherited = context.ancestorWidgetOfExactType(BlocProvider);
     return inherited?.bloc;
@@ -21,18 +27,20 @@ class Bloc {
 
   Locale _locale;
   
+  // Configuration of the game.
   final _players = <String>[];
   final _decks = <Deck>[];
   List<Deck> get _unlockedDecks => _decks.where((deck) => deck.isUnlocked).toList();
   List<Deck> get _selectedDecks => _decks.where((deck) => deck.isSelected).toList();
   bool get _isConfigurationValid => _players.length > 0 && _selectedDecks.length > 0;
 
+  // Actually playing the game.
   Generator _generator;
   bool get _isGameActive => _generator != null;
   final _cards = <Card>[];
   
 
-  // Output streams (the composed ones aren't declared right here).
+  // Output stream subjects.
   final _playersSubject = BehaviorSubject<List<String>>(seedValue: []);
   final _decksSubject = BehaviorSubject<List<Deck>>(seedValue: []);
   final _canStartSubject = BehaviorSubject<bool>(seedValue: false);
@@ -41,6 +49,7 @@ class Bloc {
   final _backCardSubject = BehaviorSubject<Card>(seedValue: EmptyCard());
   final _configurationMessageSubject = BehaviorSubject<String>(seedValue: '');
 
+  // Actual output streams. Some have subjects above, others are composed.
   Stream<List<String>> get players => _playersSubject.stream;
   Stream<List<Deck>> get decks => _decksSubject.stream;
   Stream<List<Deck>> get unlockedDecks => decks
@@ -61,7 +70,7 @@ class Bloc {
     players.listen((_) => _updateConfigurationValidity());
     decks.listen((_) => _updateConfigurationValidity());
 
-    // Load players. Once loaded, changes to players should be saved.
+    // Load players. Once loaded, further changes to players should be saved.
     _players.addAll(await ResourceManager.loadPlayers());
     _playersSubject.add(_players);
     players.listen((players) => ResourceManager.savePlayers(players));
@@ -169,6 +178,8 @@ class Bloc {
     _configurationMessageSubject.close();
   }
 }
+
+
 
 class BlocProvider extends StatelessWidget {
   BlocProvider({ @required this.bloc, @required this.child }) :

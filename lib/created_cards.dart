@@ -1,7 +1,7 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'bloc/model.dart';
-import 'edit_card.dart';
+import 'edit_and_publish_card.dart';
+import 'inline_card.dart';
 
 class CardListScreen extends StatefulWidget {
   @override
@@ -30,6 +30,22 @@ class _CardListScreenState extends State<CardListScreen> {
     ),
   ];
 
+  void _goToEditScreen(BuildContext context, ContentCard card) {
+    Navigator.of(context).push(PageRouteBuilder(
+      opaque: false,
+      transitionDuration: const Duration(milliseconds: 200),
+      pageBuilder: (BuildContext context, _, __) {
+        return EditCardScreen(card: card);
+      },
+      transitionsBuilder: (_, Animation<double> animation, __, Widget child) {
+        return FadeTransition(
+          opacity: animation,
+          child: child
+        );
+      }
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,73 +54,24 @@ class _CardListScreenState extends State<CardListScreen> {
       ),
       body: SafeArea(
         child: ListView(
-          children: cards.map((card) {
+          children: <Widget>[
+            SizedBox(height: 16.0)
+          ].followedBy(cards.map((card) {
             return Padding(
-              padding: EdgeInsets.all(16.0),
-              child: CardListItem(
-                card: card,
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) {
-                      return EditCardScreen(card: card);
-                    }
-                  ));
-                },
+              padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
+              child: Hero(
+                tag: card.toString(),
+                child: InlineCard(
+                  card: card,
+                  showFollowup: false,
+                  showAuthor: false,
+                  onTap: () => _goToEditScreen(context, card)
+                )
               )
             );
-          }).toList()
+          })).toList()
         )
       )
-    );
-  }
-}
-
-class CardListItem extends StatelessWidget {
-  CardListItem({
-    @required this.card,
-    this.onTap
-  });
-
-  final ContentCard card;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final style = TextStyle(color: Colors.white, fontSize: 24.0);
-
-    final bottomBar = Row(
-      children: <Widget>[
-        Text(card.author ?? ''),
-        Expanded(child: Container()),
-        Icon(Random().nextInt(2) == 0 ? Icons.cloud_off : Icons.cloud_done, color: Colors.white)
-      ],
-    );
-
-    Widget cardContent = Padding(
-      padding: EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(card.content, style: style),
-          bottomBar
-        ]
-      )
-    );
-
-    if (onTap != null) {
-      cardContent = InkResponse(
-        onTap: onTap,
-        radius: 1000.0,
-        child: cardContent,
-      );
-    }
-    
-
-    return Material(
-      color: Colors.black,
-      borderRadius: BorderRadius.all(Radius.circular(16.0)),
-      elevation: 4.0,
-      child: cardContent
     );
   }
 }

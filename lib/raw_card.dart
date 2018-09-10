@@ -2,51 +2,67 @@ import 'package:flutter/material.dart' hide Card;
 import 'package:hex/hex.dart';
 import 'bloc/model.dart';
 
+
+/// A fullscreen card in the game.
 class RawCard extends StatelessWidget {
   RawCard({
     @required this.card,
-    this.color = Colors.black,
+    this.backgroundColor = Colors.black,
     this.borderRadius,
     this.safeAreaTop = 0.0,
     this.leading,
-    this.following
+    this.tailing
   }) :
       assert(card != null),
-      assert(color != null),
+      assert(backgroundColor != null),
       assert(safeAreaTop != null);
 
-  final Color color;
-  final BorderRadius borderRadius;
-  final double safeAreaTop;
-  final Widget leading;
-  final Widget following;
+  /// The card to display.
   final Card card;
+
+  /// The color of the material.
+  final Color backgroundColor;
+
+  /// The border radius of the material.
+  final BorderRadius borderRadius;
+
+  /// The size of the safe area at the top of the card.
+  final double safeAreaTop;
+
+  /// A leading widget in the app bar.
+  final Widget leading;
+
+  /// A tailing widget in the app bar.
+  final Widget tailing;
+
 
   @override
   Widget build(BuildContext context) {
     final appBarItems = <Widget>[];
     appBarItems.add(leading ?? Container());
-    appBarItems.add(following ?? Container());
+    appBarItems.add(Spacer());
+    appBarItems.add(tailing ?? Container());
 
+    // A list of all content stuff. Common safe area and app bar stuff is
+    // already added, the card handler adds more stuff.
     final content = <Widget>[
       SizedBox(height: safeAreaTop),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: appBarItems,
-      )
+      Row(children: appBarItems)
     ];
 
+    // Call the correct handler based on the card's type.
     if (card is EmptyCard)
       content.addAll(_buildEmptyCard(context, card));
     else if (card is IntroductionCard)
-      content.addAll(_buildWelcomeCard(context, card));
+      content.addAll(_buildIntroductionCard(context, card));
     else if (card is ContentCard)
       content.addAll(_buildContentCard(context, card));
     else if (card is CoinCard)
       content.addAll(_buildCoinCard(context, card));
 
+    // Returns the actual card.
     return Material(
-      color: color,
+      color: backgroundColor,
       elevation: 8.0,
       animationDuration: Duration.zero,
       borderRadius: borderRadius ?? BorderRadius.zero,
@@ -54,15 +70,20 @@ class RawCard extends StatelessWidget {
     );
   }
 
+
   /// Builds an empty card.
   List<Widget> _buildEmptyCard(BuildContext context, EmptyCard card) => [];
 
+
   /// Builds a welcome card.
-  List<Widget> _buildWelcomeCard(BuildContext context, IntroductionCard card) => [
-    Expanded(child: Container()),
-    Text(card.text, style: TextStyle(color: Colors.white, fontSize: 24.0)),
-    Expanded(child: Container())
-  ];
+  List<Widget> _buildIntroductionCard(BuildContext context, IntroductionCard card) {
+    return [
+      Expanded(child: Container()),
+      Text(card.text, style: TextStyle(color: Colors.white, fontSize: 24.0)),
+      Expanded(child: Container())
+    ];
+  }
+
 
   /// Builds a content card.
   List<Widget> _buildContentCard(BuildContext context, ContentCard card) {
@@ -84,14 +105,20 @@ class RawCard extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Text(card.author == '' ? '' : 'von ${card.author}', style: TextStyle(color: color)),
-            Text(card.id, style: TextStyle(color: Color.lerp(color, Colors.black, 0.9))),
+            Text(card.hasAuthor ? 'von ${card.author}' : '',
+              style: TextStyle(color: color)
+            ),
+            Text(card.id,
+              style: TextStyle(color: Color.lerp(color, Colors.black, 0.9))
+            ),
           ],
         )
       )
     ];
   }
-  
+
+
+  /// Builds a coin card.
   List<Widget> _buildCoinCard(BuildContext context, CoinCard card) {
     return [
       Expanded(child: Container()),
@@ -102,6 +129,11 @@ class RawCard extends StatelessWidget {
   }
 }
 
+
+
+/// Tries to change the font size of the given style to match the text in the
+/// widget's constraints, while displaying it as large as possible and ahering
+/// to material design standards.
 class FittedText extends StatefulWidget {
   FittedText({
     @required this.text,
@@ -110,7 +142,10 @@ class FittedText extends StatefulWidget {
       assert(text != null),
       assert(style != null);
 
+  /// The text to be displayed.
   final String text;
+
+  /// The style of the text. The style's fontSize property will be overwritten.
   final TextStyle style;
 
   @override
@@ -125,10 +160,7 @@ class _FittedTextState extends State<FittedText> {
         final size = Size(
           constraints.maxWidth,
           constraints.maxHeight * 0.9
-          //MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top - 92.0
         );
-        //print('Constraints $constraints.');
-        //print('Fitting text in $size.');
         return Center(
           child: Text(
             widget.text,
@@ -140,8 +172,8 @@ class _FittedTextState extends State<FittedText> {
     );
   }
 
-  // Starts with a large font size, then decreases it and return the first one
-  // which makes the text fit in the size.
+  // Starts with a large font size, then decreases it and returns a style with
+  // the first size which makes the text fit in the size.
   TextStyle _styleToFitTextInSize(Size size) {
     for (double fontSize = 48.0; fontSize > 4; fontSize -= 4) {
       final textStyle = widget.style.copyWith(fontSize: fontSize);
@@ -151,7 +183,7 @@ class _FittedTextState extends State<FittedText> {
       final textHeight = renderObject.getMaxIntrinsicHeight(size.width);
 
       if (textHeight <= size.height) {
-        print('Text ${widget.text} with font size $fontSize is $textHeight <= ${size.height} high. Style was $textStyle (fontFamily ${textStyle.fontFamily}).');
+        //print('Text ${widget.text} with font size $fontSize is $textHeight <= ${size.height} high. Style was $textStyle (fontFamily ${textStyle.fontFamily}).');
         return textStyle.copyWith(fontSize: fontSize - 4);
       }
     }

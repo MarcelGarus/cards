@@ -35,16 +35,19 @@ class HomePage extends StatelessWidget {
       builder: (context, snapshot) => DeckSelector(snapshot.data ?? [])
     );
 
-    return Container(
-      color: Color(0xFFF0F0F0),
-      child: ListView(
-        children: <Widget>[
-          topPart,
-          bottomPart,
-          BetaBox(),
-          SizedBox(height: 48.0 + 24.0)
-        ],
-      ),
+    return Theme(
+      data: Theme.of(context).copyWith(primaryColor: Colors.black),
+      child: Container(
+        color: Color(0xFFF0F0F0),
+        child: ListView(
+          children: <Widget>[
+            topPart,
+            bottomPart,
+            BetaBox(),
+            SizedBox(height: 48.0 + 24.0)
+          ],
+        ),
+      )
     );
   }
 }

@@ -25,7 +25,7 @@ class _CardsGameState extends State<CardsGame> {
         title: 'Cards',
         theme: ThemeData(
           backgroundColor: Colors.white,
-          primaryColor: Colors.black,
+          primaryColor: Colors.amber,
           accentColor: Colors.amber,
           fontFamily: 'Assistant',
           primarySwatch: Colors.blue,
@@ -256,7 +256,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   /// Displays a FAB if the game can start, otherwise just an
   /// instructive message.
   Widget _buildFab(BuildContext context, bool canStart) {
-    print('Can start? $canStart');
     if (canStart) {
       return FloatingActionButton.extended(
         icon: Image.asset('graphics/style192.png', width: 24.0, height: 24.0),
@@ -362,7 +361,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       borderRadius: isFrontCard ? _borderRadius(context) : BorderRadius.zero,
       safeAreaTop: _safeAreaTopSize(context),
       leading: leading,
-      following: following,
+      tailing: following,
     );
   }
 }

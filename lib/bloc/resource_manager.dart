@@ -7,19 +7,49 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yaml/yaml.dart';
 import 'model.dart';
 
+class ResourceMissingError implements Error {
+  const ResourceMissingError(this.path) : assert(path != null);
+  
+  final String path;
+
+  String toString() => "Resource missing: $path";
+
+  StackTrace get stackTrace => null;
+}
+
+
+/// Handles all the low level stuff, like dealing with files or package
+/// libraries.
 abstract class ResourceManager {
 
+  /// Saves the list of players to the shared preferences in order to preserve
+  /// it beyond the lifetime of the app.
+  /// 
+  /// See [loadPlayers].
   static void savePlayers(List<String> players) async {
+    assert(players != null);
+
     final prefs = await SharedPreferences.getInstance();
     prefs.setStringList('players', players);
   }
 
+
+  /// Loads the list of players from the shared preferences.
+  /// 
+  /// See [savePlayers]-
   static Future<List<String>> loadPlayers() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getStringList('players') ?? [];
   }
 
+
+  /// Saves the list of selected decks to the shared preferences in order to
+  /// preserve it beyond the lifetime of the app.
+  /// 
+  /// See [loadSelectedDecks].
   static void saveSelectedDecks(List<Deck> decks) async {
+    assert(decks != null);
+
     final prefs = await SharedPreferences.getInstance();
     prefs.setStringList(
       'selected_decks',
@@ -27,29 +57,32 @@ abstract class ResourceManager {
     );
   }
 
+
+  /// Loads the list of selected decks from the shared preferences.
+  /// 
+  /// See [saveSelectedDecks].
   static Future<List<String>> loadSelectedDecks() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getStringList('selected_decks') ?? [];
   }
 
+
   /// Returns a list of all decks of a given language.
   static Future<List<Deck>> getDecks(Locale locale) async {
     assert(locale != null);
+
+    // All the decks will be saved here.
+    final decks = <Deck>[];
+
+    // Try to read the yaml file corresponding to the locale.
     final root = 'assets/${locale.languageCode}';
     final filename = '$root/decks.yaml';
+    var yaml = loadYaml(await rootBundle.loadString(filename));
 
-    print('Loading $filename.');
-    final decks = <Deck>[];
-    var file;
-    try {
-      file = loadYaml(await rootBundle.loadString(filename));
-    } catch (e) {
-      print('Warning: $e. Is the file or directory added in the pubspec.yaml?');
-    }
+    print('Loading decks of version ${yaml['version']}.');
 
-    print('Loading decks of version ${file['version']}.');
-
-    for (final deck in file['decks'] ?? []) {
+    // Save the decks.
+    for (final deck in yaml['decks'] ?? []) {
       decks.add(Deck(
         id: deck['id'],
         file: '$root/deck_${deck['id'] ?? 'id'}.txt',
@@ -61,13 +94,32 @@ abstract class ResourceManager {
       ));
     }
 
-    print('Decks: $decks');
     return decks;
   }
 
+
+  /// Picks a random deck from the given decks.
+  /// Caution: May return null if the chosen deck's file is corrupt or if there
+  /// are too few players for the chosen card. Just call it again, then. :D
+  static Deck _pickDeck(List<Deck> decks) {
+    // Calculate the sum of all the deck's probabilites.
+    // Then choose a random cumulative sum in that range.
+    final probabilitySum = decks
+        .map((deck) => deck.probability)
+        .reduce((a, b) => a + b);
+    final chosenCumSum = Random().nextDouble() * probabilitySum;
+
+    // Calculate the cumulative sum and as we go, return the first deck where
+    // the cumulative sum gets above the chosen cumulative sum.
+    double cumSum = 0.0;
+    return decks.firstWhere((deck) {
+      cumSum += deck.probability;
+      return cumSum >= chosenCumSum;
+    });
+  }
+
+
   /// Picks a random card from a random deck.
-  /// Caution: may return null if it picks a card that required too many
-  /// players or deck files are corrupt. Just call it again, then.
   static Future<ContentCard> pickCard({
     @required List<Deck> decks,
     @required List<String> players
@@ -75,51 +127,47 @@ abstract class ResourceManager {
     assert(decks != null);
     assert(players != null);
 
-    final random = Random();
-    
-    final deckProbabilitySum = decks.map((deck) => deck.probability).reduce((a, b) => a + b);
-    final chosenDeckProbability = random.nextDouble() * deckProbabilitySum;
-    double cumulativeProbability = 0.0;
-    final deck = decks.firstWhere((deck) {
-      cumulativeProbability += deck.probability;
-      return cumulativeProbability >= chosenDeckProbability;
-    });
-
+    final deck = _pickDeck(decks);
     int selectedCard = 0;
     int count = -1;
-    //print('Picking a card from deck $deck. Loading file ${deck.file}');
 
+    // Reads the deck's file line by line.
     final line = await rootBundle.loadString(deck.file)
       .asStream()
       .transform(LineSplitter())
       .where((String line) => !line.startsWith('#'))
       .where((String line) {
         if (line.startsWith('/')) {
-          selectedCard = random.nextInt(int.parse(line.substring(1)));
+          // This is the line telling us the number of cards in this file.
+          final numberOfCards = int.parse(line.substring(1));
+          selectedCard = Random().nextInt(numberOfCards);
           return false;
         } else return true;
       })
       .singleWhere((String line) {
+        // Increase count until we are at the chosen card.
         count++;
         return count == selectedCard;
       });
 
-    players.shuffle(random);
+    // Make sure the chosen line is valid.
     final parts = line.split('|');
-
     if (parts.length != 4) {
       print('Warning: Card is corrupt: There are ${parts.length} parts: $line.');
-      return null; // await pickCard(decks, players);
+      return null;
     }
 
+    // Insert the players. Return null if there are too few players to fill all
+    // the slots in the card.
+    players.shuffle(Random());
     final content = _insertNames(parts[2], players);
     final annihilation = _insertNames(parts[3], players);
 
     if (content == null || annihilation == null) {
-      print('Not enough players to fill slots in card $parts.');
-      return null; // await pickCard(decks, players);
+      return null;
     }
  
+    // Finally, return the card.
     return ContentCard(
       id: deck.id + '-' + parts[0],
       author: parts[1],
@@ -129,12 +177,12 @@ abstract class ResourceManager {
     );
   }
 
+
   /// Replaces player tokens in the string with actual player names.
-  /// [$a] is replaced with [players[0]], [$b] with [players[1]] and so on.
-  /// In order to not limit the game to the first players, shuffle players
-  /// before calling.
+  /// $a is replaced with [players[0]], $b with [players[1]] and so on.
+  /// In order to guarantee a fair game, shuffle the players before calling.
   static String _insertNames(String string, List<String> players) {
-    final chars = 'abcdefghiojklmnopqrstuvwxyz'.split('');
+    const chars = [ 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k' ];
     
     for (int i = 0; i < chars.length; i++) {
       final placeholder = '\$${chars[i]}';
