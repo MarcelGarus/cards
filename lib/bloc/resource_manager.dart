@@ -22,8 +22,8 @@ class ResourceMissingError implements Error {
 /// libraries.
 abstract class ResourceManager {
 
-  /// Saves the list of players to the shared preferences in order to preserve
-  /// it beyond the lifetime of the app.
+  /// Saves the players' names to the shared preferences in order to preserve
+  /// them beyond the lifetime of the app.
   /// 
   /// See [loadPlayers].
   static void savePlayers(List<String> players) async {
@@ -34,7 +34,7 @@ abstract class ResourceManager {
   }
 
 
-  /// Loads the list of players from the shared preferences.
+  /// Loads the players' names from the shared preferences.
   /// 
   /// See [savePlayers]-
   static Future<List<String>> loadPlayers() async {
@@ -43,14 +43,15 @@ abstract class ResourceManager {
   }
 
 
-  /// Saves the list of selected decks to the shared preferences in order to
-  /// preserve it beyond the lifetime of the app.
+  /// Saves the selected decks to the shared preferences in order to preserve
+  /// it beyond the lifetime of the app.
   /// 
   /// See [loadSelectedDecks].
   static void saveSelectedDecks(List<Deck> decks) async {
     assert(decks != null);
 
     final prefs = await SharedPreferences.getInstance();
+    
     prefs.setStringList(
       'selected_decks',
       decks.map<String>((deck) => deck.id).toList()
@@ -58,12 +59,46 @@ abstract class ResourceManager {
   }
 
 
-  /// Loads the list of selected decks from the shared preferences.
+  /// Loads the selected decks from the shared preferences.
   /// 
   /// See [saveSelectedDecks].
   static Future<List<String>> loadSelectedDecks() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getStringList('selected_decks') ?? [];
+  }
+
+
+  /// Saves the user's cards.
+  static void saveMyCards(List<ContentCard> myCards) async {
+    assert(myCards != null);
+
+    // Save the cards in the same format as cards in deck files.
+    final List<String> stringifiedCards = myCards.map((card) =>
+        '${card.id}|${card.author}|${card.content}|${card.followup}'
+    ).toList();
+
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setStringList('my_cards', stringifiedCards);
+  }
+
+
+  /// Loads the user's cards.
+  static Future<List<ContentCard>> loadMyCards() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    return (prefs.getStringList('my_cards') ?? [])
+        .map((stringifiedCard) {
+          final parts = stringifiedCard.split('|');
+          return parts.length == 4 ? ContentCard(
+            id: parts[0],
+            color: '#FFFFFF',
+            content: parts[2],
+            followup: parts[3],
+            author: parts[0],
+          ) : null;
+        })
+        .where((card) => card != null)
+        .toList();
   }
 
 

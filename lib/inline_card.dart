@@ -4,7 +4,12 @@ import 'bloc/model.dart';
 
 /// Listener that listens for changes to either the content, followup or author
 /// text fields' contents.
-typedef void InlineCardChangedListener(String content, String followup, String author);
+typedef void InlineCardChangedListener(
+  BuildContext context,
+  String content,
+  String followup,
+  String author
+);
 
 
 
@@ -18,9 +23,8 @@ class InlineCard extends StatefulWidget {
     this.showContent = true,
     this.showFollowup = true,
     this.showAuthor = true,
-    this.showBottomBar = true,
-    this.showPublishStatus = false,
     this.bottomBarLeading,
+    this.bottmoBarTailing,
     this.onTap,
     this.onChanged
   });
@@ -38,11 +42,10 @@ class InlineCard extends StatefulWidget {
   final bool showContent;
   final bool showFollowup;
   final bool showAuthor;
-  final bool showBottomBar;
-  final bool showPublishStatus;
 
   /// A widget inserted at the start of the bottom bar.
   final Widget bottomBarLeading;
+  final Widget bottmoBarTailing;
 
   // Callbacks for taps and changes (if editable).
   final VoidCallback onTap;
@@ -70,6 +73,7 @@ class _InlineCardState extends State<InlineCard> {
   // Once one of the property is edited, call the provided callback with all of
   // the user-provided content.
   void _onEdited() => widget.onChanged(
+    context,
     contentController.text,
     followupController.text,
     authorController.text
@@ -104,7 +108,7 @@ class _InlineCardState extends State<InlineCard> {
     }
     
     // Add followup.
-    if (widget.showFollowup && widget.card.hasFollowup) {
+    if (widget.showFollowup && (widget.card.hasFollowup) || widget.editable) {
       content.add(widget.editable ? CardInput(
         labelText: 'Followup',
         controller: followupController,
@@ -119,32 +123,20 @@ class _InlineCardState extends State<InlineCard> {
         labelText: 'Author',
         controller: authorController,
         maxLines: 1,
-      ) : Text(
+      ) : widget.card.hasAuthor ? Text(
         'von ${widget.card.author}',
         style: TextStyle(fontSize: 16.0)
-      ));
+      ) : Container());
     }
 
     // Add bottom bar.
-    if (widget.showBottomBar) {
-      final bottomBar = <Widget>[];
-
-      bottomBar.add(widget.bottomBarLeading ?? Container());
-      bottomBar.add(Spacer());
-      if (widget.showPublishStatus) {
-        bottomBar.add(Text(
-          widget.isPublished ? 'Published' : 'Not published yet',
-          style: TextStyle(fontSize: 16.0)
-        ));
-      }
-      bottomBar.add(SizedBox(width: 8.0));
-      bottomBar.add(Icon(
-        widget.isPublished ? Icons.cloud_done : Icons.cloud_off,
-        color: Colors.white
-      ));
-
-      content.add(Row(children: bottomBar));
-    }
+    content.add(Row(
+      children: <Widget>[
+        widget.bottomBarLeading ?? Container(),
+        Spacer(),
+        widget.bottomBarLeading ?? Container()
+      ],
+    ));
 
     return Theme(
       data: themeData,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'bloc/bloc.dart';
 import 'bloc/model.dart';
 import 'edit_and_publish_card.dart';
 import 'inline_card.dart';
@@ -9,27 +10,6 @@ class CardListScreen extends StatefulWidget {
 }
 
 class _CardListScreenState extends State<CardListScreen> {
-  List<ContentCard> cards = [
-    ContentCard(
-      id: 'card-id',
-      content: 'content content content content content content content content content content content content content content content content content content content content content content content content content content content content content content content content content content content content content content content content content',
-      followup: 'annihilation',
-      color: '#FFFFFF'
-    ),
-    ContentCard(
-      id: 'card-id',
-      content: 'other card',
-      followup: 'annihilation',
-      color: '#FFFFFF',
-      author: 'me'
-    ),
-    ContentCard(
-      id: 'card-id',
-      content: 'and yet another card',
-      color: '#FFFFFF'
-    ),
-  ];
-
   void _goToEditScreen(BuildContext context, ContentCard card) {
     Navigator.of(context).push(PageRouteBuilder(
       opaque: false,
@@ -46,6 +26,11 @@ class _CardListScreenState extends State<CardListScreen> {
     ));
   }
 
+  void _addNewCard(BuildContext context) async {
+    final card = Bloc.of(context).writeNewCard();
+    _goToEditScreen(context, card);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,23 +38,57 @@ class _CardListScreenState extends State<CardListScreen> {
         title: Text('Your cards'),
       ),
       body: SafeArea(
-        child: ListView(
-          children: <Widget>[
-            SizedBox(height: 16.0)
-          ].followedBy(cards.map((card) {
-            return Padding(
-              padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
-              child: Hero(
-                tag: card.toString(),
-                child: InlineCard(
-                  card: card,
-                  showFollowup: false,
-                  showAuthor: false,
-                  onTap: () => _goToEditScreen(context, card)
+        child: StreamBuilder(
+          stream: Bloc.of(context).myCards,
+          builder: (context, snapshot) {
+            final List<ContentCard> cards = snapshot.data ?? [];
+            final items = <Widget>[];
+
+            for (final card in cards) {
+              items.add(SizedBox(height: 16.0));
+              items.add(Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                child: Hero(
+                  tag: card.toString(),
+                  child: InlineCard(
+                    card: card,
+                    showFollowup: false,
+                    showAuthor: false,
+                    onTap: () => _goToEditScreen(context, card)
+                  )
                 )
+              ));
+            }
+
+            if (cards.isEmpty) {
+              items.add(Center(
+                child: Text('Pretty empty here...'),
+              ));
+            }
+
+            items.add(Padding(
+              padding: EdgeInsets.all(16.0),
+              child: OutlineButton(
+                child: Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Icon(Icons.add),
+                      SizedBox(width: 8.0),
+                      Text('Add new card')
+                    ],
+                  )
+                ),
+                onPressed: () => _addNewCard(context),
+                borderSide: BorderSide(color: Colors.black),
               )
+            ));
+
+            return ListView(
+              children: items
             );
-          })).toList()
+          }
         )
       )
     );

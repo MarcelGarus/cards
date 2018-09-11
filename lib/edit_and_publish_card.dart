@@ -1,15 +1,30 @@
 import 'package:flutter/material.dart';
+import 'bloc/bloc.dart';
 import 'bloc/model.dart';
 import 'inline_card.dart';
 
 
 /// Screen for editing a card.
-class EditCardScreen extends StatelessWidget {
-  EditCardScreen({ @required this.card }) : assert(card != null);
+class EditCardScreen extends StatefulWidget {
+  EditCardScreen({ @required this.card }) :
+      assert(card != null);
   
-  /// The card to be edited.
   final ContentCard card;
 
+  _EditCardScreenState createState() => _EditCardScreenState();
+}
+
+class _EditCardScreenState extends State<EditCardScreen> {
+  String content;
+  String followup;
+  String author;
+
+  void initState() {
+    super.initState();
+    content = widget.card.content;
+    followup = widget.card.followup;
+    author = widget.card.author;
+  }
 
   /// Animates to the publish screen.
   void _goToPublishScreen(BuildContext context) {
@@ -17,7 +32,7 @@ class EditCardScreen extends StatelessWidget {
       opaque: false,
       transitionDuration: const Duration(milliseconds: 200),
       pageBuilder: (BuildContext context, _, __) {
-        return PublishCardScreen(card: card);
+        return PublishCardScreen(card: widget.card);
       },
       transitionsBuilder: (_, Animation<double> animation, __, Widget child) {
         return FadeTransition(
@@ -28,29 +43,55 @@ class EditCardScreen extends StatelessWidget {
     ));
   }
 
+  // Card changed.
+  void _onChanged(BuildContext context, String content, String followup, String author) {
+    print('Content: $content, followup: $followup, author: $author');
+
+    //Bloc.of(context).
+  }
+
   @override
   Widget build(BuildContext context) {
+    /*final bottomBarTailing = if (widget.showPublishStatus) {
+      bottomBar.add(Text(
+        widget.isPublished ? 'Published' : 'Not published yet',
+        style: TextStyle(fontSize: 16.0)
+      ));
+
+      bottomBar.add(SizedBox(width: 8.0));
+      bottomBar.add(Icon(
+        widget.isPublished ? Icons.cloud_done : Icons.cloud_off,
+        color: Colors.white
+      ));
+    }*/
+
     final materialCard = Padding(
       padding: EdgeInsets.all(16.0),
       child: Hero(
-        tag: card.toString(),
+        tag: widget.card.id,
         child: InlineCard(
-          card: card,
+          card: widget.card,
           bottomBarLeading: SizedBox(
             height: 24.0,
             width: 24.0,
             child: CircularProgressIndicator(),
           ),
           editable: true,
-          showPublishStatus: true,
+          onChanged: _onChanged,
         )
       )
     );
 
     return Scaffold(
-      appBar: AppBar(title: Text('Edit card')),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.cloud_upload),
+      appBar: AppBar(
+        title: Text('Edit card'),
+        actions: <Widget>[
+          IconButton(icon: Icon(Icons.delete), onPressed: () {})
+        ],
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        icon: Icon(Icons.cloud_upload),
+        label: Text('Publish'),
         elevation: 12.0,
         onPressed: () => _goToPublishScreen(context),
       ),
@@ -58,7 +99,10 @@ class EditCardScreen extends StatelessWidget {
         child: ListView(
           children: [
             materialCard,
-            Guidelines()
+            Padding(
+              padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0 + 48.0 + 16.0),
+              child: Guidelines()
+            )
           ]
         )
       ),
@@ -76,50 +120,67 @@ class PublishCardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cardWidget = Padding(
+    final content = <Widget>[];
+
+    content.add(Padding(
+      padding: EdgeInsets.all(16.0),
+      child: Text('Make sure that your card fulfills all the guidelines below.',
+        style: TextStyle(fontSize: 24.0),
+      ),
+    ));
+
+    content.add(Padding(
       padding: EdgeInsets.all(16.0),
       child: Hero(
         tag: card.toString(),
         child: InlineCard(
           card: card,
           showFollowup: false,
-          showBottomBar: false,
         )
       )
-    );
+    ));
 
-    final followup = card.hasFollowup
-    ? Padding(
-        padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
+    if (card.hasFollowup) {
+      content.add(Center(
+        child: Material(
+          color: Colors.white,
+          elevation: 2.0,
+          shape: StadiumBorder(),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+            child: Text('Then, after some time:')
+          )
+        )
+      ));
+      content.add(Padding(
+        padding: EdgeInsets.all(16.0),
         child: InlineCard(
           card: card.createFollowup(),
-          showBottomBar: false,
         )
-      )
-    : Container();
-    
-    return Scaffold(
-      appBar: AppBar(title: Text('Publish card')),
-      floatingActionButton: FloatingActionButton.extended(
+      ));
+    }
+
+    content.add(Padding(
+      padding: EdgeInsets.all(16.0),
+      child: Guidelines()
+    ));
+
+    content.add(Container(
+      padding: EdgeInsets.only(bottom: 16.0),
+      alignment: Alignment.center,
+      child: FloatingActionButton.extended(
         icon: Icon(Icons.cloud_upload),
         label: Text('Publish'),
         elevation: 12.0,
         onPressed: () {},
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      )
+    ));
+
+    return Scaffold(
+      appBar: AppBar(title: Text('Publish card')),
       body: SafeArea(
         child: ListView(
-          children: [
-            Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Text('Make sure that your card fulfills all the guidelines below.',
-                style: TextStyle(fontSize: 24.0),
-              ),
-            ),
-            cardWidget,
-            followup,
-            Guidelines()
-          ]
+          children: content
         )
       ),
     );
@@ -185,18 +246,15 @@ class _GuidelinesState extends State<Guidelines> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 48.0 + 2 * 16.0),
-      child: ExpansionPanelList(
-        expansionCallback: expansionCallback,
-        children: guidelines.map((guideline) {
-          return ExpansionPanel(
-            isExpanded: guideline.isExpanded,
-            headerBuilder: (context, isExpanded) => guideline.header,
-            body: guideline.body
-          );
-        }).toList()
-      )
+    return ExpansionPanelList(
+      expansionCallback: expansionCallback,
+      children: guidelines.map((guideline) {
+        return ExpansionPanel(
+          isExpanded: guideline.isExpanded,
+          headerBuilder: (context, isExpanded) => guideline.header,
+          body: guideline.body
+        );
+      }).toList()
     );
   }
 }

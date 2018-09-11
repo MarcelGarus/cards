@@ -26,6 +26,7 @@ class Bloc {
 
 
   Locale _locale;
+  final List<ContentCard> _myCards = [];
   
   // Configuration of the game.
   final _players = <String>[];
@@ -41,6 +42,7 @@ class Bloc {
   
 
   // Output stream subjects.
+  final _myCardsSubject = BehaviorSubject<List<ContentCard>>(seedValue: []);
   final _playersSubject = BehaviorSubject<List<String>>(seedValue: []);
   final _decksSubject = BehaviorSubject<List<Deck>>(seedValue: []);
   final _canStartSubject = BehaviorSubject<bool>(seedValue: false);
@@ -50,6 +52,7 @@ class Bloc {
   final _configurationMessageSubject = BehaviorSubject<String>(seedValue: '');
 
   // Actual output streams. Some have subjects above, others are composed.
+  Stream<List<ContentCard>> get myCards => _myCardsSubject.stream;
   Stream<List<String>> get players => _playersSubject.stream;
   Stream<List<Deck>> get decks => _decksSubject.stream;
   Stream<List<Deck>> get unlockedDecks => decks
@@ -76,30 +79,30 @@ class Bloc {
     players.listen((players) => ResourceManager.savePlayers(players));
     print('Players loaded: $_players');
 
-    // TODO: load language, then load decks of that language.
+    // TODO: load language.
     _locale = Locale('de');
-    _loadDecks();
-  }
 
-  void _loadDecks() async {
-    print('Loading the decks.');
-    final List<Deck> decks = await ResourceManager.getDecks(_locale);
+    // Load decks of that language.
+    final List<Deck> loadedDecks = await ResourceManager.getDecks(_locale);
     _decks.clear();
-    _decks.addAll(decks);
+    _decks.addAll(loadedDecks);
     _decksSubject.add(_decks);
-    print('Decks loaded: $_decks');
 
     // TODO: get unlocked decks.
 
+    // Load selected decks.
     final List<String> selected = await ResourceManager.loadSelectedDecks();
     for (final deck in _decks) {
       deck.isSelected = selected.contains(deck.id);
     }
     _updateConfigurationValidity();
     selectedDecks.listen((decks) => ResourceManager.saveSelectedDecks(decks));
-    print('Selected decks loaded: $selected');
-  }
 
+    // Load player's custom cards.
+    _myCards.addAll(await ResourceManager.loadMyCards());
+    _myCardsSubject.add(_myCards);
+    myCards.listen((myCards) => ResourceManager.saveMyCards(myCards));
+  }
 
   void addPlayer(String player) {
     _players.add(player);
@@ -167,6 +170,33 @@ class Bloc {
     final len = _cards.length;
     _frontCardSubject.add(len > 0 ? _cards[0] : null);
     _backCardSubject.add(len > 1 ? _cards[1] : null);
+  }
+
+  /// Creates a new card for the user to fill with content.
+  ContentCard writeNewCard() {
+    final myCardIds = _myCards.map((card) => card.id).toSet();
+    var id;
+    for (int i = 0;; i++) {
+      id = 'my_$i';
+      if (!myCardIds.contains(id))
+        break;
+    }
+
+    final card = ContentCard(
+      id: id,
+      content: '',
+      color: '#FFFFFF'
+    );
+    _myCards.add(card);
+    _myCardsSubject.add(_myCards);
+    return card;
+  }
+
+  void updateMyCard(ContentCard card) {
+    final oldVersion = _myCards.singleWhere((myCard) => myCard.id == card.id);
+    _myCards.remove(oldVersion);
+    _myCards.add(card);
+    _myCardsSubject.add(_myCards);
   }
 
   void dispose() {
