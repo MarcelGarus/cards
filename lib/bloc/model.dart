@@ -14,8 +14,8 @@ class EmptyCard extends Card {}
 
 /// A card provided by some decks for introductory or initialisation
 /// purposes.
-class IntroductionCard extends Card {
-  IntroductionCard({
+class IntroCard extends Card {
+  IntroCard({
     @required this.text
   }) :
       assert(text != null);
@@ -29,8 +29,8 @@ class IntroductionCard extends Card {
 
 
 /// The content card, displaying some content from a deck.
-class ContentCard extends Card {
-  ContentCard({
+class GameCard extends Card {
+  GameCard({
     @required this.id,
     @required this.color,
     @required this.content,
@@ -62,7 +62,7 @@ class ContentCard extends Card {
 
 
   /// Creates this card's followup.
-  ContentCard createFollowup() => ContentCard(
+  GameCard createFollowup() => GameCard(
     id: id,
     author: author,
     content: followup,
@@ -137,7 +137,7 @@ class Deck {
   final double probability;
 
   /// A card doing some introduction or initialisation for the deck.
-  final IntroductionCard introduction;
+  final IntroCard introduction;
   bool get hasIntroduction => introduction != null;
 
   /// Whether the card is unlocked.

@@ -1,82 +1,64 @@
 import 'package:flutter/material.dart' hide Card;
 import 'package:hex/hex.dart';
-import 'bloc/model.dart';
-
+import '../bloc/model.dart';
+import 'raw_card.dart';
 
 /// A fullscreen card in the game.
-class RawCard extends StatelessWidget {
-  RawCard({
+class FullscreenCard extends StatelessWidget {
+  FullscreenCard({
     @required this.card,
-    this.backgroundColor = Colors.black,
-    this.borderRadius,
+    this.borderRadius = BorderRadius.zero,
     this.safeAreaTop = 0.0,
-    this.leading,
-    this.tailing
+    this.topBarLeading,
+    this.topBarTailing
   }) :
       assert(card != null),
-      assert(backgroundColor != null),
       assert(safeAreaTop != null);
 
   /// The card to display.
   final Card card;
 
-  /// The color of the material.
-  final Color backgroundColor;
-
   /// The border radius of the material.
   final BorderRadius borderRadius;
-
-  /// The size of the safe area at the top of the card.
   final double safeAreaTop;
 
-  /// A leading widget in the app bar.
-  final Widget leading;
-
-  /// A tailing widget in the app bar.
-  final Widget tailing;
+  final Widget topBarLeading;
+  final Widget topBarTailing;
 
 
   @override
   Widget build(BuildContext context) {
-    final appBarItems = <Widget>[];
-    appBarItems.add(leading ?? Container());
-    appBarItems.add(Spacer());
-    appBarItems.add(tailing ?? Container());
-
-    // A list of all content stuff. Common safe area and app bar stuff is
-    // already added, the card handler adds more stuff.
-    final content = <Widget>[
-      SizedBox(height: safeAreaTop),
-      Row(children: appBarItems)
-    ];
-
     // Call the correct handler based on the card's type.
+    List<Widget> children;
+
     if (card is EmptyCard)
-      content.addAll(_buildEmptyCard(context, card));
-    else if (card is IntroductionCard)
-      content.addAll(_buildIntroductionCard(context, card));
-    else if (card is ContentCard)
-      content.addAll(_buildContentCard(context, card));
+      children = _buildEmptyCard(context, card);
+    else if (card is IntroCard)
+      children = _buildIntroductionCard(context, card);
+    else if (card is GameCard)
+      children = _buildContentCard(context, card);
     else if (card is CoinCard)
-      content.addAll(_buildCoinCard(context, card));
+      children = _buildCoinCard(context, card);
 
     // Returns the actual card.
-    return Material(
-      color: backgroundColor,
-      elevation: 8.0,
-      animationDuration: Duration.zero,
-      borderRadius: borderRadius ?? BorderRadius.zero,
-      child: Column(children: content),
+    return RawCard(
+      borderRadius: borderRadius,
+      safeAreaTop: safeAreaTop,
+      topBarLeading: topBarLeading,
+      topBarTailing: topBarTailing,
+      child: Expanded(
+        child: Column(
+          children: children
+        )
+      ),
     );
   }
-
 
   /// Builds an empty card.
   List<Widget> _buildEmptyCard(BuildContext context, EmptyCard card) => [];
 
-
   /// Builds a welcome card.
-  List<Widget> _buildIntroductionCard(BuildContext context, IntroductionCard card) {
+  List<Widget> _buildIntroductionCard(BuildContext context, IntroCard card) {
     return [
       Expanded(child: Container()),
       Text(card.text, style: TextStyle(color: Colors.white, fontSize: 24.0)),
@@ -84,9 +66,8 @@ class RawCard extends StatelessWidget {
     ];
   }
 
-
   /// Builds a content card.
-  List<Widget> _buildContentCard(BuildContext context, ContentCard card) {
+  List<Widget> _buildContentCard(BuildContext context, GameCard card) {
     final rgb = HEX.decode(card.color.substring(1));
     final color = Color.fromARGB(255, rgb[0], rgb[1], rgb[2]);
     
@@ -117,7 +98,6 @@ class RawCard extends StatelessWidget {
     ];
   }
 
-
   /// Builds a coin card.
   List<Widget> _buildCoinCard(BuildContext context, CoinCard card) {
     return [
@@ -128,7 +108,6 @@ class RawCard extends StatelessWidget {
     ];
   }
 }
-
 
 
 /// Tries to change the font size of the given style to match the text in the

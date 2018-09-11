@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'bloc/model.dart';
-
+import '../bloc/model.dart';
 
 /// Listener that listens for changes to either the content, followup or author
 /// text fields' contents.
@@ -11,32 +10,22 @@ typedef void InlineCardChangedListener(
   String author
 );
 
-
-
-/// A non-fullscreen card that is solemnly used for [ContentCard]s that the
+/// A non-fullscreen card that is solemnly used for [GameCard]s that the
 /// user creates.
 class InlineCard extends StatefulWidget {
   InlineCard({
     @required this.card,
-    this.isPublished = false,
-    this.editable = false,
     this.showContent = true,
     this.showFollowup = true,
     this.showAuthor = true,
     this.bottomBarLeading,
     this.bottmoBarTailing,
     this.onTap,
-    this.onChanged
+    this.onEdited
   });
 
   /// The content card.
-  final ContentCard card;
-
-  /// Whether the card is already published.
-  final bool isPublished;
-
-  /// Whether the fields should be editable (TextFields) or not (Texts).
-  final bool editable;
+  final GameCard card;
 
   // Toggles for whether several parts of the card should be shown or not.
   final bool showContent;
@@ -49,7 +38,8 @@ class InlineCard extends StatefulWidget {
 
   // Callbacks for taps and changes (if editable).
   final VoidCallback onTap;
-  final InlineCardChangedListener onChanged;
+  final InlineCardChangedListener onEdited;
+  bool get editable => onEdited != null;
 
   _InlineCardState createState() => _InlineCardState();
 }
@@ -72,7 +62,7 @@ class _InlineCardState extends State<InlineCard> {
 
   // Once one of the property is edited, call the provided callback with all of
   // the user-provided content.
-  void _onEdited() => widget.onChanged(
+  void _onEdited() => widget.onEdited(
     context,
     contentController.text,
     followupController.text,
@@ -82,7 +72,7 @@ class _InlineCardState extends State<InlineCard> {
   @override
   Widget build(BuildContext context) {
     // Create a modified theme because of black background.
-    final originalTextTheme = Theme.of(context).textTheme;
+    final textTheme = Theme.of(context).textTheme;
     final themeData = Theme.of(context).copyWith(
       hintColor: Colors.white,
       inputDecorationTheme: InputDecorationTheme(
@@ -90,17 +80,17 @@ class _InlineCardState extends State<InlineCard> {
           borderSide: BorderSide(color: Colors.amber)
         ),
       ),
-      textTheme: originalTextTheme.copyWith(
-        body1: originalTextTheme.body1.copyWith(color: Colors.white, fontSize: 24.0),
+      textTheme: textTheme.copyWith(
+        body1: textTheme.body1.copyWith(color: Colors.white, fontSize: 24.0),
       ),
     );
 
     // List of column widgets, will be filled over time.
-    final content = <Widget>[];
+    final items = <Widget>[];
 
     // Add content.
     if (widget.showContent) {
-      content.add(widget.editable ? CardInput(
+      items.add(widget.editable ? CardInput(
         labelText: 'Content',
         controller: contentController,
         maxLines: 3,
@@ -109,7 +99,7 @@ class _InlineCardState extends State<InlineCard> {
     
     // Add followup.
     if (widget.showFollowup && (widget.card.hasFollowup) || widget.editable) {
-      content.add(widget.editable ? CardInput(
+      items.add(widget.editable ? CardInput(
         labelText: 'Followup',
         controller: followupController,
         maxLines: 3
@@ -118,7 +108,7 @@ class _InlineCardState extends State<InlineCard> {
 
     // Add author.
     if (widget.showAuthor) {
-      content.add(widget.editable
+      items.add(widget.editable
       ? CardInput(
         labelText: 'Author',
         controller: authorController,
@@ -130,7 +120,7 @@ class _InlineCardState extends State<InlineCard> {
     }
 
     // Add bottom bar.
-    content.add(Row(
+    items.add(Row(
       children: <Widget>[
         widget.bottomBarLeading ?? Container(),
         Spacer(),
@@ -147,11 +137,11 @@ class _InlineCardState extends State<InlineCard> {
         child: LayoutBuilder(
           builder: (context, BoxConstraints constraints) {
             // During the hero animation, the InlineCard is lifted up into the
-            // overlay, where it's provided with tight constraints.
-            // To avoid overflow errors and visual inconsistencies when
-            // animating from a smaller to a larger position (and thus trying
-            // to display the larger content in smaller, tight constraints),
-            // the content of the card isn't shown during the hero animation.
+            // overlay, where it's provided with tight constraints. To avoid
+            // overflow errors and visual inconsistencies when animating from a
+            // smaller to a larger position (and thus trying to display the
+            // larger content in smaller, tight constraints), the content of
+            // the card isn't shown during the hero animation.
             return constraints.isTight ? Container() : InkResponse(
               onTap: widget.onTap ?? () {},
               radius: 1000.0, // TODO: do not hardcode
@@ -160,7 +150,7 @@ class _InlineCardState extends State<InlineCard> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: content//.map((w) => Expanded(child: w)).toList()
+                  children: items
                 )
               ),
             );

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mailer/flutter_mailer.dart';
 import 'bloc/bloc.dart';
-import 'created_cards.dart';
+import 'my_cards/created_cards.dart';
 
 class Menu extends StatelessWidget {
   void _giveFeedback() async {

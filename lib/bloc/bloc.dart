@@ -26,7 +26,7 @@ class Bloc {
 
 
   Locale _locale;
-  final List<ContentCard> _myCards = [];
+  final List<GameCard> _myCards = [];
   
   // Configuration of the game.
   final _players = <String>[];
@@ -42,7 +42,7 @@ class Bloc {
   
 
   // Output stream subjects.
-  final _myCardsSubject = BehaviorSubject<List<ContentCard>>(seedValue: []);
+  final _myCardsSubject = BehaviorSubject<List<GameCard>>(seedValue: []);
   final _playersSubject = BehaviorSubject<List<String>>(seedValue: []);
   final _decksSubject = BehaviorSubject<List<Deck>>(seedValue: []);
   final _canStartSubject = BehaviorSubject<bool>(seedValue: false);
@@ -52,7 +52,7 @@ class Bloc {
   final _configurationMessageSubject = BehaviorSubject<String>(seedValue: '');
 
   // Actual output streams. Some have subjects above, others are composed.
-  Stream<List<ContentCard>> get myCards => _myCardsSubject.stream;
+  Stream<List<GameCard>> get myCards => _myCardsSubject.stream;
   Stream<List<String>> get players => _playersSubject.stream;
   Stream<List<Deck>> get decks => _decksSubject.stream;
   Stream<List<Deck>> get unlockedDecks => decks
@@ -173,7 +173,7 @@ class Bloc {
   }
 
   /// Creates a new card for the user to fill with content.
-  ContentCard writeNewCard() {
+  GameCard writeNewCard() {
     final myCardIds = _myCards.map((card) => card.id).toSet();
     var id;
     for (int i = 0;; i++) {
@@ -182,7 +182,7 @@ class Bloc {
         break;
     }
 
-    final card = ContentCard(
+    final card = GameCard(
       id: id,
       content: '',
       color: '#FFFFFF'
@@ -192,7 +192,7 @@ class Bloc {
     return card;
   }
 
-  void updateMyCard(ContentCard card) {
+  void updateMyCard(GameCard card) {
     final oldVersion = _myCards.singleWhere((myCard) => myCard.id == card.id);
     _myCards.remove(oldVersion);
     _myCards.add(card);

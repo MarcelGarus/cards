@@ -11,7 +11,7 @@ class _Cooldown {
       assert(card != null);
 
   /// The original card which has already been given out.
-  final ContentCard card;
+  final GameCard card;
 
   /// How long it takes before the followup is given out.
   int _countdown = 5 + Random().nextInt(7);
@@ -93,7 +93,7 @@ class Generator {
     }
 
     // Pick a random card.
-    ContentCard card;
+    GameCard card;
     while (card == null) {
       card = await ResourceManager.pickCard(
         decks: decks,

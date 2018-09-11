@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'bloc/bloc.dart';
-import 'bloc/model.dart';
-import 'edit_and_publish_card.dart';
-import 'inline_card.dart';
+import '../bloc/bloc.dart';
+import '../bloc/model.dart';
+import '../cards/inline_card.dart';
+import 'edit_card.dart';
 
 class CardListScreen extends StatefulWidget {
   @override
@@ -10,7 +10,7 @@ class CardListScreen extends StatefulWidget {
 }
 
 class _CardListScreenState extends State<CardListScreen> {
-  void _goToEditScreen(BuildContext context, ContentCard card) {
+  void _goToEditScreen(BuildContext context, GameCard card) {
     Navigator.of(context).push(PageRouteBuilder(
       opaque: false,
       transitionDuration: const Duration(milliseconds: 200),
@@ -41,7 +41,7 @@ class _CardListScreenState extends State<CardListScreen> {
         child: StreamBuilder(
           stream: Bloc.of(context).myCards,
           builder: (context, snapshot) {
-            final List<ContentCard> cards = snapshot.data ?? [];
+            final List<GameCard> cards = snapshot.data ?? [];
             final items = <Widget>[];
 
             for (final card in cards) {

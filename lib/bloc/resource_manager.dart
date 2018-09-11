@@ -51,7 +51,7 @@ abstract class ResourceManager {
     assert(decks != null);
 
     final prefs = await SharedPreferences.getInstance();
-    
+
     prefs.setStringList(
       'selected_decks',
       decks.map<String>((deck) => deck.id).toList()
@@ -69,7 +69,7 @@ abstract class ResourceManager {
 
 
   /// Saves the user's cards.
-  static void saveMyCards(List<ContentCard> myCards) async {
+  static void saveMyCards(List<GameCard> myCards) async {
     assert(myCards != null);
 
     // Save the cards in the same format as cards in deck files.
@@ -83,13 +83,13 @@ abstract class ResourceManager {
 
 
   /// Loads the user's cards.
-  static Future<List<ContentCard>> loadMyCards() async {
+  static Future<List<GameCard>> loadMyCards() async {
     final prefs = await SharedPreferences.getInstance();
 
     return (prefs.getStringList('my_cards') ?? [])
         .map((stringifiedCard) {
           final parts = stringifiedCard.split('|');
-          return parts.length == 4 ? ContentCard(
+          return parts.length == 4 ? GameCard(
             id: parts[0],
             color: '#FFFFFF',
             content: parts[2],
@@ -155,7 +155,7 @@ abstract class ResourceManager {
 
 
   /// Picks a random card from a random deck.
-  static Future<ContentCard> pickCard({
+  static Future<GameCard> pickCard({
     @required List<Deck> decks,
     @required List<String> players
   }) async {
@@ -203,7 +203,7 @@ abstract class ResourceManager {
     }
  
     // Finally, return the card.
-    return ContentCard(
+    return GameCard(
       id: deck.id + '-' + parts[0],
       author: parts[1],
       content: _insertNames(parts[2], players),

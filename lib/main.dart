@@ -5,7 +5,7 @@ import 'bloc/bloc.dart';
 import 'bloc/model.dart';
 import 'home.dart';
 import 'menu.dart';
-import 'raw_card.dart';
+import 'cards/fullscreen_card.dart';
 
 void main() => runApp(CardsGame());
 
@@ -356,12 +356,12 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       },
     );
 
-    return RawCard(
+    return FullscreenCard(
       card: card ?? EmptyCard(),
       borderRadius: isFrontCard ? _borderRadius(context) : BorderRadius.zero,
       safeAreaTop: _safeAreaTopSize(context),
-      leading: leading,
-      tailing: following,
+      topBarLeading: leading,
+      topBarTailing: following,
     );
   }
 }
