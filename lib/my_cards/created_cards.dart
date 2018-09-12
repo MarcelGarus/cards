@@ -43,19 +43,17 @@ class _CardListScreenState extends State<CardListScreen> {
           builder: (context, snapshot) {
             final List<GameCard> cards = snapshot.data ?? [];
             final items = <Widget>[];
+            print('Created cards are $cards.');
 
             for (final card in cards) {
               items.add(SizedBox(height: 16.0));
               items.add(Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
-                child: Hero(
-                  tag: card.toString(),
-                  child: InlineCard(
-                    card: card,
-                    showFollowup: false,
-                    showAuthor: false,
-                    onTap: () => _goToEditScreen(context, card)
-                  )
+                child: InlineCard(
+                  card: card,
+                  showFollowup: false,
+                  showAuthor: false,
+                  onTap: () => _goToEditScreen(context, card)
                 )
               ));
             }

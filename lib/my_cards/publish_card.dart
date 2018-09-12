@@ -12,6 +12,7 @@ class PublishCardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final content = <Widget>[];
+    print('Building publish card $card.');
 
     content.add(Padding(
       padding: EdgeInsets.all(16.0),
@@ -22,12 +23,9 @@ class PublishCardScreen extends StatelessWidget {
 
     content.add(Padding(
       padding: EdgeInsets.all(16.0),
-      child: Hero(
-        tag: card.toString(),
-        child: InlineCard(
-          card: card,
-          showFollowup: false,
-        )
+      child: InlineCard(
+        card: card,
+        showFollowup: false,
       )
     ));
 

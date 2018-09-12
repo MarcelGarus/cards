@@ -124,37 +124,40 @@ class _InlineCardState extends State<InlineCard> {
       children: <Widget>[
         widget.bottomBarLeading ?? Container(),
         Spacer(),
-        widget.bottomBarLeading ?? Container()
+        widget.bottmoBarTailing ?? Container()
       ],
     ));
 
     return Theme(
       data: themeData,
-      child: Material(
-        elevation: 4.0,
-        color: Colors.black,
-        borderRadius: BorderRadius.all(Radius.circular(8.0)),
-        child: LayoutBuilder(
-          builder: (context, BoxConstraints constraints) {
-            // During the hero animation, the InlineCard is lifted up into the
-            // overlay, where it's provided with tight constraints. To avoid
-            // overflow errors and visual inconsistencies when animating from a
-            // smaller to a larger position (and thus trying to display the
-            // larger content in smaller, tight constraints), the content of
-            // the card isn't shown during the hero animation.
-            return constraints.isTight ? Container() : InkResponse(
-              onTap: widget.onTap ?? () {},
-              radius: 1000.0, // TODO: do not hardcode
-              child: Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: items
-                )
-              ),
-            );
-          },
+      child: Hero(
+        tag: widget.card,
+        child: Material(
+          elevation: 4.0,
+          color: Colors.black,
+          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+          child: LayoutBuilder(
+            builder: (context, BoxConstraints constraints) {
+              // During the hero animation, the InlineCard is lifted up into
+              // the overlay, where it's provided with tight constraints. To
+              // avoid overflow errors and visual inconsistencies when
+              // animating from a smaller to a larger position (and thus trying
+              // to display the larger content in smaller, tight constraints),
+              // the content of the card isn't shown during the hero animation.
+              return constraints.isTight ? Container() : InkResponse(
+                onTap: widget.onTap ?? () {},
+                radius: 1000.0, // TODO: do not hardcode
+                child: Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: items
+                  )
+                ),
+              );
+            },
+          )
         )
       )
     );

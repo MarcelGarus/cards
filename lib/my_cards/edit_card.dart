@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../bloc/bloc.dart';
 import '../bloc/model.dart';
 import '../cards/inline_card.dart';
 import 'guidelines.dart';
@@ -32,7 +33,7 @@ class _EditCardScreenState extends State<EditCardScreen> {
       opaque: false,
       transitionDuration: const Duration(milliseconds: 200),
       pageBuilder: (BuildContext context, _, __) {
-        return PublishCardScreen(card: widget.card);
+        return PublishCardScreen(card: _createEditedCard());
       },
       transitionsBuilder: (_, Animation<double> animation, __, Widget child) {
         return FadeTransition(
@@ -43,11 +44,25 @@ class _EditCardScreenState extends State<EditCardScreen> {
     ));
   }
 
+  GameCard _createEditedCard() {
+    return GameCard(
+      id: widget.card.id,
+      color: '#FFFFFF',
+      content: content,
+      followup: followup,
+      author: author
+    );
+  }
+
   // Card changed.
   void _onChanged(BuildContext context, String content, String followup, String author) {
-    print('Content: $content, followup: $followup, author: $author');
+    print('Saving card with content: $content, followup: $followup, author: $author');
 
-    //Bloc.of(context).
+    this.content = content;
+    this.followup = followup;
+    this.author = author;
+
+    Bloc.of(context).updateMyCard(_createEditedCard());
   }
 
   @override
@@ -64,20 +79,18 @@ class _EditCardScreenState extends State<EditCardScreen> {
         color: Colors.white
       ));
     }*/
+    print('Editing card ${widget.card}.');
 
     final materialCard = Padding(
       padding: EdgeInsets.all(16.0),
-      child: Hero(
-        tag: widget.card.id,
-        child: InlineCard(
-          card: widget.card,
-          bottomBarLeading: SizedBox(
-            height: 24.0,
-            width: 24.0,
-            child: CircularProgressIndicator(),
-          ),
-          onEdited: _onChanged,
-        )
+      child: InlineCard(
+        card: widget.card,
+        bottomBarLeading: SizedBox(
+          height: 24.0,
+          width: 24.0,
+          child: CircularProgressIndicator(),
+        ),
+        onEdited: _onChanged,
       )
     );
 

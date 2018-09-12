@@ -94,7 +94,7 @@ abstract class ResourceManager {
             color: '#FFFFFF',
             content: parts[2],
             followup: parts[3],
-            author: parts[0],
+            author: parts[1],
           ) : null;
         })
         .where((card) => card != null)

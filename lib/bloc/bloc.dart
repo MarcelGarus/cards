@@ -187,6 +187,7 @@ class Bloc {
       content: '',
       color: '#FFFFFF'
     );
+    print('Card created: $card');
     _myCards.add(card);
     _myCardsSubject.add(_myCards);
     return card;

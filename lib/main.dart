@@ -27,6 +27,7 @@ class _CardsGameState extends State<CardsGame> {
           backgroundColor: Colors.white,
           primaryColor: Colors.amber,
           accentColor: Colors.amber,
+          brightness: Brightness.light,
           fontFamily: 'Assistant',
           primarySwatch: Colors.blue,
         ),
