@@ -164,7 +164,7 @@ class GameCard extends Card {
 
   /// Creates this card's followup.
   GameCard createFollowup() => GameCard(
-    id: id,
+    id: '$id-f',
     author: author,
     content: followup,
     followup: '',

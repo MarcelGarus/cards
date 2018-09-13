@@ -90,7 +90,7 @@ class FullscreenCard extends StatelessWidget {
               style: TextStyle(color: color)
             ),
             Text(card.id,
-              style: TextStyle(color: Color.lerp(color, Colors.black, 0.9))
+              style: TextStyle(color: Color.lerp(Colors.black, color, 0.05))
             ),
           ],
         )

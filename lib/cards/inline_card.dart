@@ -131,7 +131,7 @@ class _InlineCardState extends State<InlineCard> {
     return Theme(
       data: themeData,
       child: Hero(
-        tag: widget.card,
+        tag: widget.card.id,
         child: Material(
           elevation: 4.0,
           color: Colors.black,
