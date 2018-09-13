@@ -98,7 +98,7 @@ class _InlineCardState extends State<InlineCard> {
     }
     
     // Add followup.
-    if (widget.showFollowup && (widget.card.hasFollowup) || widget.editable) {
+    if (widget.showFollowup && widget.card.hasFollowup || widget.editable) {
       items.add(widget.editable ? CardInput(
         labelText: 'Followup',
         controller: followupController,

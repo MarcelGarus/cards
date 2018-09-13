@@ -232,8 +232,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   /// Builds the bottom part.
   Widget _buildBottomPart(BuildContext context) {
     final fab = StreamBuilder(
-      stream: Bloc.of(context).canStart,
-      builder: (context, snapshot) => _buildFab(context, snapshot.data ?? false)
+      stream: Bloc.of(context).configuration,
+      builder: (context, AsyncSnapshot<Configuration> snapshot) =>
+          _buildFab(context, snapshot.data?.isValid ?? false)
     );
     return Stack(
       children: <Widget> [
@@ -273,11 +274,17 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
           color: Colors.black,
           child: StreamBuilder(
-            stream: Bloc.of(context).configurationMessage,
-            builder: (context, snapshot) {
-              return Text(snapshot.data ?? '',
-                style: TextStyle(color: Colors.white)
-              );
+            stream: Bloc.of(context).configuration,
+            builder: (context, AsyncSnapshot<Configuration> snapshot) {
+              final configuration = snapshot.data;
+              if (configuration == null) {
+                return Text('', style: TextStyle(color: Colors.white));
+              } else if (configuration.isPlayerMissing) {
+                return Text('Add a player', style: TextStyle(color: Colors.white));
+              } else if (configuration.isDeckMissing) {
+                return Text('Select at least one deck', style: TextStyle(color: Colors.white));
+              }
+              return Container();
             },
           )
         )

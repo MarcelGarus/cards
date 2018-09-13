@@ -1,18 +1,19 @@
 import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:rxdart/subjects.dart';
-import 'generator.dart';
 import 'model.dart';
-import 'resource_manager.dart';
+import 'locale_bloc.dart';
+import 'players_bloc.dart';
+import 'decks_bloc.dart';
+import 'my_cards_bloc.dart';
+import 'game_bloc.dart';
 
 
-/// Is the gateway between Flutter Widgets and actual business logic, hence the
-/// name.
+/// The gateway between Flutter Widgets and actual business logic.
 class Bloc {
   Bloc() {
     _initialize();
   }
-
 
   /// Using this method, any widget in the tree below a BlocProvider can get
   /// access to the bloc.
@@ -22,195 +23,89 @@ class Bloc {
   }
 
   static const version = '0.0.1';
-  static const _cardBufferSize = 3;
 
+  final localeBloc = LocaleBloc();
+  final playersBloc = PlayersBloc();
+  final decksBloc = DecksBloc();
+  final myCardsBloc = MyCardsBloc();
+  final gameBloc = GameBloc();
 
-  Locale _locale;
-  final List<GameCard> _myCards = [];
-  
-  // Configuration of the game.
-  final _players = <String>[];
-  final _decks = <Deck>[];
-  List<Deck> get _unlockedDecks => _decks.where((deck) => deck.isUnlocked).toList();
-  List<Deck> get _selectedDecks => _decks.where((deck) => deck.isSelected).toList();
-  bool get _isConfigurationValid => _players.length > 0 && _selectedDecks.length > 0;
-
-  // Actually playing the game.
-  Generator _generator;
-  bool get _isGameActive => _generator != null;
-  final _cards = <Card>[];
-  
+  Configuration _configuration;
 
   // Output stream subjects.
-  final _myCardsSubject = BehaviorSubject<List<GameCard>>(seedValue: []);
-  final _playersSubject = BehaviorSubject<List<String>>(seedValue: []);
-  final _decksSubject = BehaviorSubject<List<Deck>>(seedValue: []);
-  final _canStartSubject = BehaviorSubject<bool>(seedValue: false);
+  final _configurationSubject = BehaviorSubject<Configuration>();
   final _canResumeSubject = BehaviorSubject<bool>(seedValue: false);
-  final _frontCardSubject = BehaviorSubject<Card>(seedValue: EmptyCard());
-  final _backCardSubject = BehaviorSubject<Card>(seedValue: EmptyCard());
-  final _configurationMessageSubject = BehaviorSubject<String>(seedValue: '');
 
-  // Actual output streams. Some have subjects above, others are composed.
-  Stream<List<GameCard>> get myCards => _myCardsSubject.stream;
-  Stream<List<String>> get players => _playersSubject.stream;
-  Stream<List<Deck>> get decks => _decksSubject.stream;
-  Stream<List<Deck>> get unlockedDecks => decks
-      .map((decks) => decks.where((deck) => deck.isUnlocked).toList());
-  Stream<List<Deck>> get selectedDecks => decks
-      .map((decks) => decks.where((deck) => deck.isSelected).toList());
-  Stream<bool> get canStart => _canStartSubject.stream.distinct();
-  Stream<bool> get canResume => _canResumeSubject.stream.distinct();
-  Stream<Card> get frontCard => _frontCardSubject.stream.distinct();
-  Stream<Card> get backCard => _backCardSubject.stream.distinct();
-  Stream<String> get configurationMessage => _configurationMessageSubject.stream.distinct();
+  // Actual output streams. Some have subjects above.
+  Stream<Locale> get locale => localeBloc.localeSubject.stream;
+  Stream<List<String>> get players => playersBloc.playersSubject.stream;
+  Stream<List<Deck>> get decks => decksBloc.decksSubject.stream;
+  Stream<List<Deck>> get unlockedDecks => decksBloc.unlockedDecksSubject.stream;
+  Stream<List<Deck>> get selectedDecks => decksBloc.selectedDecksSubject.stream;
+  Stream<List<GameCard>> get myCards => myCardsBloc.myCardsSubject.stream;
+  Stream<Configuration> get configuration => _configurationSubject.stream;
+  Stream<bool> get canResume => _canResumeSubject.stream;
+  Stream<Card> get frontCard => gameBloc.frontCardSubject.stream;
+  Stream<Card> get backCard => gameBloc.backCardSubject.stream;
+
+  void updateLocale(Locale locale) => localeBloc.updateLocale(locale);
+  void addPlayer(String player) => playersBloc.addPlayer(player);
+  void removePlayer(String player) => playersBloc.removePlayer(player);
+  void selectDeck(Deck deck) => decksBloc.selectDeck(deck);
+  void deselectDeck(Deck deck) => decksBloc.deselectDeck(deck);
+  GameCard createNewCard() => myCardsBloc.createNewCard();
+  void updateCard(GameCard card) => myCardsBloc.updateCard(card);
+  void deleteCard(GameCard card) => myCardsBloc.deleteCard(card);
+  void nextCard() async => gameBloc.nextCard(_configuration);
 
 
   void _initialize() async {
     print('Initializing the BLoC.');
 
-    // Update UI if configuration changes.
-    players.listen((_) => _updateConfigurationValidity());
-    decks.listen((_) => _updateConfigurationValidity());
+    // TODO: Add error handling
+    localeBloc.initialize();
+    playersBloc.initialize();
+    decksBloc.initialize(localeBloc.locale);
+    myCardsBloc.initialize();
 
-    // Load players. Once loaded, further changes to players should be saved.
-    _players.addAll(await ResourceManager.loadPlayers());
-    _playersSubject.add(_players);
-    players.listen((players) => ResourceManager.savePlayers(players));
-    print('Players loaded: $_players');
-
-    // TODO: load language.
-    _locale = Locale('de');
-
-    // Load decks of that language.
-    final List<Deck> loadedDecks = await ResourceManager.getDecks(_locale);
-    _decks.clear();
-    _decks.addAll(loadedDecks);
-    _decksSubject.add(_decks);
-
-    // TODO: get unlocked decks.
-
-    // Load selected decks.
-    final List<String> selected = await ResourceManager.loadSelectedDecks();
-    for (final deck in _decks) {
-      deck.isSelected = selected.contains(deck.id);
-    }
-    _updateConfigurationValidity();
-    selectedDecks.listen((decks) => ResourceManager.saveSelectedDecks(decks));
-
-    // Load player's custom cards.
-    _myCards.addAll(await ResourceManager.loadMyCards());
-    _myCardsSubject.add(_myCards);
-    myCards.listen((myCards) => ResourceManager.saveMyCards(myCards));
-  }
-
-  void addPlayer(String player) {
-    _players.add(player);
-    _playersSubject.add(_players);
-  }
-
-  void removePlayer(String player) {
-    _players.remove(player);
-    _playersSubject.add(_players);
-  }
-
-  void selectDeck(Deck deck) {
-    deck.isSelected = true;
-    _decksSubject.add(_decks);
-  }
-
-  void deselectDeck(Deck deck) {
-    deck.isSelected = false;
-    _decksSubject.add(_decks);
-  }
-
-  void _updateConfigurationValidity() {
-    _canStartSubject.add(_isConfigurationValid);
-    _canResumeSubject.add(_isConfigurationValid && _isGameActive);
-    _configurationMessageSubject.add(
-      _players.length == 0 ? 'To get started, add a player.' :
-      _selectedDecks.length == 0 ? 'Select at least one deck.' : ''
-    );
-  }
-
-  void start() {
-    print('Starting the game.');
-    if (_isConfigurationValid) {
-      _cards.clear();
-      _generator = Generator();
-      _canResumeSubject.add(_isGameActive);
-      _fillStack();
-    }
-  }
-
-  void nextCard() {
-    if (_cards.length > 0)
-      _cards.removeAt(0);
-
-    _notifyCards();
-    _fillStack();
-  }
-
-  void _fillStack() {
-    if (_cards.length >= _cardBufferSize)
-      return;
-
-    _generator.generateCard(
-      decks: _selectedDecks,
-      players: _players
-    ).then((Card card) {
-      print('Card generated: $card');
-      _cards.add(card);
-      _notifyCards();
-      _fillStack();
+    locale.listen((locale) {
+      decksBloc.initialize(locale);
+      gameBloc.stop();
     });
-  }
-
-  void _notifyCards() {
-    final len = _cards.length;
-    _frontCardSubject.add(len > 0 ? _cards[0] : null);
-    _backCardSubject.add(len > 1 ? _cards[1] : null);
-  }
-
-  /// Creates a new card for the user to fill with content.
-  GameCard writeNewCard() {
-    final myCardIds = _myCards.map((card) => card.id).toSet();
-    var id;
-    for (int i = 0;; i++) {
-      id = 'my_$i';
-      if (!myCardIds.contains(id))
-        break;
-    }
-
-    final card = GameCard(
-      id: id,
-      content: '',
-      color: '#FFFFFF'
-    );
-    print('Card created: $card');
-    _myCards.add(card);
-    _myCardsSubject.add(_myCards);
-    return card;
-  }
-
-  void updateMyCard(GameCard card) {
-    final oldVersion = _myCards.singleWhere((myCard) => myCard.id == card.id);
-    _myCards.remove(oldVersion);
-    _myCards.add(card);
-    _myCardsSubject.add(_myCards);
+    players.listen((players) => _updateConfiguration());
+    selectedDecks.listen((decks) => _updateConfiguration());
+    myCards.listen((cards) => _updateConfiguration());
+    configuration.listen((config) => _updateCanResume());
   }
 
   void dispose() {
-    _playersSubject.close();
-    _decksSubject.close();
-    _canStartSubject.close();
-    _frontCardSubject.close();
-    _backCardSubject.close();
-    _configurationMessageSubject.close();
+    _configurationSubject.close();
+    _canResumeSubject.close();
+  }
+
+  void _updateConfiguration() {
+    _configuration = Configuration(
+      players: playersBloc.players ?? [],
+      decks: decksBloc.selectedDecks ?? [],
+      myCards: myCardsBloc.myCards ?? []
+    );
+    _configurationSubject.add(_configuration);
+  }
+
+  void _updateCanResume() async {
+    _canResumeSubject.add(_configuration.isValid && gameBloc.isActive);
+  }
+
+  void start() async {
+    print('Starting the game.');
+
+    if (_configuration.isValid) {
+      print('Configuration is valid. Starting gameBloc.');
+      gameBloc.start(_configuration);
+      _updateCanResume();
+    }
   }
 }
-
-
 
 class BlocProvider extends StatelessWidget {
   BlocProvider({ @required this.bloc, @required this.child }) :

@@ -144,7 +144,6 @@ class _NameInputState extends State<NameInput> {
       },
       onSubmitted: (String text) {
         if (_isNameValid() && text != '') {
-          print('Adding player $text');
           Bloc.of(context).addPlayer(text);
           _controller.clear();
           FocusScope.of(context).requestFocus(_focusNode);

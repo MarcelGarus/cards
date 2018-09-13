@@ -27,7 +27,7 @@ class _CardListScreenState extends State<CardListScreen> {
   }
 
   void _addNewCard(BuildContext context) async {
-    final card = Bloc.of(context).writeNewCard();
+    final card = Bloc.of(context).createNewCard();
     _goToEditScreen(context, card);
   }
 

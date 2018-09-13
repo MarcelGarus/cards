@@ -62,34 +62,16 @@ class _EditCardScreenState extends State<EditCardScreen> {
     this.followup = followup;
     this.author = author;
 
-    Bloc.of(context).updateMyCard(_createEditedCard());
+    Bloc.of(context).updateCard(_createEditedCard());
   }
 
   @override
   Widget build(BuildContext context) {
-    /*final bottomBarTailing = if (widget.showPublishStatus) {
-      bottomBar.add(Text(
-        widget.isPublished ? 'Published' : 'Not published yet',
-        style: TextStyle(fontSize: 16.0)
-      ));
-
-      bottomBar.add(SizedBox(width: 8.0));
-      bottomBar.add(Icon(
-        widget.isPublished ? Icons.cloud_done : Icons.cloud_off,
-        color: Colors.white
-      ));
-    }*/
-    print('Editing card ${widget.card}.');
 
     final materialCard = Padding(
       padding: EdgeInsets.all(16.0),
       child: InlineCard(
         card: widget.card,
-        bottomBarLeading: SizedBox(
-          height: 24.0,
-          width: 24.0,
-          child: CircularProgressIndicator(),
-        ),
         onEdited: _onChanged,
       )
     );

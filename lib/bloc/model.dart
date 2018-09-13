@@ -1,5 +1,106 @@
 import 'package:flutter/foundation.dart';
 
+/// A deck.
+class Deck {
+  Deck({
+    @required this.id,
+    @required this.file,
+    @required this.name,
+    @required this.coverImage,
+    @required this.color,
+    @required this.description,
+    @required this.probability,
+    this.introduction,
+    this.isUnlocked = true,
+    this.isSelected = false
+  }) :
+      assert(id != null),
+      assert(file != null),
+      assert(name != null),
+      assert(coverImage != null),
+      assert(color != null),
+      assert(description != null),
+      assert(probability != null),
+      assert(isUnlocked != null);
+
+  /// The deck's ID.
+  final String id;
+
+  /// The path to the file where the deck's cards are stored.
+  final String file;
+
+  /// The name of the deck.
+  final String name;
+
+  /// The path to the file where the deck's cover image is stored.
+  final String coverImage;
+
+  /// The deck's color.
+  final String color;
+
+  /// The deck's description.
+  final String description;
+
+  /// The deck's probability.
+  /// Usually a value between 0 and 1, inclusive.
+  final double probability;
+
+  /// A card doing some introduction or initialisation for the deck.
+  final IntroCard introduction;
+  bool get hasIntroduction => introduction != null;
+
+  /// Whether the card is unlocked.
+  bool isUnlocked;
+
+  /// Whether the card is currently selected.
+  bool isSelected;
+
+
+  bool operator ==(dynamic other) {
+    if (other is! Deck)
+      return false;
+
+    final Deck typedOther = other;
+    return id == typedOther.id &&
+      file == typedOther.file &&
+      name == typedOther.name &&
+      coverImage == typedOther.coverImage &&
+      color == typedOther.color &&
+      description == typedOther.description &&
+      probability == typedOther.probability &&
+      introduction == typedOther.introduction &&
+      isUnlocked == typedOther.isUnlocked &&
+      isSelected == typedOther.isSelected;
+  }
+
+  String toString() => '(\'$name\' with description \'$description\' has color $color. See file $file)';
+}
+
+
+
+/// A game configuration with players, decks and enabled cards by the player.
+class Configuration {
+  Configuration({
+    @required this.players,
+    @required this.decks,
+    @required this.myCards
+  }) :
+      assert(players != null),
+      assert(decks != null),
+      assert(myCards != null);
+
+  final List<String> players;
+  final List<Deck> decks;
+  final List<GameCard> myCards;
+
+  bool get isPlayerMissing => players.length == 0;
+  bool get isDeckMissing => decks.length == 0;
+  bool get isValid => players.length > 0 && decks.length > 0;
+
+  String toString() => 'Configuration(players=$players, decks=decks, myCards=$myCards';
+}
+
+
 
 /// This is the base Card class, which all the other cards extend.
 class Card {}
@@ -87,82 +188,4 @@ class CoinCard extends Card {
 
 
   String toString() => 'Coin card';
-}
-
-
-
-/// A deck.
-class Deck {
-  Deck({
-    @required this.id,
-    @required this.file,
-    @required this.name,
-    @required this.coverImage,
-    @required this.color,
-    @required this.description,
-    @required this.probability,
-    this.introduction,
-    this.isUnlocked = true,
-    this.isSelected = false
-  }) :
-      assert(id != null),
-      assert(file != null),
-      assert(name != null),
-      assert(coverImage != null),
-      assert(color != null),
-      assert(description != null),
-      assert(probability != null),
-      assert(isUnlocked != null);
-
-  /// The deck's ID.
-  final String id;
-
-  /// The path to the file where the deck's cards are stored.
-  final String file;
-
-  /// The name of the deck.
-  final String name;
-
-  /// The path to the file where the deck's cover image is stored.
-  final String coverImage;
-
-  /// The deck's color.
-  final String color;
-
-  /// The deck's description.
-  final String description;
-
-  /// The deck's probability.
-  /// Usually a value between 0 and 1, inclusive.
-  final double probability;
-
-  /// A card doing some introduction or initialisation for the deck.
-  final IntroCard introduction;
-  bool get hasIntroduction => introduction != null;
-
-  /// Whether the card is unlocked.
-  bool isUnlocked;
-
-  /// Whether the card is currently selected.
-  bool isSelected;
-
-
-  bool operator ==(dynamic other) {
-    if (other is! Deck)
-      return false;
-
-    final Deck typedOther = other;
-    return id == typedOther.id &&
-      file == typedOther.file &&
-      name == typedOther.name &&
-      coverImage == typedOther.coverImage &&
-      color == typedOther.color &&
-      description == typedOther.description &&
-      probability == typedOther.probability &&
-      introduction == typedOther.introduction &&
-      isUnlocked == typedOther.isUnlocked &&
-      isSelected == typedOther.isSelected;
-  }
-
-  String toString() => '(\'$name\' with description \'$description\' has color $color. See file $file)';
 }
