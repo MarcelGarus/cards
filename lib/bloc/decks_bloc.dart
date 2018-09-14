@@ -16,10 +16,14 @@ class DecksBloc {
   final selectedDecksSubject = BehaviorSubject<List<Deck>>();
 
 
-  void initialize(Locale locale) async {
+  Future<void> initialize(Locale locale) async {
     final List<Deck> loadedDecks = await _loadDecks(locale);
 
-    // TODO: get unlocked decks.
+    // Load unlocked decks.
+    final Set<String> unlocked = await _loadUnlockedDecks();
+    for (final deck in loadedDecks) {
+      deck.isUnlocked = unlocked.contains(deck.id);
+    }
 
     // Load selected decks.
     final Set<String> selected = await _loadSelectedDecks();
@@ -40,14 +44,23 @@ class DecksBloc {
   }
 
 
+  void buy(Deck deck) {
+    deck.isUnlocked = true;
+    deck.isSelected = true;
+    unlockedDecksSubject.add(unlockedDecks);
+    selectedDecksSubject.add(selectedDecks);
+    _saveUnlockedDecks(unlockedDecks);
+    _saveSelectedDecks(selectedDecks);
+  }
+
   void selectDeck(Deck deck) {
-    decks.singleWhere((d) => d.id == deck.id).isSelected = true;
+    deck.isSelected = true;
     selectedDecksSubject.add(selectedDecks);
     _saveSelectedDecks(selectedDecks);
   }
 
   void deselectDeck(Deck deck) {
-    decks.singleWhere((d) => d.id == deck.id).isSelected = false;
+    deck.isSelected = false;
     selectedDecksSubject.add(selectedDecks);
     _saveSelectedDecks(selectedDecks);
   }
@@ -74,6 +87,19 @@ class DecksBloc {
     }
 
     return decks;
+  }
+
+  static void _saveUnlockedDecks(List<Deck> decks) {
+    ResourceManager.saveStringList(
+      'unlocked_decks',
+      decks.map((d) => d.id).toList()
+    ).catchError((e) {
+      print('An error occurred while saving $decks as unlocked decks: $e');
+    });
+  }
+
+  static Future<Set<String>> _loadUnlockedDecks() async {
+    return (await ResourceManager.loadStringList('unlocked_decks')).toSet() ?? Set();
   }
 
   static void _saveSelectedDecks(List<Deck> decks) {

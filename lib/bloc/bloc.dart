@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:rxdart/subjects.dart';
 import 'model.dart';
+import 'coins_bloc.dart';
 import 'locale_bloc.dart';
 import 'players_bloc.dart';
 import 'decks_bloc.dart';
@@ -10,6 +11,7 @@ import 'game_bloc.dart';
 
 
 /// The gateway between Flutter Widgets and actual business logic.
+/// Handles composition of the configuration.
 class Bloc {
   Bloc() {
     _initialize();
@@ -24,12 +26,15 @@ class Bloc {
 
   static const version = '0.0.1';
 
+  // The blocs.
   final localeBloc = LocaleBloc();
+  final coinsBloc = CoinsBloc();
   final playersBloc = PlayersBloc();
   final decksBloc = DecksBloc();
   final myCardsBloc = MyCardsBloc();
   final gameBloc = GameBloc();
 
+  // The current configuration.
   Configuration _configuration;
 
   // Output stream subjects.
@@ -38,6 +43,7 @@ class Bloc {
 
   // Actual output streams. Some have subjects above.
   Stream<Locale> get locale => localeBloc.localeSubject.stream;
+  Stream<BigInt> get coins => coinsBloc.coinsSubject.stream;
   Stream<List<String>> get players => playersBloc.playersSubject.stream;
   Stream<List<Deck>> get decks => decksBloc.decksSubject.stream;
   Stream<List<Deck>> get unlockedDecks => decksBloc.unlockedDecksSubject.stream;
@@ -48,25 +54,14 @@ class Bloc {
   Stream<Card> get frontCard => gameBloc.frontCardSubject.stream;
   Stream<Card> get backCard => gameBloc.backCardSubject.stream;
 
-  void updateLocale(Locale locale) => localeBloc.updateLocale(locale);
-  void addPlayer(String player) => playersBloc.addPlayer(player);
-  void removePlayer(String player) => playersBloc.removePlayer(player);
-  void selectDeck(Deck deck) => decksBloc.selectDeck(deck);
-  void deselectDeck(Deck deck) => decksBloc.deselectDeck(deck);
-  GameCard createNewCard() => myCardsBloc.createNewCard();
-  void updateCard(GameCard card) => myCardsBloc.updateCard(card);
-  void deleteCard(GameCard card) => myCardsBloc.deleteCard(card);
-  void nextCard() async => gameBloc.nextCard(_configuration);
-
 
   void _initialize() async {
     print('Initializing the BLoC.');
 
-    // TODO: Add error handling
-    localeBloc.initialize();
-    playersBloc.initialize();
-    decksBloc.initialize(localeBloc.locale);
-    myCardsBloc.initialize();
+    localeBloc.initialize().catchError(print);
+    playersBloc.initialize().catchError(print);
+    decksBloc.initialize(localeBloc.locale).catchError(print);
+    myCardsBloc.initialize().catchError(print);
 
     locale.listen((locale) {
       decksBloc.initialize(locale);
@@ -96,6 +91,32 @@ class Bloc {
     _canResumeSubject.add(_configuration.isValid && gameBloc.isActive);
   }
 
+
+  void updateLocale(Locale locale) => localeBloc.updateLocale(locale);
+
+  void findCoin() => coinsBloc.findCoin();
+
+  void canBuy(Deck deck) => coinsBloc.canBuy(deck);
+
+  void buy(Deck deck) {
+    coinsBloc.buy(deck);
+    decksBloc.buy(deck);
+  }
+  
+  void addPlayer(String player) => playersBloc.addPlayer(player);
+  
+  void removePlayer(String player) => playersBloc.removePlayer(player);
+  
+  void selectDeck(Deck deck) => decksBloc.selectDeck(deck);
+  
+  void deselectDeck(Deck deck) => decksBloc.deselectDeck(deck);
+  
+  GameCard createNewCard() => myCardsBloc.createNewCard();
+  
+  void updateCard(GameCard card) => myCardsBloc.updateCard(card);
+  
+  void deleteCard(GameCard card) => myCardsBloc.deleteCard(card);
+  
   void start() async {
     print('Starting the game.');
 
@@ -105,6 +126,8 @@ class Bloc {
       _updateCanResume();
     }
   }
+  
+  void nextCard() async => gameBloc.nextCard(_configuration);
 }
 
 class BlocProvider extends StatelessWidget {

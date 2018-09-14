@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'bloc/bloc.dart';
 
 /// A list of names as well as the input below.
-class NameSelector extends StatelessWidget {
+class PlayerInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(

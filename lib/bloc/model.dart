@@ -9,6 +9,7 @@ class Deck {
     @required this.coverImage,
     @required this.color,
     @required this.description,
+    @required this.price,
     @required this.probability,
     this.introduction,
     this.isUnlocked = true,
@@ -20,6 +21,7 @@ class Deck {
       assert(coverImage != null),
       assert(color != null),
       assert(description != null),
+      assert(price != null),
       assert(probability != null),
       assert(isUnlocked != null);
 
@@ -40,6 +42,9 @@ class Deck {
 
   /// The deck's description.
   final String description;
+
+  /// The deck's price.
+  final int price;
 
   /// The deck's probability.
   /// Usually a value between 0 and 1, inclusive.

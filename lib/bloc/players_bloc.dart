@@ -8,7 +8,7 @@ class PlayersBloc {
   final playersSubject = BehaviorSubject<List<String>>(seedValue: []);
 
 
-  void initialize() async {
+  Future<void> initialize() async {
     players = await _loadPlayers();
     playersSubject.add(players);
   }

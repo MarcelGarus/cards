@@ -9,7 +9,7 @@ class LocaleBloc {
   final localeSubject = BehaviorSubject<Locale>();
 
 
-  void initialize() async {
+  Future<void> initialize() async {
     locale = await _loadLocale();
     localeSubject.add(locale);
   }

@@ -9,7 +9,7 @@ class MyCardsBloc {
 
   final myCardsSubject = BehaviorSubject<List<GameCard>>(seedValue: []);
 
-  void initialize() async {
+  Future<void> initialize() async {
     myCards = await _loadMyCards();
     myCardsSubject.add(myCards);
   }

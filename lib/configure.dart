@@ -2,29 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mailer/flutter_mailer.dart';
 import 'bloc/bloc.dart';
 import 'deck_selector.dart';
-import 'name_selector.dart';
+import 'player_input.dart';
 
 /// The configuration page.
 class ConfigureScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final appBar = Padding(
+      padding: EdgeInsets.all(8.0),
+      child: Row(
+        children: <Widget>[
+          Spacer(),
+          Image.asset('graphics/style384.png', width: 48.0, height: 48.0),
+          Text('Cards', style: TextStyle(fontSize: 24.0)),
+          Spacer(),
+          //CoinCounter(12)
+        ]
+      ),
+    );
+
     final topPart = Material(
       color: Colors.white,
       elevation: 2.0,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          SizedBox(height: 8.0),
-          Row(
-            children: <Widget>[
-              Expanded(child: Container()),
-              Image.asset('graphics/style384.png', width: 48.0, height: 48.0),
-              Text('Cards', style: TextStyle(fontSize: 24.0)),
-              Expanded(child: Container()),
-            ]
-          ),
-          SizedBox(height: 8.0),
-          NameSelector(),
+          appBar,
+          PlayerInput(),
         ],
       )
     );
@@ -42,6 +46,18 @@ class ConfigureScreen extends StatelessWidget {
           ],
         ),
       )
+    );
+  }
+}
+
+
+
+/// The coin counter.
+class CoinCounter extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      
     );
   }
 }
