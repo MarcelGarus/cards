@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mailer/flutter_mailer.dart';
 import 'bloc/bloc.dart';
 import 'my_cards/created_cards.dart';
+import 'settings.dart';
 
 class Menu extends StatelessWidget {
   void _giveFeedback() async {
@@ -33,9 +34,16 @@ class Menu extends StatelessWidget {
           title: Text('My cards'),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) {
-                return CardListScreen();
-              }
+              builder: (context) => CardListScreen()
+            ));
+          },
+        ),
+        ListTile(
+          leading: Icon(Icons.settings, color: Colors.black),
+          title: Text('Settings'),
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => SettingsScreen()
             ));
           },
         ),
