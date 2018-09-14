@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart' hide Card;
 import 'bloc/bloc.dart';
 import 'bloc/model.dart';
-import 'home.dart';
+import 'configure.dart';
 import 'menu.dart';
 import 'cards/fullscreen_card.dart';
 
@@ -224,7 +224,12 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
-        body: Stack(children: <Widget>[ HomePage(), translatedBottomPart ])
+        body: Stack(
+          children: <Widget>[
+            ConfigureScreen(),
+            translatedBottomPart,
+          ]
+        )
       )
     );
   }
