@@ -22,8 +22,8 @@ class DecksBloc {
     // TODO: get unlocked decks.
 
     // Load selected decks.
-    final List<String> selected = await _loadSelectedDecks();
-    for (final deck in decks) {
+    final Set<String> selected = await _loadSelectedDecks();
+    for (final deck in loadedDecks) {
       deck.isSelected = selected.contains(deck.id);
     }
 
@@ -85,7 +85,7 @@ class DecksBloc {
     });
   }
 
-  static Future<List<String>> _loadSelectedDecks() async {
-    return await ResourceManager.loadStringList('selected_decks') ?? [];
+  static Future<Set<String>> _loadSelectedDecks() async {
+    return (await ResourceManager.loadStringList('selected_decks')).toSet() ?? Set();
   }
 }
