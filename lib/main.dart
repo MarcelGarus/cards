@@ -25,14 +25,19 @@ class _CardsGameState extends State<CardsGame> {
       child: MaterialApp(
         title: 'Cards',
         theme: ThemeData(
-          backgroundColor: Colors.white,
           primaryColor: Colors.amber,
-          accentColor: Colors.amber,
-          brightness: Brightness.light,
-          fontFamily: 'Assistant',
-          primarySwatch: Colors.blue,
+          brightness: Brightness.dark,
         ),
-        home: MainPage(),
+        home: Theme(
+          data: ThemeData(
+            backgroundColor: Colors.white,
+            primaryColor: Colors.amber,
+            accentColor: Colors.amber,
+            brightness: Brightness.light,
+            fontFamily: 'Assistant',
+          ),
+          child: MainPage()
+        ),
       )
     );
   }
