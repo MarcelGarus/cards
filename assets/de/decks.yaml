@@ -4,31 +4,37 @@ decks:
     name: Trinken
     color: '#ffc107'
     description: Ein einfaches Trinkdeck.
+    price: 0
     probability: 0.7
   - id: 'b'
     name: Masterdrink
     color: '#00cc68'
     description: In ein großes Glas in der Mitte wird alles mögliche gemischt.
+    price: 5
     probability: 0.3
   - id: 'c'
     name: Persönliche Fragen
     color: '#ffcdd2'
     description: Intime Fragen, auf die ihr antworten müsst.
+    price: 0
     probability: 1.0
   - id: 'd'
     name: Kategorien
     color: '#4a86e8'
     description: Einige Kategorien.
+    price: 0
     probability: 0.7
   - id: 'e'
     name: Abstimmungen
     color: '#00ffff'
     description: Einige Abstimmungen.
+    price: 1
     probability: 0.7
   - id: 'f'
     name: Fragedame
     color: '#ff00ff'
     description: Das Fragedame-Spiel.
+    price: 2
     probability: 0.1
   #- id: 'e'
   #  name: Heißes Deck

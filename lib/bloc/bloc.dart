@@ -51,7 +51,7 @@ class Bloc {
   Stream<List<GameCard>> get myCards => myCardsBloc.myCardsSubject.stream;
   Stream<Configuration> get configuration => _configurationSubject.stream;
   Stream<bool> get canResume => _canResumeSubject.stream;
-  Stream<Card> get frontCard => gameBloc.frontCardSubject.stream;
+  Stream<Card> get frontCard => gameBloc.frontCardSubject.stream.distinct();
   Stream<Card> get backCard => gameBloc.backCardSubject.stream;
 
 
@@ -71,6 +71,7 @@ class Bloc {
     selectedDecks.listen((decks) => _updateConfiguration());
     myCards.listen((cards) => _updateConfiguration());
     configuration.listen((config) => _updateCanResume());
+    frontCard.where((card) => card is CoinCard).listen((card) => coinsBloc.findCoin());
   }
 
   void dispose() {
@@ -93,8 +94,6 @@ class Bloc {
 
 
   void updateLocale(Locale locale) => localeBloc.updateLocale(locale);
-
-  void findCoin() => coinsBloc.findCoin();
 
   void canBuy(Deck deck) => coinsBloc.canBuy(deck);
 

@@ -4,13 +4,15 @@ import 'model.dart';
 import 'resource_manager.dart';
 
 class CoinsBloc {
-  BigInt coins;
+  BigInt coins = BigInt.zero;
 
   final coinsSubject = BehaviorSubject<BigInt>();
 
 
   void initialize() async {
-    coins = await _loadCoins();
+    _loadCoins().then((loadedCoins) {
+      coins += loadedCoins;
+    });
     coinsSubject.add(coins);
   }
 
@@ -23,6 +25,7 @@ class CoinsBloc {
     coins += BigInt.one;
     coinsSubject.add(coins);
     _saveCoins(coins);
+    print('Got $coins coins now.');
   }
 
   bool canBuy(Deck deck) {

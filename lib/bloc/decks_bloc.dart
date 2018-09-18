@@ -68,6 +68,10 @@ class DecksBloc {
 
   /// Returns a list of all decks of a given language.
   static Future<List<Deck>> _loadDecks(Locale locale) async {
+    print('Locale is $locale');
+    if (locale == null)
+      return [];
+
     final decks = <Deck>[];
 
     final root = 'assets/${locale.languageCode}';
@@ -76,12 +80,13 @@ class DecksBloc {
 
     for (final deck in yaml['decks'] ?? []) {
       decks.add(Deck(
-        id: deck['id'],
+        id: deck['id'] ?? '<no id>',
         file: '$root/deck_${deck['id'] ?? 'id'}.txt',
         name: deck['name'] ?? '<no name>',
         coverImage: deck['image'] ?? '',
         color: deck['color'] ?? '<color>',
         description: deck['description'] ?? '<description>',
+        price: deck['price'] ?? 0,
         probability: deck['probability'] ?? 1.0
       ));
     }
@@ -99,7 +104,7 @@ class DecksBloc {
   }
 
   static Future<Set<String>> _loadUnlockedDecks() async {
-    return (await ResourceManager.loadStringList('unlocked_decks')).toSet() ?? Set();
+    return (await ResourceManager.loadStringList('unlocked_decks'))?.toSet() ?? Set();
   }
 
   static void _saveSelectedDecks(List<Deck> decks) {
@@ -112,6 +117,6 @@ class DecksBloc {
   }
 
   static Future<Set<String>> _loadSelectedDecks() async {
-    return (await ResourceManager.loadStringList('selected_decks')).toSet() ?? Set();
+    return (await ResourceManager.loadStringList('selected_decks'))?.toSet() ?? Set();
   }
 }

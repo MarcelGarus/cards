@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:rxdart/rxdart.dart';
 import 'model.dart';
-import 'resource_manager.dart';
 
 /// This class keeps track of the scheduling the followup of the given card.
 class _Cooldown {
@@ -59,6 +58,7 @@ class GameBloc {
     if (cards.length > 0)
       cards.removeAt(0);
 
+    print('Current: ${cards[0]}.');
     _updateSubjects();
     _fillStack(config).catchError((e) {
       print('An error occurred while filling the stack: $e');
@@ -68,7 +68,7 @@ class GameBloc {
   Future<void> _fillStack(Configuration config) async {
     while (cards.length < _cardBufferSize) {
       await _generator.generateCard(config).then((card) {
-        print('Card generated: $card');
+        print('Generated: $card.');
         cards.add(card);
         _updateSubjects();
       }).catchError((e) {
@@ -108,7 +108,7 @@ class _Generator {
 
   /// Generates a card.
   Future<Card> generateCard(Configuration config) async {
-    print('Generating a card.');
+    //print('Generating a card.');
 
     // New turn.
     _tick();
@@ -170,8 +170,6 @@ class _Generator {
 
   /// Picks a random card from a random deck or user-generated cards.
   Future<GameCard> _tryToPickCard(Configuration config) async {
-    print('Trying to pick a card.');
-
     // If the configuration provides user-generated cards, these should be
     // considered too.
     final bool considerMyCards = config.myCards.length > 0;
@@ -196,8 +194,8 @@ class _Generator {
     }, orElse: () => null);
 
     if (chosenDeck == null) {
-      // Pick a user-generated card.
-      print('We would pick a user-generated card here.');
+      // TODO: Pick a user-generated card.
+      //print('We would pick a user-generated card here.');
     } else {
       return await _pickCardFromDeck(chosenDeck, config.players);
     }

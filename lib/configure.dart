@@ -16,7 +16,7 @@ class ConfigureScreen extends StatelessWidget {
           Image.asset('graphics/style384.png', width: 48.0, height: 48.0),
           Text('Cards', style: TextStyle(fontSize: 24.0)),
           Spacer(),
-          //CoinCounter(12)
+          CoinCounter()
         ]
       ),
     );
@@ -56,8 +56,18 @@ class ConfigureScreen extends StatelessWidget {
 class CoinCounter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      
+    return StreamBuilder(
+      stream: Bloc.of(context).coins,
+      builder: (BuildContext context, AsyncSnapshot<BigInt> snapshot) {
+        return Material(
+          shape: StadiumBorder(),
+          color: Colors.black12,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+            child: Text(snapshot.data?.toString() ?? '0')
+          )
+        );
+      },
     );
   }
 }
