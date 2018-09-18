@@ -26,7 +26,10 @@ class Menu extends StatelessWidget {
         ListTile(
           leading: Icon(Icons.verified_user, color: Colors.black),
           title: Text('Log in'),
-          subtitle: Text('Log in to synchronize your progress across devices and in order to publish your own cards.'),
+          subtitle: Text(
+            'Log in to synchronize your progress across devices and in order '
+            'to publish your own cards.'
+          ),
           onTap: () {},
         ),
         ListTile(

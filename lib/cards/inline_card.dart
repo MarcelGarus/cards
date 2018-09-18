@@ -45,7 +45,9 @@ class InlineCard extends StatefulWidget {
 }
 
 class _InlineCardState extends State<InlineCard> {
-  TextEditingController contentController, followupController, authorController;
+  TextEditingController contentController;
+  TextEditingController followupController;
+  TextEditingController authorController;
 
   void initState() {
     super.initState();

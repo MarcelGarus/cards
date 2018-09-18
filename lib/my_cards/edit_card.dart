@@ -55,8 +55,14 @@ class _EditCardScreenState extends State<EditCardScreen> {
   }
 
   // Card changed.
-  void _onChanged(BuildContext context, String content, String followup, String author) {
-    print('Saving card with content: $content, followup: $followup, author: $author');
+  void _onChanged(
+    BuildContext context,
+    String content,
+    String followup,
+    String author
+  ) {
+    print('Saving card with content: $content, followup: $followup, author: '
+        '$author');
 
     this.content = content;
     this.followup = followup;
@@ -94,7 +100,11 @@ class _EditCardScreenState extends State<EditCardScreen> {
           children: [
             materialCard,
             Padding(
-              padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0 + 48.0 + 16.0),
+              padding: EdgeInsets.only(
+                left: 16.0,
+                right: 16.0,
+                bottom: 16.0 + 48.0 + 16.0
+              ),
               child: Guidelines()
             )
           ]

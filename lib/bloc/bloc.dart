@@ -20,7 +20,8 @@ class Bloc {
   /// Using this method, any widget in the tree below a BlocProvider can get
   /// access to the bloc.
   static Bloc of(BuildContext context) {
-    final BlocProvider inherited = context.ancestorWidgetOfExactType(BlocProvider);
+    final BlocProvider inherited = context
+        .ancestorWidgetOfExactType(BlocProvider);
     return inherited?.bloc;
   }
 
@@ -46,8 +47,12 @@ class Bloc {
   Stream<BigInt> get coins => coinsBloc.coinsSubject.stream;
   Stream<List<String>> get players => playersBloc.playersSubject.stream;
   Stream<List<Deck>> get decks => decksBloc.decksSubject.stream;
-  Stream<List<Deck>> get unlockedDecks => decksBloc.unlockedDecksSubject.stream;
-  Stream<List<Deck>> get selectedDecks => decksBloc.selectedDecksSubject.stream;
+  Stream<List<Deck>> get unlockedDecks => decksBloc
+      .unlockedDecksSubject
+      .stream;
+  Stream<List<Deck>> get selectedDecks => decksBloc
+      .selectedDecksSubject
+      .stream;
   Stream<List<GameCard>> get myCards => myCardsBloc.myCardsSubject.stream;
   Stream<Configuration> get configuration => _configurationSubject.stream;
   Stream<bool> get canResume => _canResumeSubject.stream;
@@ -71,7 +76,8 @@ class Bloc {
     selectedDecks.listen((decks) => _updateConfiguration());
     myCards.listen((cards) => _updateConfiguration());
     configuration.listen((config) => _updateCanResume());
-    frontCard.where((card) => card is CoinCard).listen((card) => coinsBloc.findCoin());
+    frontCard.where((card) => card is CoinCard)
+        .listen((card) => coinsBloc.findCoin());
   }
 
   void dispose() {

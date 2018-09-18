@@ -62,7 +62,8 @@ class SelectableDeck extends StatefulWidget {
   _SelectableDeckState createState() => _SelectableDeckState();
 }
 
-class _SelectableDeckState extends State<SelectableDeck> with SingleTickerProviderStateMixin {
+class _SelectableDeckState extends State<SelectableDeck>
+    with SingleTickerProviderStateMixin {
   AnimationController _selectController;
   Animation<double> _selectAnimation;
   double _selectionValue;
@@ -73,7 +74,10 @@ class _SelectableDeckState extends State<SelectableDeck> with SingleTickerProvid
   void initState() {
     super.initState();
     _selectionValue = _defaultValue;
-    _selectController = AnimationController(vsync: this, duration: Duration(seconds: 2))
+    _selectController = AnimationController(
+      duration: Duration(seconds: 2),
+      vsync: this,
+    )
       ..addListener(() => setState(() {
         _selectionValue = _selectAnimation?.value ?? _defaultValue;
       }));

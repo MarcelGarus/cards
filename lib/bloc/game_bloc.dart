@@ -101,7 +101,9 @@ class _Generator {
     for (final cooldown in _cooldowns)
       cooldown.countdown();
 
-    _cooldowns.removeWhere((cooldown) => cooldown.isDone && !cooldown.card.hasFollowup);
+    _cooldowns.removeWhere(
+      (cooldown) => cooldown.isDone && !cooldown.card.hasFollowup
+    );
 
     // TODO: gather analytics data
   }
@@ -130,7 +132,8 @@ class _Generator {
       return deck.introduction;
     }
 
-    // Maybe return a coin. TODO: take in consideration the time played, cards etc.
+    // Maybe return a coin. TODO: take in consideration the time played, cards
+    // etc.
     if (Random().nextInt(50) == 0) {
       return CoinCard(text: 'Du hast eine Münze gefunden!');
     }
@@ -138,7 +141,8 @@ class _Generator {
     // In the cooldowns list, cards that do not have a followup and are cooled
     // down are automatically removed. The remaining fully cooled down cards
     // are guaranteed to have a followup.
-    final ripeFollowup = _cooldowns.firstWhere((a) => a.isDone, orElse: () => null);
+    final ripeFollowup = _cooldowns
+        .firstWhere((a) => a.isDone, orElse: () => null);
     if (ripeFollowup != null) {
       _cooldowns.remove(ripeFollowup);
       return ripeFollowup.card.createFollowup();
@@ -186,7 +190,8 @@ class _Generator {
 
     // Calculate the cumulative sum and as we go, return the first deck where
     // the cumulative sum gets above the chosen cumulative sum or else return
-    // null indicating one of the cards created by the player should be selected.
+    // null indicating one of the cards created by the player should be
+    // selected.
     double cumSum = 0.0;
     final chosenDeck = config.decks.firstWhere((deck) {
       cumSum += deck.probability;
@@ -227,7 +232,7 @@ class _Generator {
     // Make sure the chosen line is valid.
     final parts = line.split('|');
     if (parts.length != 4) {
-      print('Warning: Card is corrupt: There are ${parts.length} parts: $line.');
+      print('Warning: Corrupt card: There are ${parts.length} parts: $line.');
       return null;
     }
 

@@ -7,7 +7,10 @@ class SettingsScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('Settings')
       ),
-      floatingActionButton: FloatingActionButton(child: Icon(Icons.settings), onPressed: () {}),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: Icon(Icons.settings),
+      ),
     );
   }
 }

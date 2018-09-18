@@ -68,11 +68,17 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     print('Initializing state.');
-    _stackVisibilityController = AnimationController(vsync: this, duration: Duration(seconds: 2))
+    _stackVisibilityController = AnimationController(
+      duration: Duration(seconds: 2),
+      vsync: this,
+    )
       ..addListener(() => setState(() {
         _stackVisibility = _stackVisibilityAnimation?.value ?? 0.0;
       }));
-    _cardPositionController = AnimationController(vsync: this, duration: Duration(seconds: 2))
+    _cardPositionController = AnimationController(
+      duration: Duration(seconds: 2),
+      vsync: this,
+    )
       ..addListener(() => setState(() {
         _cardPosition = _cardPositionAnimation?.value ?? Offset.zero;
       }))
@@ -102,16 +108,22 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   }
 
   void _animateStack(double targetVisibility, { double velocity }) {
-    _stackVisibilityAnimation = Tween<double>(begin: _stackVisibility, end: targetVisibility)
-      .animate(_stackVisibilityController);
+    _stackVisibilityAnimation = Tween<double>(
+      begin: _stackVisibility,
+      end: targetVisibility
+    ).animate(_stackVisibilityController);
+
     _stackVisibilityController
       ..value = 0.0
       ..fling(velocity: velocity ?? 2.0);
   }
 
   void _animateCard(Offset targetPosition, { double velocity }) {
-    _cardPositionAnimation = Tween<Offset>(begin: _cardPosition, end: targetPosition)
-      .animate(_cardPositionController);
+    _cardPositionAnimation = Tween<Offset>(
+      begin: _cardPosition,
+      end: targetPosition
+    ).animate(_cardPositionController);
+
     _cardPositionController
       ..value = 0.0
       ..fling(velocity: velocity ?? 2.0);
@@ -133,7 +145,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
   void _handleDragDown(BuildContext context, DragDownDetails details) {
     _dragStart = details.globalPosition;
-    _isVisibilityDrag = !_isStackFullyVisible || _dragStart.dy < MediaQuery.of(context).padding.top + appBarHeight;
+    _isVisibilityDrag = !_isStackFullyVisible
+        || _dragStart.dy < MediaQuery.of(context).padding.top + appBarHeight;
 
     if (_isVisibilityDrag) {
       _stackVisibilityWhenDragStarted = _stackVisibility;
@@ -147,11 +160,13 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       final movingLength = MediaQuery.of(context).size.height;
       final yDelta = _dragStart.dy - details.globalPosition.dy;
       setState(() {
-        _stackVisibility = (_stackVisibilityWhenDragStarted + yDelta / movingLength).clamp(0.0, 1.0);
+        _stackVisibility = (_stackVisibilityWhenDragStarted + yDelta /
+            movingLength).clamp(0.0, 1.0);
       });
     } else {
       setState(() {
-        _cardPosition = _cardPositionWhenDragStarted + details.globalPosition - _dragStart;
+        _cardPosition = _cardPositionWhenDragStarted
+            + details.globalPosition - _dragStart;
       });
     }
   }
@@ -162,23 +177,31 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     if (_isVisibilityDrag) {
       final movingLength = MediaQuery.of(context).size.height;
       final visibilityVelocity = -velocity / movingLength;
-      final extrapolatedVisibility = _stackVisibility + visibilityVelocity * 1500;
-      final targetVisibility = extrapolatedVisibility.clamp(0.0, 1.0).roundToDouble();
+      final extrapolatedVisibility = _stackVisibility + visibilityVelocity
+          * 1500;
+      final targetVisibility = extrapolatedVisibility
+          .clamp(0.0, 1.0)
+          .roundToDouble();
 
       _animateStack(targetVisibility, velocity: velocity.abs());
     } else {
-      final thresholdDistance = MediaQuery.of(context).size.longestSide * sqrt(2);
+      final thresholdDistance = MediaQuery
+          .of(context).size.longestSide * sqrt(2);
       final velocityOffset = details.velocity.pixelsPerSecond.scale(0.5, 0.5);
       final extrapolatedPosition = _cardPosition + velocityOffset;
       _cardWasDismissed = extrapolatedPosition.distance > thresholdDistance;
 
-      _animateCard(_cardWasDismissed ? extrapolatedPosition : Offset.zero, velocity: velocity.abs());
+      _animateCard(
+        _cardWasDismissed ? extrapolatedPosition
+        : Offset.zero, velocity: velocity.abs()
+      );
       // Once the animation is completed, the BLoC will be notified.
     }
   }
 
   Offset _bottomPartPosition(BuildContext context) {
-    final animateHeight = MediaQuery.of(context).size.height - appBarHeight - fabHeight / 2;
+    final animateHeight = MediaQuery.of(context).size.height - appBarHeight
+        - fabHeight / 2;
     return Offset(0.0, (1 - _stackVisibility) * animateHeight);
   }
 
@@ -198,8 +221,10 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
   double _rotation(Rect dragBounds) {
     if (_dragStart != null) {
-      final rotationCornerMultiplier = _dragStart.dy >= dragBounds.top + (dragBounds.height / 2) ? -1 : 1;
-      return (pi / 8) * (_cardPosition.dx / dragBounds.width) * rotationCornerMultiplier;
+      final rotationCornerMultiplier = _dragStart.dy >= dragBounds.top
+          + (dragBounds.height / 2) ? -1 : 1;
+      return (pi / 8) * (_cardPosition.dx / dragBounds.width)
+          * rotationCornerMultiplier;
     } else {
       return 0.0;
     }
@@ -285,9 +310,13 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               if (configuration == null) {
                 return Text('', style: TextStyle(color: Colors.white));
               } else if (configuration.isPlayerMissing) {
-                return Text('Add a player', style: TextStyle(color: Colors.white));
+                return Text('Add a player',
+                  style: TextStyle(color: Colors.white)
+                );
               } else if (configuration.isDeckMissing) {
-                return Text('Select at least one deck', style: TextStyle(color: Colors.white));
+                return Text('Select at least one deck',
+                  style: TextStyle(color: Colors.white)
+                );
               }
               return Container();
             },
@@ -332,7 +361,11 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   }
 
   /// Builds cards from a stream.
-  Widget _buildCardStreamBuilder(BuildContext context, Stream<Card> stream, bool isFrontCard) {
+  Widget _buildCardStreamBuilder(
+    BuildContext context,
+    Stream<Card> stream,
+    bool isFrontCard
+  ) {
     return StreamBuilder<Card>(
       stream: stream,
       builder: (context, snapshot) {
@@ -362,7 +395,10 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         return !(snapshot.data ?? false)
           ? Container()
           : IconButton(
-            icon: Icon(_isStackVisible ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_up),
+            icon: Icon(
+              _isStackVisible ? Icons.keyboard_arrow_down
+                  : Icons.keyboard_arrow_up
+            ),
             color: Colors.white,
             onPressed: () => setState(_toggleStackVisibility)
           );

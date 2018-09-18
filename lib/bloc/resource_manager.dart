@@ -1,10 +1,5 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:math';
-import 'package:flutter/widgets.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'model.dart';
 
 class ResourceMissingError implements Error {
   const ResourceMissingError(this.path) : assert(path != null);

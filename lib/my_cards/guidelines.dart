@@ -39,7 +39,8 @@ class _GuidelinesState extends State<Guidelines> {
     GuidelineItem(
       icon: Icon(Icons.people_outline),
       title: 'How to include players',
-      content: 'You can use Alice and Bob as placeholders for names. During the game, these will be replaced by actual names.'
+      content: 'You can use Alice and Bob as placeholders for names. During '
+          'the game, these will be replaced by actual names.'
     ),
     GuidelineItem(
       icon: Icon(Icons.description),

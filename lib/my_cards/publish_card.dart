@@ -16,7 +16,8 @@ class PublishCardScreen extends StatelessWidget {
 
     content.add(Padding(
       padding: EdgeInsets.all(16.0),
-      child: Text('Make sure that your card fulfills all the guidelines below.',
+      child: Text(
+        'Make sure that your card fulfills all the guidelines below.',
         style: TextStyle(fontSize: 24.0),
       ),
     ));

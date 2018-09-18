@@ -42,7 +42,10 @@ class PlayerInput extends StatelessWidget {
     );
   }
 
-  Widget _buildInput(BuildContext context, AsyncSnapshot<List<String>> snapshot) {
+  Widget _buildInput(
+    BuildContext context,
+    AsyncSnapshot<List<String>> snapshot
+  ) {
     return Padding(
       padding: EdgeInsets.all(16.0),
       child: NameInput(players: snapshot.data ?? [])
@@ -62,15 +65,18 @@ class PlayerChip extends StatefulWidget {
   _PlayerChipState createState() => _PlayerChipState();
 }
 
-class _PlayerChipState extends State<PlayerChip> with SingleTickerProviderStateMixin {
+class _PlayerChipState extends State<PlayerChip>
+    with SingleTickerProviderStateMixin {
   AnimationController controller;
   CurvedAnimation animation;
   double animationValue = 0.0;
 
   void initState() {
     super.initState();
-    controller = AnimationController(vsync: this, duration: Duration(milliseconds: 200))
-        ..forward();
+    controller = AnimationController(
+      duration: Duration(milliseconds: 200),
+      vsync: this,
+    )..forward();
     animation = CurvedAnimation(parent: controller, curve: Curves.easeOut)
         ..addListener(() => setState(() {
           animationValue = animation.value;

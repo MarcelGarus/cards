@@ -104,7 +104,8 @@ class DecksBloc {
   }
 
   static Future<Set<String>> _loadUnlockedDecks() async {
-    return (await ResourceManager.loadStringList('unlocked_decks'))?.toSet() ?? Set();
+    return (await ResourceManager.loadStringList('unlocked_decks'))?.toSet()
+        ?? Set();
   }
 
   static void _saveSelectedDecks(List<Deck> decks) {
@@ -117,6 +118,7 @@ class DecksBloc {
   }
 
   static Future<Set<String>> _loadSelectedDecks() async {
-    return (await ResourceManager.loadStringList('selected_decks'))?.toSet() ?? Set();
+    return (await ResourceManager.loadStringList('selected_decks'))?.toSet()
+        ?? Set();
   }
 }

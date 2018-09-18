@@ -78,7 +78,8 @@ class Deck {
       isSelected == typedOther.isSelected;
   }
 
-  String toString() => '(\'$name\' with description \'$description\' has color $color. See file $file)';
+  String toString() => '(\'$name\' with description \'$description\' has color'
+      '$color. See file $file)';
 }
 
 
@@ -102,7 +103,8 @@ class Configuration {
   bool get isDeckMissing => decks.length == 0;
   bool get isValid => players.length > 0 && decks.length > 0;
 
-  String toString() => 'Configuration(players=$players, decks=decks, myCards=$myCards';
+  String toString() => 'Configuration(players=$players, decks=decks, '
+      'myCards=$myCards)';
 }
 
 

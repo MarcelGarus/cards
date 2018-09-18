@@ -162,7 +162,6 @@ class _FittedTextState extends State<FittedText> {
       final textHeight = renderObject.getMaxIntrinsicHeight(size.width);
 
       if (textHeight <= size.height) {
-        //print('Text ${widget.text} with font size $fontSize is $textHeight <= ${size.height} high. Style was $textStyle (fontFamily ${textStyle.fontFamily}).');
         return textStyle.copyWith(fontSize: fontSize - 4);
       }
     }

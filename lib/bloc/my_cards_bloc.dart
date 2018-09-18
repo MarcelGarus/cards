@@ -58,9 +58,11 @@ class MyCardsBloc {
         '${card.id}|${card.author}|${card.content}|${card.followup}'
     ).toList();
 
-    ResourceManager.saveStringList('my_cards', stringifiedCards).catchError((e) {
-      print('An error occured while saving $cards as my cards: $e');
-    });
+    ResourceManager
+        .saveStringList('my_cards', stringifiedCards)
+        .catchError((e) {
+          print('An error occured while saving $cards as my cards: $e');
+        });
   }
 
 
