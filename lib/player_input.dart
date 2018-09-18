@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'bloc/bloc.dart';
+import 'localized.dart';
 
 /// A list of names as well as the input below.
 class PlayerInput extends StatelessWidget {
@@ -127,28 +128,30 @@ class _NameInputState extends State<NameInput> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: _controller,
-      focusNode: _focusNode,
-      decoration: InputDecoration(
-        border: OutlineInputBorder(),
-        labelText: 'Add a player',
-        hintText: 'Enter the name',
-        errorText: errorText
-      ),
-      onChanged: (String text) {
-        setState(() {
-          errorText = _isNameValid() || _name == '' ? null
-            : 'You already added $_name.';
-        });
-      },
-      onSubmitted: (String text) {
-        if (_isNameValid() && text != '') {
-          Bloc.of(context).addPlayer(text);
-          _controller.clear();
-          FocusScope.of(context).requestFocus(_focusNode);
-        }
-      },
+    return Localized(
+      child: TextField(
+        controller: _controller,
+        focusNode: _focusNode,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(),
+          labelText: 'Add a player',
+          hintText: 'Enter the name',
+          errorText: errorText
+        ),
+        onChanged: (String text) {
+          setState(() {
+            errorText = _isNameValid() || _name == '' ? null
+              : 'You already added $_name.';
+          });
+        },
+        onSubmitted: (String text) {
+          if (_isNameValid() && text != '') {
+            Bloc.of(context).addPlayer(text);
+            _controller.clear();
+            FocusScope.of(context).requestFocus(_focusNode);
+          }
+        },
+      )
     );
   }
 }

@@ -1,21 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mailer/flutter_mailer.dart';
 import 'bloc/bloc.dart';
+import 'localized.dart';
 import 'my_cards/created_cards.dart';
 import 'settings.dart';
 
 class Menu extends StatelessWidget {
-  void _giveFeedback() async {
+  void _goToMyCards(BuildContext context) {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => CardListScreen()
+    ));
+  }
+
+  void _goToSettings(BuildContext context) {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => SettingsScreen()
+    ));
+  }
+
+  void _giveFeedback(BuildContext context) async {
     print('Mailing');
     final version = Bloc.version;
+
     final MailOptions mailOptions = MailOptions(
-      body: 'Nicht löschen: Version $version\n\nHi Marcel,\n',
-      subject: 'Feedback zu Cards',
+      subject: Bloc.of(context).getText(TextId.mail_subject),
       recipients: [ 'marcel.garus@gmail.com' ],
+      body: Bloc
+          .of(context)
+          .getText(TextId.mail_body)
+          .replaceFirst('\$version', version),
     );
 
     await FlutterMailer.send(mailOptions);
-    print('Mail sent');
   }
 
   @override
@@ -25,35 +41,24 @@ class Menu extends StatelessWidget {
       children: <Widget>[
         ListTile(
           leading: Icon(Icons.verified_user, color: Colors.black),
-          title: Text('Log in'),
-          subtitle: Text(
-            'Log in to synchronize your progress across devices and in order '
-            'to publish your own cards.'
-          ),
+          title: LocalizedText(id: TextId.menu_log_in),
+          subtitle: LocalizedText(id: TextId.menu_log_in_text),
           onTap: () {},
         ),
         ListTile(
           leading: Icon(Icons.wb_iridescent, color: Colors.black),
-          title: Text('My cards'),
-          onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => CardListScreen()
-            ));
-          },
+          title: LocalizedText(id: TextId.menu_my_cards),
+          onTap: () => _goToMyCards(context)
         ),
         ListTile(
           leading: Icon(Icons.settings, color: Colors.black),
-          title: Text('Settings'),
-          onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => SettingsScreen()
-            ));
-          },
+          title: LocalizedText(id: TextId.menu_settings),
+          onTap: () => _goToSettings(context)
         ),
         ListTile(
           leading: Icon(Icons.feedback, color: Colors.black),
-          title: Text('Send feedback'),
-          onTap: _giveFeedback
+          title: LocalizedText(id: TextId.menu_feedback),
+          onTap: () => _giveFeedback(context)
         ),
         Row(
           children: <Widget>[
@@ -67,6 +72,7 @@ class Menu extends StatelessWidget {
     
     return Material(
       child: GestureDetector(
+        // Prevents accidental taps from closing the bottom sheet.
         onTap: () {},
         child: column
       )

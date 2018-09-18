@@ -3,9 +3,10 @@ import 'dart:math';
 import 'package:flutter/material.dart' hide Card;
 import 'bloc/bloc.dart';
 import 'bloc/model.dart';
-import 'configure.dart';
-import 'menu.dart';
 import 'cards/fullscreen_card.dart';
+import 'configure.dart';
+import 'localized.dart';
+import 'menu.dart';
 
 void main() => runApp(CardsGame());
 
@@ -127,11 +128,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     _cardPositionController
       ..value = 0.0
       ..fling(velocity: velocity ?? 2.0);
-  }
-
-  void _showStack(BuildContext context) {
-    _animateStack(1.0);
-    _start(context);
   }
 
   void _hideStack(BuildContext context) => _animateStack(0.0);
@@ -261,11 +257,18 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
   /// Builds the bottom part.
   Widget _buildBottomPart(BuildContext context) {
-    final fab = StreamBuilder(
-      stream: Bloc.of(context).configuration,
-      builder: (context, AsyncSnapshot<Configuration> snapshot) =>
-          _buildFab(context, snapshot.data?.isValid ?? false)
+    final scaledFab = Transform.scale(
+      scale: 1.0 - _stackVisibility,
+      alignment: Alignment.topCenter,
+      child: Opacity(
+        opacity: 1.0 - _stackVisibility,
+        child: StreamBuilder(
+          stream: Bloc.of(context).configuration,
+          builder: _buildFab
+        )
+      )
     );
+
     return Stack(
       children: <Widget> [
         Transform.translate(
@@ -275,11 +278,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         Container(
           alignment: Alignment.center,
           height: fabHeight,
-          child: Transform.scale(
-            scale: 1.0 - _stackVisibility,
-            alignment: Alignment.topCenter,
-            child: Opacity(opacity: 1.0 - _stackVisibility, child: fab)
-          )
+          child: scaledFab
         )
       ]
     );
@@ -287,43 +286,38 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
   /// Displays a FAB if the game can start, otherwise just an
   /// instructive message.
-  Widget _buildFab(BuildContext context, bool canStart) {
+  Widget _buildFab(BuildContext context, AsyncSnapshot<Configuration> snapshot) {
+    final config = snapshot.data;
+    final canStart = config?.isValid ?? false;
+
     if (canStart) {
       return FloatingActionButton.extended(
         icon: Image.asset('graphics/style192.png', width: 24.0, height: 24.0),
-        label: Text('Start playing',
+        label: LocalizedText(
+          id: TextId.start_game,
           style: TextStyle(fontSize: 20.0, letterSpacing: -0.5)
         ),
         onPressed: () => _start(context),
       );
-    } else {
-      return Material(
-        shape: StadiumBorder(),
-        elevation: 6.0,
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          color: Colors.black,
-          child: StreamBuilder(
-            stream: Bloc.of(context).configuration,
-            builder: (context, AsyncSnapshot<Configuration> snapshot) {
-              final configuration = snapshot.data;
-              if (configuration == null) {
-                return Text('', style: TextStyle(color: Colors.white));
-              } else if (configuration.isPlayerMissing) {
-                return Text('Add a player',
-                  style: TextStyle(color: Colors.white)
-                );
-              } else if (configuration.isDeckMissing) {
-                return Text('Select at least one deck',
-                  style: TextStyle(color: Colors.white)
-                );
-              }
-              return Container();
-            },
-          )
-        )
-      );
     }
+    
+    final hintText = LocalizedText(
+      id: config == null ? TextId.none :
+          config.isPlayerMissing ? TextId.configuration_player_missing :
+          config.isDeckMissing ? TextId.configuration_deck_missing :
+          TextId.none,
+      style: TextStyle(color: Colors.white)
+    );
+
+    return Material(
+      shape: StadiumBorder(),
+      elevation: 6.0,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        color: Colors.black,
+        child: hintText
+      )
+    );
   }
 
   /// Builds a stack of cards.

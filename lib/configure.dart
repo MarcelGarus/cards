@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mailer/flutter_mailer.dart';
 import 'bloc/bloc.dart';
 import 'deck_selector.dart';
+import 'localized.dart';
 import 'player_input.dart';
 
 /// The configuration page.
@@ -101,35 +102,20 @@ class BetaBox extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text('Dankeschön für\'s Beta-Testen!',
+              LocalizedText(
+                id: TextId.beta_box_title,
                 style: TextStyle(color: Colors.red, fontSize: 16.0)
               ),
               SizedBox(height: 16.0),
-              Text(
-                'Wie du siehst, funktioniert die grundlegende Spielmechanik '
-                'bereits, allerdings mangelt es noch sehr an Inhalten, '
-                'bislang gibt es nämlich nur 100 Karten.'
-              ),
-              SizedBox(height: 4.0),
-              Text(
-                'Deshalb wäre es nett, wenn du neue Karten erstellst (dazu '
-                'unten auf\'s Menü gehen) und veröffentlichst. Als '
-                'Gegenleistung kannst du deinen Namen auch auf den '
-                'veröffentlichten Karten verewigen lassen.'
-              ),
-              SizedBox(height: 4.0),
-              Text(
-                'Oh, und falls du Bugs findest, Ideen für neue Kartendecks '
-                'oder für einen besseren App-Namen als "Cards" hast oder wenn '
-                'du einfach Feedback geben willst, schreib mir ruhig.'
-              ),
+              LocalizedText(id: TextId.beta_box_body),
               SizedBox(height: 16.0),
               Align(
                 alignment: Alignment.centerRight,
                 child: RaisedButton(
                   color: Colors.red,
                   onPressed: _giveFeedback,
-                  child: Text('Feedback senden',
+                  child: Text(
+                    'Feedback senden',
                     style: TextStyle(color: Colors.white)
                   ),
                 )

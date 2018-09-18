@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ResourceMissingError implements Error {
@@ -29,5 +30,9 @@ abstract class ResourceManager {
   
   static Future<List<String>> loadStringList(String key) async {
     return (await SharedPreferences.getInstance()).getStringList(key);
+  }
+
+  static String getRootDirectory(Locale locale) {
+    return 'assets/${locale.languageCode}';
   }
 }

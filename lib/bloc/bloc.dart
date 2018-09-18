@@ -9,6 +9,35 @@ import 'decks_bloc.dart';
 import 'my_cards_bloc.dart';
 import 'game_bloc.dart';
 
+enum TextId {
+  none,
+  app_title,
+
+  add_player_label,
+  add_player_hint,
+  add_player_error,
+  
+  configuration_player_missing,
+  configuration_deck_missing,
+  start_game,
+  
+  beta_box_title,
+  beta_box_body,
+  beta_box_action,
+  
+  menu_log_in,
+  menu_log_in_text,
+  menu_my_cards,
+  menu_settings,
+  menu_feedback,
+  
+  mail_subject,
+  mail_body,
+  
+  coin_card,
+  game_card_author
+}
+
 
 /// The gateway between Flutter Widgets and actual business logic.
 /// Handles composition of the configuration.
@@ -76,7 +105,8 @@ class Bloc {
     selectedDecks.listen((decks) => _updateConfiguration());
     myCards.listen((cards) => _updateConfiguration());
     configuration.listen((config) => _updateCanResume());
-    frontCard.where((card) => card is CoinCard)
+    frontCard
+        .where((card) => card is CoinCard)
         .listen((card) => coinsBloc.findCoin());
   }
 
@@ -100,6 +130,8 @@ class Bloc {
 
 
   void updateLocale(Locale locale) => localeBloc.updateLocale(locale);
+
+  String getText(TextId id) => localeBloc.getText(id);
 
   void canBuy(Deck deck) => coinsBloc.canBuy(deck);
 

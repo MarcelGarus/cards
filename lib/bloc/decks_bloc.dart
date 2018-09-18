@@ -68,13 +68,12 @@ class DecksBloc {
 
   /// Returns a list of all decks of a given language.
   static Future<List<Deck>> _loadDecks(Locale locale) async {
-    print('Locale is $locale');
     if (locale == null)
       return [];
 
     final decks = <Deck>[];
 
-    final root = 'assets/${locale.languageCode}';
+    final root = ResourceManager.getRootDirectory(locale);
     final filename = '$root/decks.yaml';
     final yaml = loadYaml(await rootBundle.loadString(filename));
 
