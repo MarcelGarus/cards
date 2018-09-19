@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../bloc/model.dart';
+import 'raw_card.dart';
 
 /// Listener that listens for changes to either the content, followup or author
 /// text fields' contents.
@@ -73,20 +74,6 @@ class _InlineCardState extends State<InlineCard> {
 
   @override
   Widget build(BuildContext context) {
-    // Create a modified theme because of black background.
-    final textTheme = Theme.of(context).textTheme;
-    final themeData = Theme.of(context).copyWith(
-      hintColor: Colors.white,
-      inputDecorationTheme: InputDecorationTheme(
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.amber)
-        ),
-      ),
-      textTheme: textTheme.copyWith(
-        body1: textTheme.body1.copyWith(color: Colors.white, fontSize: 24.0),
-      ),
-    );
-
     // List of column widgets, will be filled over time.
     final items = <Widget>[];
 
@@ -121,46 +108,14 @@ class _InlineCardState extends State<InlineCard> {
       ) : Container());
     }
 
-    // Add bottom bar.
-    items.add(Row(
-      children: <Widget>[
-        widget.bottomBarLeading ?? Container(),
-        Spacer(),
-        widget.bottmoBarTailing ?? Container()
-      ],
-    ));
-
-    return Theme(
-      data: themeData,
-      child: Hero(
-        tag: widget.card.id,
-        child: Material(
-          elevation: 4.0,
-          color: Colors.black,
-          borderRadius: BorderRadius.all(Radius.circular(8.0)),
-          child: LayoutBuilder(
-            builder: (context, BoxConstraints constraints) {
-              // During the hero animation, the InlineCard is lifted up into
-              // the overlay, where it's provided with tight constraints. To
-              // avoid overflow errors and visual inconsistencies when
-              // animating from a smaller to a larger position (and thus trying
-              // to display the larger content in smaller, tight constraints),
-              // the content of the card isn't shown during the hero animation.
-              return constraints.isTight ? Container() : InkResponse(
-                onTap: widget.onTap ?? () {},
-                radius: 1000.0, // TODO: do not hardcode
-                child: Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: items
-                  )
-                ),
-              );
-            },
-          )
-        )
+    return RawCard(
+      heroTag: widget.card.id,
+      borderRadius: BorderRadius.all(Radius.circular(8.0)),
+      contract: true,
+      onTap: widget.onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: items
       )
     );
   }

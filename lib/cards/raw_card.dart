@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 /// A card in the game.
 class RawCard extends StatelessWidget {
   const RawCard({
+    this.heroTag,
     this.borderRadius,
     this.safeAreaTop = 0.0,
+    this.contract = false,
     this.topBarLeading,
     this.topBarTailing,
     this.bottomBarLeading,
@@ -13,11 +15,11 @@ class RawCard extends StatelessWidget {
     this.child
   });
 
-  final Widget child;
-
   // Basic properties of the card.
+  final String heroTag;
   final BorderRadius borderRadius;
   final double safeAreaTop;
+  final bool contract;
 
   // Widgets that can customize the top bar.
   final Widget topBarLeading;
@@ -30,9 +32,12 @@ class RawCard extends StatelessWidget {
   // Listeners.
   final VoidCallback onTap;
 
+  final Widget child;
+
 
   @override
   Widget build(BuildContext context) {
+    // The card's top bar.
     final topBar = Row(
       children: <Widget>[
         topBarLeading ?? Container(),
@@ -41,6 +46,7 @@ class RawCard extends StatelessWidget {
       ],
     );
 
+    // The card's bottom bar.
     final bottomBar = Row(
       children: <Widget>[
         bottomBarLeading ?? Container(),
@@ -49,23 +55,75 @@ class RawCard extends StatelessWidget {
       ],
     );
 
-    return Material(
+    // Put the content parts into a column.
+    Widget card = Column(
+      mainAxisSize: contract ? MainAxisSize.min : MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        SizedBox(height: safeAreaTop),
+        topBar,
+        child,
+        bottomBar
+      ]
+    );
+
+    // During the hero animation, the card is lifted up into the overlay, where
+    // it's provided with tight constraints. To avoid overflow errors and
+    // visual inconsistencies when animating from a smaller to a larger
+    // position (and thus trying to display the larger content in smaller,
+    // tight constraints), the card's content isn't shown during the hero
+    // animation.
+    if (contract) {
+      card = LayoutBuilder(
+        builder: (context, BoxConstraints constraints) {
+          return constraints.isTight ? Container() : Padding(
+            padding: EdgeInsets.all(16.0),
+            child: card
+          );
+        },
+      );
+    }
+
+    // Handle taps.
+    if (onTap != null) {
+      card = InkResponse(
+        onTap: onTap,
+        splashColor: Colors.white10,
+        radius: 1000.0, // TODO: do not hardcode
+        child: card
+      );
+    }
+
+    // The material card.
+    card = Material(
       color: Colors.black,
       borderRadius: borderRadius,
       elevation: 8.0,
       animationDuration: Duration.zero,
-      child: InkResponse(
-        onTap: onTap,
-        splashColor: Colors.white10,
-        child: Column(
-          children: <Widget>[
-            SizedBox(height: safeAreaTop),
-            topBar,
-            child,
-            bottomBar
-          ]
-        ),
-      )
+      child: card
     );
+
+    // The themed card.
+    card = Theme(
+      data: ThemeData(
+        hintColor: Colors.white,
+        inputDecorationTheme: InputDecorationTheme(
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.amber)
+          ),
+        ),
+        textTheme: TextTheme(
+          body1: TextStyle(color: Colors.white, fontFamily: 'Assistant'),
+        ),
+      ),
+      child: card
+    );
+
+    // Hero.
+    if (heroTag != null) {
+      card = Hero(tag: heroTag, child: card);
+    }
+
+    return card;
   }
 }

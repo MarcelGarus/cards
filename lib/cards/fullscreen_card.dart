@@ -47,9 +47,7 @@ class FullscreenCard extends StatelessWidget {
       topBarLeading: topBarLeading,
       topBarTailing: topBarTailing,
       child: Expanded(
-        child: Column(
-          children: children
-        )
+        child: Column(children: children)
       ),
     );
   }
