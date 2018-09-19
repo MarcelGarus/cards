@@ -5,8 +5,9 @@ import 'bloc/bloc.dart';
 import 'bloc/model.dart';
 import 'cards/fullscreen_card.dart';
 import 'configure.dart';
-import 'localized.dart';
+import 'localize.dart';
 import 'menu.dart';
+import 'utils.dart';
 
 void main() => runApp(CardsGame());
 
@@ -29,13 +30,7 @@ class _CardsGameState extends State<CardsGame> {
           brightness: Brightness.dark,
         ),
         home: Theme(
-          data: ThemeData(
-            backgroundColor: Colors.white,
-            primaryColor: Colors.amber,
-            accentColor: Colors.amber,
-            brightness: Brightness.light,
-            fontFamily: 'Assistant',
-          ),
+          data: Utils.buildLightTheme(),
           child: MainPage()
         ),
       )

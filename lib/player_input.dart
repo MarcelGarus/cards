@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'bloc/bloc.dart';
-import 'localized.dart';
+import 'localize.dart';
 
 /// A list of names as well as the input below.
 class PlayerInput extends StatelessWidget {
@@ -96,7 +96,9 @@ class _PlayerChipState extends State<PlayerChip>
     return Transform.translate(
       offset: getOffset(),
       child: InputChip(
-        label: Text(widget.name, style: TextStyle(color: Colors.white)),
+        label: Text(widget.name,
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w900)
+        ),
         backgroundColor: Colors.black,
         deleteIconColor: Colors.white,
         onDeleted: () => Bloc.of(context).removePlayer(widget.name)

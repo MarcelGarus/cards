@@ -85,7 +85,7 @@ class FullscreenCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Text(card.hasAuthor ? 'von ${card.author}' : '',
-              style: TextStyle(color: color)
+              style: TextStyle(color: color, fontSize: 16.0)
             ),
             Text(card.id,
               style: TextStyle(color: Color.lerp(Colors.black, color, 0.05))

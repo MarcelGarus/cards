@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../bloc/bloc.dart';
 import '../bloc/model.dart';
 import '../cards/inline_card.dart';
+import '../utils.dart';
 import 'guidelines.dart';
 import 'publish_card.dart';
 
@@ -73,7 +74,7 @@ class _EditCardScreenState extends State<EditCardScreen> {
 
   @override
   Widget build(BuildContext context) {
-
+    
     final materialCard = Padding(
       padding: EdgeInsets.all(16.0),
       child: InlineCard(
@@ -82,34 +83,37 @@ class _EditCardScreenState extends State<EditCardScreen> {
       )
     );
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Edit card'),
-        actions: <Widget>[
-          IconButton(icon: Icon(Icons.delete), onPressed: () {})
-        ],
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        icon: Icon(Icons.cloud_upload),
-        label: Text('Publish'),
-        elevation: 12.0,
-        onPressed: () => _goToPublishScreen(context),
-      ),
-      body: SafeArea(
-        child: ListView(
-          children: [
-            materialCard,
-            Padding(
-              padding: EdgeInsets.only(
-                left: 16.0,
-                right: 16.0,
-                bottom: 16.0 + 48.0 + 16.0
-              ),
-              child: Guidelines()
-            )
-          ]
-        )
-      ),
+    return Theme(
+      data: Utils.buildLightTheme(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Edit card'),
+          actions: <Widget>[
+            IconButton(icon: Icon(Icons.delete), onPressed: () {})
+          ],
+        ),
+        floatingActionButton: FloatingActionButton.extended(
+          icon: Icon(Icons.cloud_upload),
+          label: Text('Publish'),
+          elevation: 12.0,
+          onPressed: () => _goToPublishScreen(context),
+        ),
+        body: SafeArea(
+          child: ListView(
+            children: [
+              materialCard,
+              Padding(
+                padding: EdgeInsets.only(
+                  left: 16.0,
+                  right: 16.0,
+                  bottom: 16.0 + 48.0 + 16.0
+                ),
+                child: Guidelines()
+              )
+            ]
+          )
+        ),
+      )
     );
   }
 }

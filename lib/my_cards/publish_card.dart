@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../bloc/model.dart';
 import '../cards/inline_card.dart';
+import '../utils.dart';
 import 'guidelines.dart';
 
 /// The screen for publishing the card.
@@ -17,7 +18,7 @@ class PublishCardScreen extends StatelessWidget {
     content.add(Padding(
       padding: EdgeInsets.all(16.0),
       child: Text(
-        'Make sure that your card fulfills all the guidelines below.',
+        'Review your card.',
         style: TextStyle(fontSize: 24.0),
       ),
     ));
@@ -66,11 +67,14 @@ class PublishCardScreen extends StatelessWidget {
       )
     ));
 
-    return Scaffold(
-      appBar: AppBar(title: Text('Publish card')),
-      body: SafeArea(
-        child: ListView(
-          children: content
+    return Theme(
+      data: Utils.buildLightTheme(),
+      child: Scaffold(
+        appBar: AppBar(title: Text('Publish card')),
+        body: SafeArea(
+          child: ListView(
+            children: content
+          )
         )
       ),
     );

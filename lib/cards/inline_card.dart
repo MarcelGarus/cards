@@ -115,6 +115,7 @@ class _InlineCardState extends State<InlineCard> {
       onTap: widget.onTap,
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: items
       )
     );

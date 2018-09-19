@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mailer/flutter_mailer.dart';
 import 'bloc/bloc.dart';
 import 'deck_selector.dart';
-import 'localized.dart';
+import 'localize.dart';
 import 'player_input.dart';
 
 /// The configuration page.
@@ -104,7 +104,7 @@ class BetaBox extends StatelessWidget {
             children: <Widget>[
               LocalizedText(
                 id: TextId.beta_box_title,
-                style: TextStyle(color: Colors.red, fontSize: 16.0)
+                style: TextStyle(color: Colors.red, fontSize: 16.0, fontFamily: 'Assistant')
               ),
               SizedBox(height: 16.0),
               LocalizedText(id: TextId.beta_box_body),

@@ -56,7 +56,7 @@ class RawCard extends StatelessWidget {
     );
 
     // Put the content parts into a column.
-    Widget card = Column(
+    Widget content = Column(
       mainAxisSize: contract ? MainAxisSize.min : MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -73,34 +73,30 @@ class RawCard extends StatelessWidget {
     // position (and thus trying to display the larger content in smaller,
     // tight constraints), the card's content isn't shown during the hero
     // animation.
-    if (contract) {
-      card = LayoutBuilder(
-        builder: (context, BoxConstraints constraints) {
-          return constraints.isTight ? Container() : Padding(
-            padding: EdgeInsets.all(16.0),
-            child: card
-          );
-        },
-      );
-    }
+    final layoutContent = !contract ? content : LayoutBuilder(
+      builder: (context, BoxConstraints constraints) {
+        return constraints.isTight ? Container() : Padding(
+          padding: EdgeInsets.all(16.0),
+          child: content
+        );
+      },
+    );
 
     // Handle taps.
-    if (onTap != null) {
-      card = InkResponse(
-        onTap: onTap,
-        splashColor: Colors.white10,
-        radius: 1000.0, // TODO: do not hardcode
-        child: card
-      );
-    }
+    final responsiveContent = (onTap == null) ? layoutContent : InkResponse(
+      onTap: onTap,
+      splashColor: Colors.white10,
+      radius: 1000.0, // TODO: do not hardcode
+      child: layoutContent
+    );
 
     // The material card.
-    card = Material(
+    Widget card = Material(
       color: Colors.black,
       borderRadius: borderRadius,
       elevation: 8.0,
       animationDuration: Duration.zero,
-      child: card
+      child: responsiveContent
     );
 
     // The themed card.
@@ -113,7 +109,12 @@ class RawCard extends StatelessWidget {
           ),
         ),
         textTheme: TextTheme(
-          body1: TextStyle(color: Colors.white, fontFamily: 'Assistant'),
+          body1: TextStyle(color: Colors.white, fontFamily: 'Assistant', fontSize: 24.0),
+          body2: TextStyle(color: Colors.white, fontFamily: 'Assistant'),
+          display1: TextStyle(color: Colors.white, fontFamily: 'Assistant'),
+          display2: TextStyle(color: Colors.white, fontFamily: 'Assistant'),
+          display3: TextStyle(color: Colors.white, fontFamily: 'Assistant'),
+          display4: TextStyle(color: Colors.white, fontFamily: 'Assistant'),
         ),
       ),
       child: card
