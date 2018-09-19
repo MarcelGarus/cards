@@ -11,7 +11,7 @@ abstract class TextIds {
     switch (id) {
       case 'app_title': return TextId.app_title;
 
-      case 'add_player_label': return TextId.app_title;
+      case 'add_player_label': return TextId.add_player_label;
       case 'add_player_hint': return TextId.add_player_hint;
       case 'add_player_error': return TextId.add_player_error;
 
@@ -49,6 +49,7 @@ class LocaleBloc {
   Future<void> initialize() async {
     locale = await _loadLocale();
     _textItems = await _loadText(locale);
+    print('Updating all locale widgets with locale $locale.');
     localeSubject.add(locale);
   }
 

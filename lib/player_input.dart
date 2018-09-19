@@ -121,37 +121,40 @@ class NameInput extends StatefulWidget {
 class _NameInputState extends State<NameInput> {
   final _controller = TextEditingController();
   final _focusNode = FocusNode();
-  String errorText;
 
   String get _name => _controller.text;
-  bool _isNameValid() => !widget.players.contains(_name);
+
+
+  String get errorText {
+    final showError = Bloc.of(context).isPlayerInputErroneous(_name);
+    return !showError ? null : Bloc.of(context)
+        .getText(TextId.add_player_error)
+        .replaceFirst('\$author', _name);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Localized(
-      child: TextField(
-        controller: _controller,
-        focusNode: _focusNode,
-        decoration: InputDecoration(
-          border: OutlineInputBorder(),
-          labelText: 'Add a player',
-          hintText: 'Enter the name',
-          errorText: errorText
-        ),
-        onChanged: (String text) {
-          setState(() {
-            errorText = _isNameValid() || _name == '' ? null
-              : 'You already added $_name.';
-          });
-        },
-        onSubmitted: (String text) {
-          if (_isNameValid() && text != '') {
-            Bloc.of(context).addPlayer(text);
-            _controller.clear();
-            FocusScope.of(context).requestFocus(_focusNode);
-          }
-        },
-      )
+      builder: (context) {
+        return TextField(
+          controller: _controller,
+          focusNode: _focusNode,
+          decoration: InputDecoration(
+            border: OutlineInputBorder(),
+            labelText: Bloc.of(context).getText(TextId.add_player_label),
+            hintText: Bloc.of(context).getText(TextId.add_player_hint),
+            errorText: errorText
+          ),
+          onChanged: (String text) => setState(() {}),
+          onSubmitted: (String text) {
+            if (Bloc.of(context).isPlayerInputValid(_name)) {
+              Bloc.of(context).addPlayer(_name);
+              _controller.clear();
+              FocusScope.of(context).requestFocus(_focusNode);
+            }
+          },
+        );
+      }
     );
   }
 }

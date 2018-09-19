@@ -16,24 +16,24 @@ enum TextId {
   add_player_label,
   add_player_hint,
   add_player_error,
-  
+
   configuration_player_missing,
   configuration_deck_missing,
   start_game,
-  
+
   beta_box_title,
   beta_box_body,
   beta_box_action,
-  
+
   menu_log_in,
   menu_log_in_text,
   menu_my_cards,
   menu_settings,
   menu_feedback,
-  
+
   mail_subject,
   mail_body,
-  
+
   coin_card,
   game_card_author
 }
@@ -139,7 +139,11 @@ class Bloc {
     coinsBloc.buy(deck);
     decksBloc.buy(deck);
   }
-  
+
+  bool isPlayerInputErroneous(String player) => playersBloc.isPlayerInputErroneous(player);
+
+  bool isPlayerInputValid(String player) => playersBloc.isPlayerInputValid(player);
+
   void addPlayer(String player) => playersBloc.addPlayer(player);
   
   void removePlayer(String player) => playersBloc.removePlayer(player);

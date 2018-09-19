@@ -3,6 +3,9 @@ import 'package:rxdart/rxdart.dart';
 import 'resource_manager.dart';
 
 class PlayersBloc {
+  bool isPlayerInputErroneous(String player) => players?.contains(player) ?? false;
+  bool isPlayerInputValid(String player) =>
+      player != '' && !isPlayerInputErroneous(player);
   List<String> players;
 
   final playersSubject = BehaviorSubject<List<String>>(seedValue: []);
@@ -17,10 +20,9 @@ class PlayersBloc {
     playersSubject.close();
   }
 
-
   void addPlayer(String player) {
     assert(player != null);
-    assert(player != '');
+    assert(isPlayerInputValid(player));
 
     players.add(player);
     playersSubject.add(players);
