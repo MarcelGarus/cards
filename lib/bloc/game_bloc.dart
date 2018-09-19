@@ -238,7 +238,7 @@ class _Generator {
 
     // Insert the players. Return null if there are too few players to fill all
     // the slots in the card.
-    players.shuffle(Random());
+    players = List.from(players)..shuffle(Random());
     final content = _insertNames(parts[2], players);
     final annihilation = _insertNames(parts[3], players);
 

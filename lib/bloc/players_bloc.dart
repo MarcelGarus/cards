@@ -13,6 +13,7 @@ class PlayersBloc {
 
   Future<void> initialize() async {
     players = await _loadPlayers();
+    print('Loaded players are $players.');
     playersSubject.add(players);
   }
 
@@ -31,6 +32,7 @@ class PlayersBloc {
 
   void removePlayer(String player) {
     assert(player != null);
+    assert(players.contains(player));
 
     players.remove(player);
     playersSubject.add(players);

@@ -6,50 +6,46 @@ import 'localize.dart';
 class PlayerInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: Bloc.of(context).players,
-      builder: (context, snapshot) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            _buildNames(context, snapshot),
-            _buildInput(context, snapshot)
-          ]
-        );
-      },
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 8.0),
+          child: StreamBuilder(
+            stream: Bloc.of(context).players,
+            builder: (context, snapshot) {
+              return _buildNames(context, snapshot.data ?? []);
+            },
+          )
+        ),
+        _buildInput(context)
+      ]
     );
   }
 
-  Widget _buildNames(BuildContext context, AsyncSnapshot snapshot) {
-    if (snapshot.data == null || snapshot.data.length == 0) {
+  Widget _buildNames(BuildContext context, List<String> players) {
+    if (players.length == 0) {
       return Container(
         height: 32.0,
         alignment: Alignment.center,
         child: Text('Pretty empty here...')
       );
     }
-
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 8.0),
-      child: Wrap(
-        children: List.generate(snapshot.data?.length ?? 0, (i) {
-          return Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
-            child: PlayerChip(name: snapshot.data[i])
-          );
-        })
-      )
+    return Wrap(
+      children: players.map((String player) {
+        return Padding(
+          padding: EdgeInsets.symmetric(horizontal: 8.0),
+          child: PlayerChip(name: player)
+        );
+      }).toList()
     );
   }
 
-  Widget _buildInput(
-    BuildContext context,
-    AsyncSnapshot<List<String>> snapshot
-  ) {
+  Widget _buildInput(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(16.0),
-      child: NameInput(players: snapshot.data ?? [])
+      child: NameInput()
     );
   }
 }
@@ -111,11 +107,6 @@ class _PlayerChipState extends State<PlayerChip>
 
 /// The input field where players can input their names.
 class NameInput extends StatefulWidget {
-  NameInput({ @required this.players });
-
-  /// List of players, used to validate input.
-  final List<String> players;
-
   @override
   _NameInputState createState() => _NameInputState();
 }
