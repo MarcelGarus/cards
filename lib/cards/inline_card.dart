@@ -110,8 +110,8 @@ class _InlineCardState extends State<InlineCard> {
 
     return RawCard(
       heroTag: widget.card.id,
-      borderRadius: BorderRadius.all(Radius.circular(8.0)),
-      contract: true,
+      borderRadius: BorderRadius.circular(8.0),
+      expand: false,
       onTap: widget.onTap,
       child: Column(
         mainAxisSize: MainAxisSize.min,

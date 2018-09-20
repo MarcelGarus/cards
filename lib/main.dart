@@ -204,7 +204,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
   BorderRadius _borderRadius(BuildContext context) {
     final radius = (_cardPosition.distance / 100).clamp(0.0, 1.0) * 32.0;
-    return BorderRadius.all(Radius.circular(radius));
+    return BorderRadius.circular(radius);
   }
 
   double _safeAreaTopSize(BuildContext context) {

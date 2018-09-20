@@ -112,11 +112,12 @@ class _SelectableDeckState extends State<SelectableDeck>
         DeckCover(deck: widget.deck),
         Material(
           color: Colors.black.withOpacity(_selectionValue * 0.5),
-          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+          borderRadius: BorderRadius.circular(8.0),
           child: InkResponse(
             onTap: _toggleSelection,
-            radius: 100.0,
             splashColor: Colors.white12,
+            highlightShape: BoxShape.rectangle,
+            radius: 1000.0,
             child: Container(
               width: 96.0,
               height: 144.0,

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-/// A card in the game.
+/// A widget that displays a card in the game.
 class RawCard extends StatelessWidget {
   const RawCard({
     this.heroTag,
     this.borderRadius,
     this.safeAreaTop = 0.0,
-    this.contract = false,
+    this.expand = true,
     this.topBarLeading,
     this.topBarTailing,
     this.bottomBarLeading,
@@ -19,13 +19,11 @@ class RawCard extends StatelessWidget {
   final String heroTag;
   final BorderRadius borderRadius;
   final double safeAreaTop;
-  final bool contract;
+  final bool expand;
 
-  // Widgets that can customize the top bar.
+  // Widgets that can customize the top and bottom bars.
   final Widget topBarLeading;
   final Widget topBarTailing;
-
-  // Widgets that can customize the bottom bar.
   final Widget bottomBarLeading;
   final Widget bottomBarTailing;
 
@@ -57,7 +55,7 @@ class RawCard extends StatelessWidget {
 
     // Put the content parts into a column.
     Widget content = Column(
-      mainAxisSize: contract ? MainAxisSize.min : MainAxisSize.max,
+      mainAxisSize: expand ? MainAxisSize.min : MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         SizedBox(height: safeAreaTop),
@@ -68,12 +66,11 @@ class RawCard extends StatelessWidget {
     );
 
     // During the hero animation, the card is lifted up into the overlay, where
-    // it's provided with tight constraints. To avoid overflow errors and
-    // visual inconsistencies when animating from a smaller to a larger
-    // position (and thus trying to display the larger content in smaller,
-    // tight constraints), the card's content isn't shown during the hero
-    // animation.
-    final layoutContent = !contract ? content : LayoutBuilder(
+    // it's provided with tight constraints. To avoid overflowing when
+    // animating from a smaller to a larger position (and thus trying to
+    // display the larger content in smaller, tight constraints), the card's
+    // content isn't shown during the hero animation.
+    final layoutContent = expand ? content : LayoutBuilder(
       builder: (context, BoxConstraints constraints) {
         return constraints.isTight ? Container() : Padding(
           padding: EdgeInsets.all(16.0),
@@ -86,21 +83,13 @@ class RawCard extends StatelessWidget {
     final responsiveContent = (onTap == null) ? layoutContent : InkResponse(
       onTap: onTap,
       splashColor: Colors.white10,
-      radius: 1000.0, // TODO: do not hardcode
+      highlightShape: BoxShape.rectangle,
+      radius: 2 * MediaQuery.of(context).size.longestSide,
       child: layoutContent
     );
 
-    // The material card.
-    Widget card = Material(
-      color: Colors.black,
-      borderRadius: borderRadius,
-      elevation: 8.0,
-      animationDuration: Duration.zero,
-      child: responsiveContent
-    );
-
-    // The themed card.
-    card = Theme(
+    // The themed material card.
+    Widget card = Theme(
       data: ThemeData(
         hintColor: Colors.white,
         inputDecorationTheme: InputDecorationTheme(
@@ -117,7 +106,13 @@ class RawCard extends StatelessWidget {
           display4: TextStyle(color: Colors.white, fontFamily: 'Assistant'),
         ),
       ),
-      child: card
+      child: Material(
+        color: Colors.black,
+        borderRadius: borderRadius,
+        elevation: 8.0,
+        animationDuration: Duration.zero,
+        child: responsiveContent
+      )
     );
 
     // Hero.

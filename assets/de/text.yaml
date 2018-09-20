@@ -1,0 +1,34 @@
+app_title: Cards
+
+players_empty: Ziemlich leer hier...
+add_player_label: Spieler hinzufügen
+add_player_hint: Gib den Namen ein
+add_player_error: Du hast bereits $author hinzugefügt.
+
+configuration_player_missing: Füge einen Spieler hinzu
+configuration_deck_missing: Füge mindestens ein Deck hinzu
+start_game: Spiel starten
+
+beta_box_title: Danke für's Beta-Testen!
+beta_box_body: "Wie du siehst, funktioniert die grundlegende Spielmechanik
+  bereits, allerdings mangelt es noch sehr an Inhalten, bislang gibt es nämlich
+  nur 100 Karten.\nDeshalb wäre es nett, wenn du neue Karten erstellst (dazu
+  unten auf's Menü gehen) und veröffentlichst. Als Gegenleistung kannst du
+  deinen Namen auch auf den veröffentlichten Karten verewigen lassen.\nOh, und
+  falls du Bugs findest, Ideen für neue Kartendecks oder für einen besseren
+  App-Namen als \"Cards\" hast oder wenn du einfach Feedback geben willst,
+  schreib mir ruhig."
+beta_box_action: Feedback senden
+
+menu_log_in: Einloggen
+menu_log_in_text: 'Logge dich ein, um deinen Fortschritt zu synchronisieren und
+  eigene Karten zu veröffentlichen.'
+menu_my_cards: Meine Karten
+menu_settings: Einstellungen
+menu_feedback: Feedback
+
+mail_subject: Feedback zu Cards
+mail_body: 'Nicht löschen: Version $version\n\nHi Marcel,\n'
+
+coin_card: Du hast eine Münze gefunden!
+game_card_author: von $author
