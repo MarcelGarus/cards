@@ -8,7 +8,7 @@ import 'guidelines.dart';
 class PublishCardScreen extends StatelessWidget {
   PublishCardScreen({ @required this.card }) : assert(card != null);
   
-  final GameCard card;
+  final MyCard card;
 
   @override
   Widget build(BuildContext context) {
@@ -26,12 +26,12 @@ class PublishCardScreen extends StatelessWidget {
     content.add(Padding(
       padding: EdgeInsets.all(16.0),
       child: InlineCard(
-        card: card,
+        card: card.gameCard,
         showFollowup: false,
       )
     ));
 
-    if (card.hasFollowup) {
+    if (card.gameCard.hasFollowup) {
       content.add(Center(
         child: Material(
           color: Colors.white,
@@ -46,7 +46,7 @@ class PublishCardScreen extends StatelessWidget {
       content.add(Padding(
         padding: EdgeInsets.all(16.0),
         child: InlineCard(
-          card: card.createFollowup(),
+          card: card.gameCard.createFollowup(),
         )
       ));
     }

@@ -11,7 +11,7 @@ class CardsListScreen extends StatefulWidget {
 }
 
 class _CardsListScreenState extends State<CardsListScreen> {
-  void _goToEditScreen(BuildContext context, GameCard card) {
+  void _goToEditScreen(BuildContext context, MyCard card) {
     Navigator.of(context).push(PageRouteBuilder(
       opaque: false,
       transitionDuration: const Duration(milliseconds: 200),
@@ -42,7 +42,7 @@ class _CardsListScreenState extends State<CardsListScreen> {
         body: SafeArea(
           child: StreamBuilder(
             stream: Bloc.of(context).myCards,
-            builder: (context, AsyncSnapshot<List<GameCard>> snapshot) {
+            builder: (context, AsyncSnapshot<List<MyCard>> snapshot) {
               return _buildCardsList(snapshot.data ?? []);
             }
           )
@@ -51,7 +51,7 @@ class _CardsListScreenState extends State<CardsListScreen> {
     );
   }
 
-  Widget _buildCardsList(List<GameCard> cards) {
+  Widget _buildCardsList(List<MyCard> cards) {
     final items = <Widget>[];
     print('Created cards are $cards.');
 
@@ -61,7 +61,7 @@ class _CardsListScreenState extends State<CardsListScreen> {
       items.add(Padding(
         padding: EdgeInsets.symmetric(horizontal: 16.0),
         child: InlineCard(
-          card: card,
+          card: card.gameCard,
           showFollowup: false,
           showAuthor: false,
           onTap: () => _goToEditScreen(context, card)

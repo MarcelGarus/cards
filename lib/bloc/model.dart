@@ -80,8 +80,8 @@ class Deck {
 
   // TODO: override hash code
 
-  String toString() => '(\'$name\' with description \'$description\' has color'
-      '$color. See file $file)';
+  String toString() => '(\'$name\' with description \'$description\' has '
+      'color $color. See file $file)';
 }
 
 
@@ -180,7 +180,7 @@ class GameCard extends Card {
     color: color
   );
 
-  String toString() => 'Card #$id: "$content" by $author';
+  String toString() => '$id: "$content" by $author';
 }
 
 
@@ -197,4 +197,30 @@ class CoinCard extends Card {
 
 
   String toString() => 'Coin card';
+}
+
+
+
+/// My card.
+class MyCard extends Card {
+  MyCard({
+    @required this.gameCard,
+    this.isEnabled = true,
+    this.isPublished = false
+  }) :
+      assert(gameCard != null),
+      assert(isEnabled != null),
+      assert(isPublished != null);
+
+  final GameCard gameCard;
+  bool get isContentValid => !gameCard.content.contains('|');
+  bool get isFollowupValid => !gameCard.followup.contains('|');
+  bool get isAuthorValid => !gameCard.author.contains('|');
+  bool get isValid => gameCard.content != ''
+      && isContentValid && isFollowupValid && isAuthorValid;
+
+  bool isEnabled;
+  bool get includeInGame => isEnabled && isValid;
+
+  bool isPublished;
 }

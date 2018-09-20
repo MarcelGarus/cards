@@ -22,11 +22,13 @@ class DeckSelector extends StatelessWidget {
     final decks = snapshot.data;
 
     if (decks == null) {
+      print('No decks.');
       return Center(
         child: CircularProgressIndicator(),
       );
     }
 
+    print('Building list of ${decks.length} decks.');
     return ListView(
       scrollDirection: Axis.horizontal,
       padding: EdgeInsets.all(8.0),

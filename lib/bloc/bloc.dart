@@ -43,7 +43,9 @@ enum TextId {
 /// Handles composition of the configuration.
 class Bloc {
   Bloc() {
-    _initialize();
+    _initialize().catchError((e) {
+      print('An error occurred when initializing the BloC: $e');
+    });
   }
 
   /// Using this method, any widget in the tree below a BlocProvider can get
@@ -68,6 +70,7 @@ class Bloc {
   Configuration _configuration;
 
   // Output stream subjects.
+  final _decksSubject = BehaviorSubject<List<Deck>>(seedValue: []);
   final _configurationSubject = BehaviorSubject<Configuration>();
   final _canResumeSubject = BehaviorSubject<bool>(seedValue: false);
 
@@ -75,44 +78,71 @@ class Bloc {
   Stream<Locale> get locale => localeBloc.localeSubject.stream;
   Stream<BigInt> get coins => coinsBloc.coinsSubject.stream;
   Stream<List<String>> get players => playersBloc.playersSubject.stream;
-  Stream<List<Deck>> get decks => decksBloc.decksSubject.stream;
+  Stream<List<Deck>> get decks => _decksSubject.stream;
   Stream<List<Deck>> get unlockedDecks => decksBloc
       .unlockedDecksSubject
       .stream;
   Stream<List<Deck>> get selectedDecks => decksBloc
       .selectedDecksSubject
       .stream;
-  Stream<List<GameCard>> get myCards => myCardsBloc.myCardsSubject.stream;
+  Stream<List<MyCard>> get myCards => myCardsBloc.myCardsSubject.stream;
   Stream<Configuration> get configuration => _configurationSubject.stream;
   Stream<bool> get canResume => _canResumeSubject.stream;
   Stream<Card> get frontCard => gameBloc.frontCardSubject.stream.distinct();
   Stream<Card> get backCard => gameBloc.backCardSubject.stream;
 
 
-  void _initialize() async {
+  /// Initializes the bloc by initializing sub-blocs and listening to streams
+  /// in order to update and notify necessary sub-blocs.
+  Future<void> _initialize() async {
     print('Initializing the BLoC.');
 
+    // Initialize all the sub-blocs.
     localeBloc.initialize().catchError(print);
     playersBloc.initialize().catchError(print);
     decksBloc.initialize(localeBloc.locale).catchError(print);
     myCardsBloc.initialize().catchError(print);
 
+    // Load new decks and stop the game if the locale changes.
     locale.listen((locale) {
       decksBloc.initialize(locale);
       gameBloc.stop();
     });
+
+    // Update decks if decks or user-generated cards change.
+    decksBloc.decksSubject.listen((decks) => _updateDecks());
+    myCards.listen((myCards) => _updateDecks());
+
+    // Update configuration if players or selected decks change.
     players.listen((players) => _updateConfiguration());
     selectedDecks.listen((decks) => _updateConfiguration());
-    myCards.listen((cards) => _updateConfiguration());
+
     configuration.listen((config) => _updateCanResume());
     frontCard
         .where((card) => card is CoinCard)
         .listen((card) => coinsBloc.findCoin());
   }
 
+  /// Closes all subjects.
   void dispose() {
+    localeBloc.dispose();
+    playersBloc.dispose();
+    decksBloc.dispose();
+    myCardsBloc.dispose();
+
+    _decksSubject.close();
     _configurationSubject.close();
     _canResumeSubject.close();
+  }
+
+  void _updateDecks() {
+    final decks = List.from<Deck>(decksBloc.decks);
+    // TODO: Sort decks.
+    if (!myCardsBloc.providesCardsForGame) {
+      print('User provides no valid cards.');
+      decks.removeWhere((deck) => deck.id == 'my');
+    }
+    _decksSubject.add(decks);
   }
 
   void _updateConfiguration() {
@@ -128,6 +158,8 @@ class Bloc {
     _canResumeSubject.add(_configuration.isValid && gameBloc.isActive);
   }
 
+
+  // The following methods are entry-points for the UI.
 
   void updateLocale(Locale locale) => localeBloc.updateLocale(locale);
 
@@ -152,13 +184,13 @@ class Bloc {
   
   void deselectDeck(Deck deck) => decksBloc.deselectDeck(deck);
   
-  GameCard createNewCard() => myCardsBloc.createNewCard();
+  MyCard createNewCard() => myCardsBloc.createNewCard();
   
-  void updateCard(GameCard card) => myCardsBloc.updateCard(card);
+  void updateCard(MyCard card) => myCardsBloc.updateCard(card);
   
-  void deleteCard(GameCard card) => myCardsBloc.deleteCard(card);
+  void deleteCard(MyCard card) => myCardsBloc.deleteCard(card);
   
-  void start() async {
+  void start() {
     print('Starting the game.');
 
     if (_configuration.isValid) {
@@ -168,7 +200,7 @@ class Bloc {
     }
   }
   
-  void nextCard() async => gameBloc.nextCard(_configuration);
+  void nextCard() => gameBloc.nextCard(_configuration);
 }
 
 class BlocProvider extends StatelessWidget {

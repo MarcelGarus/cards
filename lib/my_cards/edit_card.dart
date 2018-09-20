@@ -11,7 +11,7 @@ class EditCardScreen extends StatefulWidget {
   EditCardScreen({ @required this.card }) :
       assert(card != null);
   
-  final GameCard card;
+  final MyCard card;
 
   _EditCardScreenState createState() => _EditCardScreenState();
 }
@@ -23,9 +23,9 @@ class _EditCardScreenState extends State<EditCardScreen> {
 
   void initState() {
     super.initState();
-    content = widget.card.content;
-    followup = widget.card.followup;
-    author = widget.card.author;
+    content = widget.card.gameCard.content;
+    followup = widget.card.gameCard.followup;
+    author = widget.card.gameCard.author;
   }
 
   /// Animates to the publish screen.
@@ -45,13 +45,16 @@ class _EditCardScreenState extends State<EditCardScreen> {
     ));
   }
 
-  GameCard _createEditedCard() {
-    return GameCard(
-      id: widget.card.id,
-      color: '#FFFFFF',
-      content: content,
-      followup: followup,
-      author: author
+  MyCard _createEditedCard() {
+    return MyCard(
+      gameCard: GameCard(
+        id: widget.card.gameCard.id,
+        color: '#FFFFFF',
+        content: content,
+        followup: followup,
+        author: author
+      ),
+      isEnabled: widget.card.isEnabled
     );
   }
 
@@ -78,7 +81,7 @@ class _EditCardScreenState extends State<EditCardScreen> {
     final materialCard = Padding(
       padding: EdgeInsets.all(16.0),
       child: InlineCard(
-        card: widget.card,
+        card: widget.card.gameCard,
         onEdited: _onChanged,
       )
     );

@@ -5,9 +5,11 @@ import 'model.dart';
 import 'resource_manager.dart';
 
 class MyCardsBloc {
-  List<GameCard> myCards = <GameCard>[];
+  List<MyCard> myCards = <MyCard>[];
+  bool get providesCardsForGame => myCards.any((card) => card.includeInGame);
 
-  final myCardsSubject = BehaviorSubject<List<GameCard>>(seedValue: []);
+  final myCardsSubject = BehaviorSubject<List<MyCard>>(seedValue: []);
+
 
   Future<void> initialize() async {
     myCards = await _loadMyCards();
@@ -19,8 +21,8 @@ class MyCardsBloc {
   }
 
   /// Creates a new card for the user to fill with content.
-  GameCard createNewCard() {
-    final myCardIds = myCards.map((card) => card.id).toSet();
+  MyCard createNewCard() {
+    final myCardIds = myCards.map((card) => card.gameCard.id).toSet();
     var id;
     for (int i = 0;; i++) {
       id = 'my_$i';
@@ -28,7 +30,9 @@ class MyCardsBloc {
         break;
     }
 
-    final card = GameCard(id: id, content: '', color: '#FFFFFF');
+    final card = MyCard(
+      gameCard: GameCard(id: id, content: '', color: '#FFFFFF')
+    );
 
     myCards.add(card);
     myCardsSubject.add(myCards);
@@ -36,15 +40,17 @@ class MyCardsBloc {
     return card;
   }
 
-  void updateCard(GameCard card) {
-    final oldVersion = myCards.singleWhere((myCard) => myCard.id == card.id);
+  void updateCard(MyCard card) {
+    final oldVersion = myCards
+        .singleWhere((myCard) => myCard.gameCard.id == card.gameCard.id);
+
     myCards.remove(oldVersion);
     myCards.add(card);
     myCardsSubject.add(myCards);
     _saveMyCards(myCards);
   }
 
-  void deleteCard(GameCard card) {
+  void deleteCard(MyCard card) {
     myCards.remove(card);
     myCardsSubject.add(myCards);
     _saveMyCards(myCards);
@@ -52,10 +58,16 @@ class MyCardsBloc {
 
 
   /// Saves the user's cards.
-  static Future<void> _saveMyCards(List<GameCard> cards) async {
-    // Save the cards in the same format as cards in deck files.
+  static Future<void> _saveMyCards(List<MyCard> cards) async {
+    // Save the cards in the same format as cards in deck files, but with a
+    // leading enabled property.
     final List<String> stringifiedCards = cards.map((card) =>
-        '${card.id}|${card.author}|${card.content}|${card.followup}'
+        '${card.gameCard.id}|'
+        '${card.gameCard.author}|'
+        '${card.gameCard.content}|'
+        '${card.gameCard.followup}|'
+        '${card.isEnabled ? 'enabled' : 'disabled'}|'
+        '${card.isPublished ? 'published' : 'local'}'
     ).toList();
 
     ResourceManager
@@ -67,19 +79,27 @@ class MyCardsBloc {
 
 
   /// Loads the user's cards.
-  static Future<List<GameCard>> _loadMyCards() async {
+  static Future<List<MyCard>> _loadMyCards() async {
     final prefs = await SharedPreferences.getInstance();
 
     return (prefs.getStringList('my_cards') ?? [])
         .map((stringifiedCard) {
           final parts = stringifiedCard.split('|');
-          return parts.length == 4 ? GameCard(
-            id: parts[0],
-            color: '#FFFFFF',
-            content: parts[2],
-            followup: parts[3],
-            author: parts[1],
-          ) : null;
+          if (parts.length == 6) {
+            return MyCard(
+              gameCard: GameCard(
+                id: parts[0],
+                color: '#FFFFFF',
+                content: parts[2],
+                followup: parts[3],
+                author: parts[1],
+              ),
+              isEnabled: parts[4] == 'enabled',
+              isPublished: parts[5] == 'published'
+            );
+          }
+          print('Warning: My card $stringifiedCard is not parseable.');
+          return null;
         })
         .where((card) => card != null)
         .toList();
