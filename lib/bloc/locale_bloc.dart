@@ -71,7 +71,7 @@ class LocaleBloc {
   }
 
   String getText(TextId id) {
-    return _textItems?.containsKey(id) ?? false ? _textItems[id] : '<$id missing>';
+    return _textItems?.containsKey(id) ?? false ? _textItems[id] : '$id missing';
   }
 
 
@@ -96,12 +96,13 @@ class LocaleBloc {
     final yaml = loadYaml(await rootBundle.loadString(filename)) as YamlMap;
 
     final texts = Map<TextId, String>();
-    texts[TextId.none] = '<string res missing>';
+    texts[TextId.none] = '<None>';
 
     for (final MapEntry entry in yaml.entries) {
       texts[TextIds.fromString(entry.key.toString())] = entry.value.toString();
     }
 
+    print('Texts are $texts.');
     return texts;
   }
 }

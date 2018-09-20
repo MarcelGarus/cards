@@ -68,19 +68,16 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    print('Initializing state.');
     _stackVisibilityController = AnimationController(
       duration: Duration(seconds: 2),
       vsync: this,
-    )
-      ..addListener(() => setState(() {
+    )..addListener(() => setState(() {
         _stackVisibility = _stackVisibilityAnimation?.value ?? 0.0;
       }));
     _cardPositionController = AnimationController(
       duration: Duration(seconds: 2),
       vsync: this,
-    )
-      ..addListener(() => setState(() {
+    )..addListener(() => setState(() {
         _cardPosition = _cardPositionAnimation?.value ?? Offset.zero;
       }))
       ..addStatusListener((status) {
@@ -288,9 +285,12 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   /// instructive message.
   Widget _buildFab(BuildContext context, AsyncSnapshot<Configuration> snapshot) {
     final config = snapshot.data;
-    final canStart = config?.isValid ?? false;
 
-    if (canStart) {
+    if (config == null) return Container();
+
+    print('Config: isValid=${config.isValid}, isPlayerMissing=${config.isPlayerMissing}, isDeckMissing=${config.isDeckMissing}');
+
+    if (config.isValid) {
       return FloatingActionButton.extended(
         icon: Image.asset('graphics/style192.png', width: 24.0, height: 24.0),
         label: LocalizedText(

@@ -18,10 +18,11 @@ class _Cooldown {
   int _countdown = 5 + Random().nextInt(7);
   bool get isDone => _countdown == 0;
 
-
   /// Counts down by 1.
   void countdown() => _countdown = max(0, _countdown - 1);
 }
+
+
 
 class GameBloc {
   static const _cardBufferSize = 3;
@@ -36,10 +37,9 @@ class GameBloc {
 
 
   void start(Configuration config) {
+    print('Initializing the deck and filling the stack.');
     cards = [];
-    print('Initializing generator.');
     _generator.initialize();
-    print('Filling stack.');
     _fillStack(config).catchError((e) {
       print('An error occurred while filling the stack: $e');
     });
@@ -84,8 +84,6 @@ class GameBloc {
 }
 
 class _Generator {
-  static const _myCardsProbability = 0.6;
-
   List<Deck> _lastTurnDecks;
   Set<Deck> _decksToIntroduce;
   List<_Cooldown> _cooldowns;
@@ -116,9 +114,8 @@ class _Generator {
     _tick();
 
     // If there are some decks that need introduction but have been deselected,
-    // do not bother to introduce them anymore.
-    // On the other hand, if new decks were added, schedule an introduction for
-    // them.
+    // do not bother to introduce them anymore. On the other hand, if new decks
+    // were added, schedule an introduction for them.
     _decksToIntroduce.removeWhere((deck) => !config.decks.contains(deck));
     _decksToIntroduce.addAll(config.decks
         .where((deck) => !_lastTurnDecks.contains(deck))
@@ -174,34 +171,28 @@ class _Generator {
 
   /// Picks a random card from a random deck or user-generated cards.
   Future<GameCard> _tryToPickCard(Configuration config) async {
-    // If the configuration provides user-generated cards, these should be
-    // considered too.
-    final bool considerMyCards = config.myCards.length > 0;
-
     // First, we need to choose a deck. Do that by calculating the sum of all
-    // the decks' probabilites, then adding the probability for user-generated
-    // cards if they should be considered.
-    // Then, choose a random cumulative sum in that range.
+    // the decks' probabilites. Then, choose a random cumulative sum in that
+    // range.
     final probabilitySum = config.decks
         .map((deck) => deck.probability)
-        .reduce((a, b) => a + b)
-        + (considerMyCards ? _myCardsProbability : 0);
+        .reduce((a, b) => a + b);
     final chosenCumSum = Random().nextDouble() * probabilitySum;
 
     // Calculate the cumulative sum and as we go, return the first deck where
-    // the cumulative sum gets above the chosen cumulative sum or else return
-    // null indicating one of the cards created by the player should be
-    // selected.
+    // the cumulative sum gets above the chosen cumulative sum.
     double cumSum = 0.0;
     final chosenDeck = config.decks.firstWhere((deck) {
       cumSum += deck.probability;
       return cumSum >= chosenCumSum;
     }, orElse: () => null);
 
-    if (chosenDeck == null) {
-      // TODO: Pick a user-generated card.
-      //print('We would pick a user-generated card here.');
+    if (chosenDeck.id == 'my') {
+      // Pick a user-generated card.
+      final cards = config.myCards;
+      return cards[(Random().nextDouble() * cards.length).toInt()];
     } else {
+      // Pick a card from the chosen deck.
       return await _pickCardFromDeck(chosenDeck, config.players);
     }
   }

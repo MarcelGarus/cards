@@ -1,5 +1,11 @@
 version: 20180417
 decks:
+  - id: 'my'
+    name: Meine Karten
+    color: '#ffffff'
+    description: Deine eigenen Karten.
+    price: 0
+    probability: 0.6
   - id: 'a'
     name: Trinken
     color: '#ffc107'

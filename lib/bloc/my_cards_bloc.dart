@@ -6,13 +6,18 @@ import 'resource_manager.dart';
 
 class MyCardsBloc {
   List<MyCard> myCards = <MyCard>[];
-  bool get providesCardsForGame => myCards.any((card) => card.includeInGame);
+  List<GameCard> get cardsForGame => myCards
+      .where((card) => card.includeInGame)
+      .map((card) => card.gameCard)
+      .toList();
+  bool get providesCardsForGame => cardsForGame.length > 0;
 
   final myCardsSubject = BehaviorSubject<List<MyCard>>(seedValue: []);
 
 
   Future<void> initialize() async {
     myCards = await _loadMyCards();
+    _saveMyCards(myCards);
     myCardsSubject.add(myCards);
   }
 

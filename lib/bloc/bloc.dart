@@ -137,21 +137,27 @@ class Bloc {
 
   void _updateDecks() {
     final decks = List.from<Deck>(decksBloc.decks);
-    // TODO: Sort decks.
+
+    // TODO: Sort decks according to user's preferences.
     if (!myCardsBloc.providesCardsForGame) {
-      print('User provides no valid cards.');
       decks.removeWhere((deck) => deck.id == 'my');
     }
     _decksSubject.add(decks);
   }
 
   void _updateConfiguration() {
-    _configuration = Configuration(
-      players: playersBloc.players ?? [],
-      decks: decksBloc.selectedDecks ?? [],
-      myCards: myCardsBloc.myCards ?? []
-    );
-    _configurationSubject.add(_configuration);
+    print('Updating configuration.');
+    try {
+      _configuration = Configuration(
+        players: playersBloc.players ?? [],
+        decks: decksBloc.selectedDecks ?? [],
+        myCards: myCardsBloc.cardsForGame ?? []
+      );
+      print('Configuration is $_configuration.');
+      _configurationSubject.add(_configuration);
+    } catch (e) {
+      print(e);
+    }
   }
 
   void _updateCanResume() async {
