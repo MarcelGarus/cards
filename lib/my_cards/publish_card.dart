@@ -25,10 +25,7 @@ class PublishCardScreen extends StatelessWidget {
 
     content.add(Padding(
       padding: EdgeInsets.all(16.0),
-      child: InlineCard(
-        card: card.gameCard,
-        showFollowup: false,
-      )
+      child: InlineCard(card.gameCard, showFollowup: false)
     ));
 
     if (card.gameCard.hasFollowup) {
@@ -45,9 +42,7 @@ class PublishCardScreen extends StatelessWidget {
       ));
       content.add(Padding(
         padding: EdgeInsets.all(16.0),
-        child: InlineCard(
-          card: card.gameCard.createFollowup(),
-        )
+        child: InlineCard(card.gameCard.createFollowup())
       ));
     }
 

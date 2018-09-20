@@ -30,7 +30,7 @@ class GameBloc {
   List<Card> cards;
   bool get isActive => cards != null;
 
-  _Generator _generator = _Generator();
+  Generator _generator = Generator();
 
   final frontCardSubject = BehaviorSubject<Card>(seedValue: EmptyCard());
   final backCardSubject = BehaviorSubject<Card>(seedValue: EmptyCard());
@@ -83,7 +83,7 @@ class GameBloc {
   }
 }
 
-class _Generator {
+class Generator {
   List<Deck> _lastTurnDecks;
   Set<Deck> _decksToIntroduce;
   List<_Cooldown> _cooldowns;
@@ -106,8 +106,11 @@ class _Generator {
     // TODO: gather analytics data
   }
 
-  /// Generates a card.
-  Future<Card> generateCard(Configuration config) async {
+  /// Generates a card. If onlyGameCard is set to true, no intro card or coin
+  /// card will be returned. This is useful for example cards in deck details.
+  Future<Card> generateCard(Configuration config, {
+    bool onlyGameCard = false
+  }) async {
     //print('Generating a card.');
 
     // New turn.
@@ -123,7 +126,7 @@ class _Generator {
     );
     
     // Actually introduce the first deck that needs an introduction.
-    if (_decksToIntroduce.length > 0) {
+    if (!onlyGameCard && _decksToIntroduce.length > 0) {
       final deck = _decksToIntroduce.toList().first;
       _decksToIntroduce.remove(deck);
       return deck.introduction;
@@ -131,7 +134,7 @@ class _Generator {
 
     // Maybe return a coin. TODO: take in consideration the time played, cards
     // etc.
-    if (Random().nextInt(50) == 0) {
+    if (!onlyGameCard && Random().nextInt(50) == 0) {
       return CoinCard(text: 'Du hast eine Münze gefunden!');
     }
 

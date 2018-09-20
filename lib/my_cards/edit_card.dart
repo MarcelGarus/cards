@@ -31,7 +31,6 @@ class _EditCardScreenState extends State<EditCardScreen> {
   /// Animates to the publish screen.
   void _goToPublishScreen(BuildContext context) {
     Navigator.of(context).push(PageRouteBuilder(
-      opaque: false,
       transitionDuration: const Duration(milliseconds: 200),
       pageBuilder: (BuildContext context, _, __) {
         return PublishCardScreen(card: _createEditedCard());
@@ -80,10 +79,7 @@ class _EditCardScreenState extends State<EditCardScreen> {
     
     final materialCard = Padding(
       padding: EdgeInsets.all(16.0),
-      child: InlineCard(
-        card: widget.card.gameCard,
-        onEdited: _onChanged,
-      )
+      child: InlineCard(widget.card.gameCard, onEdited: _onChanged)
     );
 
     return Theme(

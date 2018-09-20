@@ -2,10 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:hex/hex.dart';
 import 'bloc/bloc.dart';
 import 'bloc/model.dart';
+import 'deck_details.dart';
 
 /// A list of selectable decks.
 class DeckSelector extends StatelessWidget {
   DeckSelector();
+
+  void _displayDetails(BuildContext context, Deck deck) {
+    Navigator.of(context).push(PageRouteBuilder(
+      transitionDuration: const Duration(milliseconds: 200),
+      pageBuilder: (context, _, __) => DeckDetailsScreen(deck),
+      transitionsBuilder: (_, Animation<double> animation, __, Widget child) {
+        return FadeTransition(opacity: animation, child: child);
+      }
+    ));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,6 +28,7 @@ class DeckSelector extends StatelessWidget {
 
   Widget _buildList(BuildContext context, AsyncSnapshot<List<Deck>> snapshot) {
     if (!snapshot.hasData) {
+      print('Building no decks');
       return Container(
         height: 128.0,
         alignment: Alignment.center,
@@ -25,6 +37,7 @@ class DeckSelector extends StatelessWidget {
     }
 
     final decks = snapshot.data;
+    print('Building ${decks.length} decks.');
     return Padding(
       padding: EdgeInsets.all(12.0),
       child: Wrap(
@@ -36,24 +49,11 @@ class DeckSelector extends StatelessWidget {
               deck: decks[i],
               onSelect: () => Bloc.of(context).selectDeck(decks[i]),
               onDeselect: () => Bloc.of(context).deselectDeck(decks[i]),
+              onDetails: () => _displayDetails(context, decks[i]),
             )
           );
         })
       )
-    );
-    return ListView(
-      scrollDirection: Axis.horizontal,
-      padding: EdgeInsets.all(8.0),
-      children: List.generate(decks.length, (i) {
-        return Padding(
-          padding: EdgeInsets.all(2.0),
-          child: SelectableDeck(
-            deck: decks[i],
-            onSelect: () => Bloc.of(context).selectDeck(decks[i]),
-            onDeselect: () => Bloc.of(context).deselectDeck(decks[i]),
-          )
-        );
-      })
     );
   }
 }
@@ -65,12 +65,14 @@ class SelectableDeck extends StatefulWidget {
   SelectableDeck({
     @required this.deck,
     @required this.onSelect,
-    @required this.onDeselect
+    @required this.onDeselect,
+    @required this.onDetails
   });
 
   final Deck deck;
   final VoidCallback onSelect;
   final VoidCallback onDeselect;
+  final VoidCallback onDetails;
 
   @override
   _SelectableDeckState createState() => _SelectableDeckState();
@@ -121,12 +123,13 @@ class _SelectableDeckState extends State<SelectableDeck>
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
-        DeckCover(deck: widget.deck),
+        DeckCover(widget.deck),
         Material(
           color: Colors.black.withOpacity(_selectionValue * 0.5),
           borderRadius: BorderRadius.circular(8.0),
           child: InkResponse(
             onTap: _toggleSelection,
+            onLongPress: widget.onDetails,
             splashColor: Colors.white12,
             highlightShape: BoxShape.rectangle,
             radius: 1000.0,
@@ -153,7 +156,7 @@ class _SelectableDeckState extends State<SelectableDeck>
 
 /// A cover of a deck. TODO: add image
 class DeckCover extends StatelessWidget {
-  DeckCover({ @required this.deck });
+  DeckCover(this.deck);
 
   final Deck deck;
 
@@ -162,23 +165,26 @@ class DeckCover extends StatelessWidget {
     final rgb = HEX.decode(deck.color.substring(1));
     final color = Color.fromARGB(255, rgb[0], rgb[1], rgb[2]);
 
-    return Material(
-      color: color,
-      elevation: 2.0,
-      borderRadius: BorderRadius.all(Radius.circular(8.0)),
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [ Colors.white10, Colors.black12 ],
+    return Hero(
+      tag: 'deck_${deck.id}',
+      child: Material(
+        color: color,
+        elevation: 2.0,
+        borderRadius: BorderRadius.all(Radius.circular(8.0)),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [ Colors.white10, Colors.black12 ],
+            ),
           ),
-        ),
-        width: 96.0,
-        height: 144.0,
-        child: Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text(deck.name)
+          width: 96.0,
+          height: 144.0,
+          child: Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Text(deck.name)
+          )
         )
       )
     );

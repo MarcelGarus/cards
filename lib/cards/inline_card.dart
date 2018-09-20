@@ -14,8 +14,7 @@ typedef void InlineCardChangedListener(
 /// A non-fullscreen card that is solemnly used for [GameCard]s that the
 /// user creates.
 class InlineCard extends StatefulWidget {
-  InlineCard({
-    @required this.card,
+  InlineCard(this.card, {
     this.showContent = true,
     this.showFollowup = true,
     this.showAuthor = true,

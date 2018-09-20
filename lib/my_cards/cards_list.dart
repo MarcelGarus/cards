@@ -60,8 +60,7 @@ class _CardsListScreenState extends State<CardsListScreen> {
       items.add(SizedBox(height: 16.0));
       items.add(Padding(
         padding: EdgeInsets.symmetric(horizontal: 16.0),
-        child: InlineCard(
-          card: card.gameCard,
+        child: InlineCard(card.gameCard,
           showFollowup: false,
           showAuthor: false,
           onTap: () => _goToEditScreen(context, card)
