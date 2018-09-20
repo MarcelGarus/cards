@@ -9,32 +9,44 @@ class DeckSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 144.0 + 32.0,
-      child: StreamBuilder<List<Deck>>(
-        stream: Bloc.of(context).decks,
-        builder: _buildList
-      )
+    return StreamBuilder<List<Deck>>(
+      stream: Bloc.of(context).decks,
+      builder: _buildList
     );
   }
 
   Widget _buildList(BuildContext context, AsyncSnapshot<List<Deck>> snapshot) {
-    final decks = snapshot.data;
-
-    if (decks == null) {
-      print('No decks.');
-      return Center(
+    if (!snapshot.hasData) {
+      return Container(
+        height: 128.0,
+        alignment: Alignment.center,
         child: CircularProgressIndicator(),
       );
     }
 
-    print('Building list of ${decks.length} decks.');
+    final decks = snapshot.data;
+    return Padding(
+      padding: EdgeInsets.all(12.0),
+      child: Wrap(
+        alignment: WrapAlignment.center,
+        children: List.generate(decks.length, (i) {
+          return Padding(
+            padding: EdgeInsets.all(8.0),
+            child: SelectableDeck(
+              deck: decks[i],
+              onSelect: () => Bloc.of(context).selectDeck(decks[i]),
+              onDeselect: () => Bloc.of(context).deselectDeck(decks[i]),
+            )
+          );
+        })
+      )
+    );
     return ListView(
       scrollDirection: Axis.horizontal,
       padding: EdgeInsets.all(8.0),
       children: List.generate(decks.length, (i) {
         return Padding(
-          padding: EdgeInsets.all(8.0),
+          padding: EdgeInsets.all(2.0),
           child: SelectableDeck(
             deck: decks[i],
             onSelect: () => Bloc.of(context).selectDeck(decks[i]),

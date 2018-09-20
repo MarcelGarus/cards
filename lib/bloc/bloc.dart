@@ -146,14 +146,12 @@ class Bloc {
   }
 
   void _updateConfiguration() {
-    print('Updating configuration.');
     try {
       _configuration = Configuration(
         players: playersBloc.players ?? [],
         decks: decksBloc.selectedDecks ?? [],
         myCards: myCardsBloc.cardsForGame ?? []
       );
-      print('Configuration is $_configuration.');
       _configurationSubject.add(_configuration);
     } catch (e) {
       print(e);

@@ -49,13 +49,10 @@ class LocaleBloc {
   Future<void> initialize() async {
     locale = await _loadLocale();
     _textItems = await _loadText(locale);
-    print('Updating all locale widgets with locale $locale.');
     localeSubject.add(locale);
   }
 
-  void dispose() {
-    localeSubject.close();
-  }
+  void dispose() => localeSubject.close();
 
 
   Future<void> updateLocale(Locale locale) async {
@@ -82,9 +79,7 @@ class LocaleBloc {
   }
 
   static Future<Locale> _loadLocale() async {
-    return Locale(
-      await ResourceManager.loadString('locale') ?? 'de'
-    );
+    return Locale(await ResourceManager.loadString('locale') ?? 'de');
   }
 
   static Future<Map<TextId, String>> _loadText(Locale locale) async {
@@ -102,7 +97,6 @@ class LocaleBloc {
       texts[TextIds.fromString(entry.key.toString())] = entry.value.toString();
     }
 
-    print('Texts are $texts.');
     return texts;
   }
 }

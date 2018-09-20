@@ -42,7 +42,7 @@ class ConfigureScreen extends StatelessWidget {
           children: <Widget>[
             topPart,
             DeckSelector(),
-            BetaBox(),
+            //BetaBox(),
             SizedBox(height: 48.0 + 24.0)
           ],
         ),

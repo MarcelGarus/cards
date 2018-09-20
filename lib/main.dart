@@ -288,8 +288,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
     if (config == null) return Container();
 
-    print('Config: isValid=${config.isValid}, isPlayerMissing=${config.isPlayerMissing}, isDeckMissing=${config.isDeckMissing}');
-
     if (config.isValid) {
       return FloatingActionButton.extended(
         icon: Image.asset('graphics/style192.png', width: 24.0, height: 24.0),

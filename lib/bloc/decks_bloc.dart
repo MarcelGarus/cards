@@ -76,8 +76,10 @@ class DecksBloc {
     final root = ResourceManager.getRootDirectory(locale);
     final filename = '$root/decks.yaml';
     final yaml = loadYaml(await rootBundle.loadString(filename));
+    print('Loaded yaml decks are $yaml.');
 
     for (final deck in yaml['decks'] ?? []) {
+      print('Loading deck $deck.');
       decks.add(Deck(
         id: deck['id'] ?? '<no id>',
         file: '$root/deck_${deck['id'] ?? 'id'}.txt',
