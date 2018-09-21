@@ -9,11 +9,13 @@ class CoinsBloc {
   final coinsSubject = BehaviorSubject<BigInt>();
 
 
-  void initialize() async {
+  Future<void> initialize() async {
     _loadCoins().then((loadedCoins) {
       coins += loadedCoins;
+      _saveCoins(coins);
     });
     coinsSubject.add(coins);
+    print('Loaded coins: $coins');
   }
 
   void dispose() {
@@ -39,9 +41,9 @@ class CoinsBloc {
     coinsSubject.add(coins);
     _saveCoins(coins);
   }
-  
 
-  static Future<void> _saveCoins(BigInt coins) {
+
+  static void _saveCoins(BigInt coins) {
     ResourceManager.saveString('coins', coins.toString()).catchError((e) {
       print('An error occured while saving $coins as coins: $e');
     });
@@ -49,7 +51,7 @@ class CoinsBloc {
 
   static Future<BigInt> _loadCoins() async {
     return BigInt.parse(
-      await ResourceManager.loadString('coins') ?? '0'
+      await ResourceManager.loadString('coins') ?? '10'
     );
   }
 }

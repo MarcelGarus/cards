@@ -71,6 +71,7 @@ class DecksBloc {
     final displayedDecks = List.from<Deck>(usefulDecks);
     displayedDecks.sort((a, b) => a.price.compareTo(b.price));
     decksSubject.add(displayedDecks);
+    print('Currently selected decks are $selectedDecks.');
   }
 
 

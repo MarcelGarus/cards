@@ -53,8 +53,6 @@ class DeckSelector extends StatelessWidget {
             padding: EdgeInsets.all(8.0),
             child: SelectableDeck(
               deck: deck,
-              onSelect: () => Bloc.of(context).selectDeck(deck),
-              onDeselect: () => Bloc.of(context).deselectDeck(deck),
               onDetails: () => _displayDetails(context, decks, deck),
             )
           );
@@ -70,14 +68,10 @@ class DeckSelector extends StatelessWidget {
 class SelectableDeck extends StatefulWidget {
   SelectableDeck({
     @required this.deck,
-    @required this.onSelect,
-    @required this.onDeselect,
     @required this.onDetails
   });
 
   final Deck deck;
-  final VoidCallback onSelect;
-  final VoidCallback onDeselect;
   final VoidCallback onDetails;
 
   @override
@@ -89,6 +83,7 @@ class _SelectableDeckState extends State<SelectableDeck>
   AnimationController _selectController;
   Animation<double> _selectAnimation;
   double _selectionValue;
+  double _targetSelectionValue;
 
   double get _defaultValue => !widget.deck.isUnlocked
       ? 1.0 : widget.deck.isSelected ? 1.0 : 0.0;
@@ -111,27 +106,36 @@ class _SelectableDeckState extends State<SelectableDeck>
     super.dispose();
   }
 
-  void _onTap() {
-    if (!widget.deck.isUnlocked) {
-      // TODO: unlock deck if there are enough coins.
-      return;
-    }
+  /// Updates the target value based on the given isSelect value. If it
+  /// changed, start the animation.
+  void _startAnimationIfNecessary(bool isSelected) {
+    final targetSelectionValue = isSelected ? 1.0 : 0.0;
+    if (_targetSelectionValue == targetSelectionValue) return; // Nothing changed
 
-    final targetSelect = widget.deck.isSelected ? 0.0 : 1.0;
-    _selectAnimation = Tween<double>(begin: _selectionValue, end: targetSelect)
+    _selectAnimation = Tween<double>(begin: _selectionValue, end: targetSelectionValue)
       .animate(_selectController);
     _selectController
       ..value = 0.0
       ..fling(velocity: 2.0);
+  }
 
-    if (widget.deck.isSelected)
-      widget.onDeselect();
+  /// If the deck is locked, try to unlock it. Otherwise, deselect the deck if
+  /// it's already selected or select it if it's not.
+  void _onTap() {
+    final bloc = Bloc.of(context);
+
+    if (widget.deck.isLocked)
+      bloc.buy(widget.deck);
+    else if (widget.deck.isSelected)
+      bloc.deselectDeck(widget.deck);
     else
-      widget.onSelect();
+      bloc.selectDeck(widget.deck);
   }
 
   @override
   Widget build(BuildContext context) {
+    _startAnimationIfNecessary(widget.deck.isSelected);
+
     final overlayItems = widget.deck.isUnlocked ? [
       Icon(Icons.check, color: Colors.white)
     ] : [

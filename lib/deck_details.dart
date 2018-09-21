@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart' hide Card;
 import 'package:hex/hex.dart';
+import 'bloc/bloc.dart';
 import 'bloc/game_bloc.dart';
 import 'bloc/model.dart';
 import 'cards/inline_card.dart';
@@ -80,7 +81,9 @@ class _DeckDetailsState extends State<DeckDetails> {
 
   void initState() {
     super.initState();
-    generateSampleCards();
+    
+    if (widget.deck.id != 'my')
+      generateSampleCards();
   }
 
   /// Pick some sample cards from the deck. For every card, create an own
@@ -106,9 +109,18 @@ class _DeckDetailsState extends State<DeckDetails> {
     final rgb = HEX.decode(widget.deck.color.substring(1));
     final color = Color.fromARGB(255, rgb[0], rgb[1], rgb[2]);
 
-    final button = RaisedButton(
+    final bloc = Bloc.of(context);
+    final button = widget.deck.isUnlocked ? OutlineButton(
+      onPressed: () {
+        if (widget.deck.isSelected)
+          bloc.deselectDeck(widget.deck);
+        else
+          bloc.selectDeck(widget.deck);
+      },
+      child: Text(widget.deck.isSelected ? 'Deselect' : 'Select')
+    ) : RaisedButton(
       color: color,
-      onPressed: () {},
+      onPressed: () => bloc.buy(widget.deck),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[

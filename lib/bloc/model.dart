@@ -56,6 +56,7 @@ class Deck {
 
   /// Whether the card is unlocked.
   bool isUnlocked;
+  bool get isLocked => !isUnlocked;
 
   /// Whether the card is currently selected.
   bool isSelected;

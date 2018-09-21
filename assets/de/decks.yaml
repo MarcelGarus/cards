@@ -3,61 +3,61 @@ decks:
   - id: 'my'
     name: Meine Karten
     color: '#ffffff'
-    description: In diesem Deck sind die Karten, die du selbst erstellt hast.
     price: 0
     probability: 0.6
+    description: In diesem Deck sind die Karten, die du selbst erstellt hast.
   - id: 'a'
     name: Trinken
-    color: '#ffc107'
-    description: 'Ein einfaches Deck mit einigen Trinkaufgaben und -regeln.'
+    color: '#ffc400'
     price: 0
     probability: 0.7
+    description: 'Ein einfaches Deck mit einigen Trinkaufgaben und -regeln.'
   - id: 'b'
     name: Masterdrink
-    color: '#00cc68'
+    color: '#00c853'
+    price: 5
+    probability: 0.3
     description: 'Für dieses Deck wird ein großes Glas in die Mitte des Tisches
       gestellt. In diesen "Masterdrink" wird mit der Zeit alles mögliche Ess-
       und Trinkbare gemischt.'
-    price: 5
-    probability: 0.3
   - id: 'c'
     name: Persönliche Fragen
     color: '#ffcdd2'
-    description: 'In diesem Deck sind einige persönliche Fragen enthalten.
-      Perfekt, um euch besser kennenzulernen.'
     price: 0
     probability: 1.0
+    description: 'In diesem Deck sind einige persönliche Fragen enthalten.
+      Perfekt, um euch besser kennenzulernen.'
   - id: 'd'
     name: Kategorien
-    color: '#4a86e8'
+    color: '#448aff'
+    price: 0
+    probability: 0.7
     description: 'Dieses Deck testet euer Wissen: Zu einer Kategorie müsst ihr
       im Uhrzeigersinn Begriffe finden. Die Person, die als erstes nichts mehr
       findet oder etwas wiederholt, muss eine Strafe über sich ergehen lassen,
       die ihr vorher gemeinsam aussucht.'
-    price: 0
-    probability: 0.7
   - id: 'e'
     name: Abstimmungen
-    color: '#00ffff'
+    color: '#aeea00'
+    price: 1
+    probability: 0.7
     description: 'In diesem Deck stehen einige Fragen, zu denen ihr eine von
       zwei Optionen wählen müsst. Ihr stimmt alle gleichzeitig ab und die
       Leute, die die Option mit weniger Stimmen gewählt haben, müssen eine
       Strafe über sich ergehen lassen, die ihr vorher gemeinsam aussucht.
       Perfekt, um euch besser kennenzulernen.'
-    price: 1
-    probability: 0.7
   - id: 'f'
     name: Fragedame
-    color: '#ff00ff'
+    color: '#ff4081'
+    price: 2
+    probability: 0.1
     description: 'Diese Deck ernennt jeweils einen von euch zur Fragedame und
       einen anderen zum Daumenkönig. Der Daumenkönig kann zu einer beliebigen
       Zeit einen Daumen auf den Tisch legen und alle anderen müssen ihm folgen.
       Wer als letztes den Daumen auf den Tisch legt, muss eine Strafe über sich
       ergehen lassen, die ihr vorher gemeinsam aussucht. Antwortet ein Spieler
       auf eine Frage der Fragedame, geschieht das selbe.'
-    price: 2
-    probability: 0.1
-  #- id: 'e'
+  #- id: 'g'
   #  name: Heißes Deck
   #  color: '#f44336'
   #  description: Kein Kommentar...

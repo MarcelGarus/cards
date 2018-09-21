@@ -50,6 +50,7 @@ class LocaleBloc {
     locale = await _loadLocale();
     _textItems = await _loadText(locale);
     localeSubject.add(locale);
+    print('Loaded locale: $locale');
   }
 
   void dispose() => localeSubject.close();

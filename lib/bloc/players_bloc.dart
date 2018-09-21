@@ -13,8 +13,8 @@ class PlayersBloc {
 
   Future<void> initialize() async {
     players = await _loadPlayers();
-    print('Loaded players are $players.');
     playersSubject.add(players);
+    print('Loaded players: $players');
   }
 
   void dispose() {

@@ -134,7 +134,7 @@ class Generator {
 
     // Maybe return a coin. TODO: take in consideration the time played, cards
     // etc.
-    if (!onlyGameCard && Random().nextInt(50) == 0) {
+    if (!onlyGameCard && Random().nextDouble() < 0.2) {
       return CoinCard(text: 'Du hast eine Münze gefunden!');
     }
 
@@ -154,7 +154,7 @@ class Generator {
     while (card == null && count < 10) {
       count++;
       card = await _tryToPickCard(config).catchError((e) {
-        print('An error occured while picking a card: $e');
+        print('Error while picking a card: $e');
       });
 
       if (card == null)

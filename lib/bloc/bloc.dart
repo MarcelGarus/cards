@@ -92,6 +92,7 @@ class Bloc {
 
     // Initialize all the sub-blocs.
     localeBloc.initialize().catchError(print);
+    coinsBloc.initialize().catchError(print);
     playersBloc.initialize().catchError(print);
     decksBloc.initialize(localeBloc.locale).catchError(print);
     myCardsBloc.initialize().catchError(print);

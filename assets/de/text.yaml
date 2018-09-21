@@ -6,7 +6,7 @@ add_player_hint: Gib den Namen ein
 add_player_error: Du hast bereits $author hinzugefügt.
 
 configuration_player_missing: Füge einen Spieler hinzu
-configuration_deck_missing: Füge mindestens ein Deck hinzu
+configuration_deck_missing: Wähle mindestens ein Deck aus
 start_game: Spiel starten
 
 beta_box_title: Danke für's Beta-Testen!
