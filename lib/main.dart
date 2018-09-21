@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 import 'package:flutter/material.dart' hide Card;
 import 'bloc/bloc.dart';
 import 'bloc/model.dart';
@@ -8,6 +7,7 @@ import 'configure.dart';
 import 'localize.dart';
 import 'menu.dart';
 import 'utils.dart';
+import 'cards_scaffold.dart';
 
 void main() => runApp(CardsGame());
 
@@ -46,244 +46,40 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
-  static const double appBarHeight = 48.0;
-  static const double fabHeight = 48.0;
-
-  Offset _dragStart = Offset.zero;
-  bool _isVisibilityDrag = false;
-
-  double _stackVisibility = 0.0;
-  bool get _isStackVisible => _stackVisibility > 0;
-  bool get _isStackFullyVisible => _stackVisibility == 1;
-  double _stackVisibilityWhenDragStarted = 0.0;
-  AnimationController _stackVisibilityController;
-  Animation<double> _stackVisibilityAnimation;
-
-  Offset _cardPosition = Offset.zero;
-  Offset _cardPositionWhenDragStarted = Offset.zero;
-  bool _cardWasDismissed = false;
-  AnimationController _cardPositionController;
-  Animation<Offset> _cardPositionAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _stackVisibilityController = AnimationController(
-      duration: Duration(seconds: 2),
-      vsync: this,
-    )..addListener(() => setState(() {
-        _stackVisibility = _stackVisibilityAnimation?.value ?? 0.0;
-      }));
-    _cardPositionController = AnimationController(
-      duration: Duration(seconds: 2),
-      vsync: this,
-    )..addListener(() => setState(() {
-        _cardPosition = _cardPositionAnimation?.value ?? Offset.zero;
-      }))
-      ..addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
-          _cardPosition = Offset.zero;
-
-          if (_cardWasDismissed)
-            Bloc.of(context).nextCard();
-        }
-      });
+  void _showMenu() {
+    showModalBottomSheet(context: context, builder: (_) => Menu());
   }
 
-  @override
-  void dispose() {
-    _stackVisibilityController.dispose();
-    super.dispose();
-  }
-
-  Future<bool> _onWillPop() async {
-    final isStackVisible = _isStackVisible;
-
-    if (isStackVisible)
-      _hideStack(context);
-    
-    return !isStackVisible;
-  }
-
-  void _animateStack(double targetVisibility, { double velocity }) {
-    _stackVisibilityAnimation = Tween<double>(
-      begin: _stackVisibility,
-      end: targetVisibility
-    ).animate(_stackVisibilityController);
-
-    _stackVisibilityController
-      ..value = 0.0
-      ..fling(velocity: velocity ?? 2.0);
-  }
-
-  void _animateCard(Offset targetPosition, { double velocity }) {
-    _cardPositionAnimation = Tween<Offset>(
-      begin: _cardPosition,
-      end: targetPosition
-    ).animate(_cardPositionController);
-
-    _cardPositionController
-      ..value = 0.0
-      ..fling(velocity: velocity ?? 2.0);
-  }
-
-  void _hideStack(BuildContext context) => _animateStack(0.0);
-
-  void _toggleStackVisibility() => _animateStack(_isStackVisible ? 0.0 : 1.0);
-
-  void _start(BuildContext context) {
-    Bloc.of(context).start();
-    _toggleStackVisibility();
-  }
-
-  void _handleDragDown(BuildContext context, DragDownDetails details) {
-    _dragStart = details.globalPosition;
-    _isVisibilityDrag = !_isStackFullyVisible
-        || _dragStart.dy < MediaQuery.of(context).padding.top + appBarHeight;
-
-    if (_isVisibilityDrag) {
-      _stackVisibilityWhenDragStarted = _stackVisibility;
-    } else {
-      _cardPositionWhenDragStarted = _cardPosition;
-    }
-  }
-
-  void _handleDragUpdate(BuildContext context, DragUpdateDetails details) {
-    if (_isVisibilityDrag) {
-      final movingLength = MediaQuery.of(context).size.height;
-      final yDelta = _dragStart.dy - details.globalPosition.dy;
-      setState(() {
-        _stackVisibility = (_stackVisibilityWhenDragStarted + yDelta /
-            movingLength).clamp(0.0, 1.0);
-      });
-    } else {
-      setState(() {
-        _cardPosition = _cardPositionWhenDragStarted
-            + details.globalPosition - _dragStart;
-      });
-    }
-  }
-
-  void _handleDragEnd(BuildContext context, DragEndDetails details) {
-    final velocity = details.velocity.pixelsPerSecond.dy / 1000;
-
-    if (_isVisibilityDrag) {
-      final movingLength = MediaQuery.of(context).size.height;
-      final visibilityVelocity = -velocity / movingLength;
-      final extrapolatedVisibility = _stackVisibility + visibilityVelocity
-          * 1500;
-      final targetVisibility = extrapolatedVisibility
-          .clamp(0.0, 1.0)
-          .roundToDouble();
-
-      _animateStack(targetVisibility, velocity: velocity.abs());
-    } else {
-      final thresholdDistance = MediaQuery
-          .of(context).size.longestSide * sqrt(2);
-      final velocityOffset = details.velocity.pixelsPerSecond.scale(0.5, 0.5);
-      final extrapolatedPosition = _cardPosition + velocityOffset;
-      _cardWasDismissed = extrapolatedPosition.distance > thresholdDistance;
-
-      _animateCard(
-        _cardWasDismissed ? extrapolatedPosition
-        : Offset.zero, velocity: velocity.abs()
+  Widget buildPlaceholder(String name, Color color) => LayoutBuilder(
+    builder: (context, constraints) {
+      print('Building $name');
+      return Stack(
+        children: [ Container(color: color), Placeholder(color: Colors.white) ]
       );
-      // Once the animation is completed, the BLoC will be notified.
-    }
-  }
-
-  Offset _bottomPartPosition(BuildContext context) {
-    final animateHeight = MediaQuery.of(context).size.height - appBarHeight
-        - fabHeight / 2;
-    return Offset(0.0, (1 - _stackVisibility) * animateHeight);
-  }
-
-  Offset _stackOffset(BuildContext context) {
-    return Offset(0.0, (1 - _stackVisibility) * fabHeight / 2);
-  }
-
-  BorderRadius _borderRadius(BuildContext context) {
-    final radius = (_cardPosition.distance / 100).clamp(0.0, 1.0) * 32.0;
-    return BorderRadius.circular(radius);
-  }
-
-  double _safeAreaTopSize(BuildContext context) {
-    final safeAreaTop = MediaQuery.of(context).padding.top;
-    return _stackVisibility * safeAreaTop;
-  }
-
-  double _rotation(Rect dragBounds) {
-    if (_dragStart != null) {
-      final rotationCornerMultiplier = _dragStart.dy >= dragBounds.top
-          + (dragBounds.height / 2) ? -1 : 1;
-      return (pi / 8) * (_cardPosition.dx / dragBounds.width)
-          * rotationCornerMultiplier;
-    } else {
-      return 0.0;
-    }
-  }
-
-  Offset _rotationOrigin(Rect dragBounds) {
-    return _dragStart == null ? Offset.zero : _dragStart - dragBounds.topLeft;
-  }
-
-  void _showMenu(BuildContext context) {
-    showModalBottomSheet(context: context, builder: (context) {
-      return Menu();
-    });
-  }
+    },
+  );
 
   @override
   Widget build(BuildContext context) {
-    final translatedBottomPart = Transform.translate(
-      offset: _bottomPartPosition(context),
-      child: _buildBottomPart(context)
-    );
-    return WillPopScope(
-      onWillPop: _onWillPop,
-      child: Scaffold(
-        body: Stack(
-          children: <Widget>[
-            ConfigureScreen(),
-            translatedBottomPart,
-          ]
-        )
-      )
-    );
-  }
-
-  /// Builds the bottom part.
-  Widget _buildBottomPart(BuildContext context) {
-    final scaledFab = Transform.scale(
-      scale: 1.0 - _stackVisibility,
-      alignment: Alignment.topCenter,
-      child: Opacity(
-        opacity: 1.0 - _stackVisibility,
-        child: StreamBuilder(
-          stream: Bloc.of(context).configuration,
-          builder: _buildFab
-        )
-      )
-    );
-
-    return Stack(
-      children: <Widget> [
-        Transform.translate(
-          offset: _stackOffset(context),
-          child: _buildCardStack(context)
-        ),
-        Container(
-          alignment: Alignment.center,
-          height: fabHeight,
-          child: scaledFab
-        )
-      ]
+    return CardsScaffold(
+      configure: ConfigureScreen(),
+      extendedFab: FloatingActionButton.extended(
+        onPressed: () => print('Starting game'),
+        icon: Icon(Icons.code),
+        label: Text('Start game'),
+      ), //(snapshot),
+      frontCard: _buildCardStreamBuilder(true),
+      backCard: _buildCardStreamBuilder(false),
+      canStartGame: true,
+      canResumeGame: true,
+      onMenuTapped: _showMenu,
+      onDismissed: () {},
     );
   }
 
-  /// Displays a FAB if the game can start, otherwise just an
+  /*/// Displays a FAB if the game can start, otherwise just an
   /// instructive message.
-  Widget _buildFab(BuildContext context, AsyncSnapshot<Configuration> snapshot) {
+  Widget _buildFab(AsyncSnapshot<Configuration> snapshot) {
     final config = snapshot.data;
 
     if (config == null) return Container();
@@ -320,21 +116,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
   /// Builds a stack of cards.
   Widget _buildCardStack(BuildContext context) {
-    final screen = MediaQuery.of(context).size;
-    final screenRect = Rect.fromLTWH(0.0, 0.0, screen.width, screen.height);
-    final bloc = Bloc.of(context);
-
-    final backCard = _buildCardStreamBuilder(context, bloc.backCard, false);
-    final frontCard = _buildCardStreamBuilder(context, bloc.frontCard, true);
-
+    
     return Stack(
       children: <Widget>[
-        backCard,
-        Transform(
-          transform: Matrix4
-              .translationValues(_cardPosition.dx, _cardPosition.dy, 0.0)
-              ..rotateZ(_rotation(screenRect)),
-          origin: _rotationOrigin(screenRect),
           child: StreamBuilder(
             stream: bloc.canResume,
             builder: (context, snapshot) {
@@ -350,59 +134,18 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         ),
       ],
     );
-  }
+  }*/
 
   /// Builds cards from a stream.
-  Widget _buildCardStreamBuilder(
-    BuildContext context,
-    Stream<Card> stream,
-    bool isFrontCard
-  ) {
+  Widget _buildCardStreamBuilder(bool frontCard) {
+    final bloc = Bloc.of(context);
     return StreamBuilder<Card>(
-      stream: stream,
+      stream: frontCard ? bloc.frontCard : bloc.backCard,
       builder: (context, snapshot) {
-        return _buildCard(context, snapshot.data, isFrontCard);
+        return FullscreenCard(
+          card: snapshot.data ?? EmptyCard(),
+        );
       }
-    );
-  }
-
-  /// Builds the given card.
-  Widget _buildCard(BuildContext context, Card card, bool isFrontCard) {
-    final leading = _isStackFullyVisible || !isFrontCard ? Container()
-    : Opacity(
-      opacity: 1 - _stackVisibility,
-      child: IconButton(
-        icon: Icon(Icons.menu),
-        color: Colors.white,
-        onPressed: () {
-          _showMenu(context);
-        }
-      ),
-    );
-
-    final following = StreamBuilder(
-      stream: Bloc.of(context).canResume,
-      builder: (context, snapshot) {
-        // If the game is active, show an arrow icon button, otherwise nothing.
-        return !(snapshot.data ?? false)
-          ? Container()
-          : IconButton(
-            icon: Icon(
-              _isStackVisible ? Icons.keyboard_arrow_down
-                  : Icons.keyboard_arrow_up
-            ),
-            color: Colors.white,
-            onPressed: () => setState(_toggleStackVisibility)
-          );
-      },
-    );
-
-    return FullscreenCard(
-      card: card ?? EmptyCard(),
-      borderRadius: isFrontCard ? _borderRadius(context) : BorderRadius.zero,
-      safeAreaTop: _safeAreaTopSize(context),
-      topBarLeading: leading,
-      topBarTailing: following,
     );
   }
 }
