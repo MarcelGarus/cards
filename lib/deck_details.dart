@@ -157,17 +157,45 @@ class _DeckDetailsState extends State<DeckDetails> {
         borderRadius: BorderRadius.circular(16.0),
         elevation: 16.0,
         child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Column(
+          padding: EdgeInsets.symmetric(),
+          child: Stack(
             children: <Widget>[
-              topPart,
-              SizedBox(height: 16.0),
-              Text(widget.deck.description, style: TextStyle(fontSize: 16.0)),
-              SizedBox(height: 8.0),
-              sampleCardColumn,
-              SizedBox(height: 16.0),
-              technicalInformation
-            ]
+              ListView(
+                padding: EdgeInsets.all(16.0),
+                children: <Widget>[
+                  topPart,
+                  SizedBox(height: 16.0),
+                  Text(widget.deck.description, style: TextStyle(fontSize: 16.0)),
+                  SizedBox(height: 8.0),
+                  sampleCardColumn,
+                  SizedBox(height: 16.0),
+                  technicalInformation
+                ]
+              ),
+              Container(
+                height: 16.0,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [ Colors.white, Color(0x00FFFFFF) ]
+                  )
+                )
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  height: 16.0,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [ Color(0x00FFFFFF), Colors.white ]
+                    )
+                  )
+                )
+              ),
+            ],
           )
         )
       )

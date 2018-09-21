@@ -90,7 +90,8 @@ class _SelectableDeckState extends State<SelectableDeck>
   Animation<double> _selectAnimation;
   double _selectionValue;
 
-  double get _defaultValue => widget.deck.isSelected ? 1.0 : 0.0;
+  double get _defaultValue => !widget.deck.isUnlocked
+      ? 1.0 : widget.deck.isSelected ? 1.0 : 0.0;
 
   @override
   void initState() {
@@ -99,10 +100,9 @@ class _SelectableDeckState extends State<SelectableDeck>
     _selectController = AnimationController(
       duration: Duration(seconds: 2),
       vsync: this,
-    )
-      ..addListener(() => setState(() {
-        _selectionValue = _selectAnimation?.value ?? _defaultValue;
-      }));
+    )..addListener(() => setState(() {
+      _selectionValue = _selectAnimation?.value ?? _defaultValue;
+    }));
   }
 
   @override
@@ -111,7 +111,12 @@ class _SelectableDeckState extends State<SelectableDeck>
     super.dispose();
   }
 
-  void _toggleSelection() {
+  void _onTap() {
+    if (!widget.deck.isUnlocked) {
+      // TODO: unlock deck if there are enough coins.
+      return;
+    }
+
     final targetSelect = widget.deck.isSelected ? 0.0 : 1.0;
     _selectAnimation = Tween<double>(begin: _selectionValue, end: targetSelect)
       .animate(_selectController);
@@ -127,6 +132,39 @@ class _SelectableDeckState extends State<SelectableDeck>
 
   @override
   Widget build(BuildContext context) {
+    final overlayItems = widget.deck.isUnlocked ? [
+      Icon(Icons.check, color: Colors.white)
+    ] : [
+      Icon(Icons.lock_outline, size: 32.0, color: Colors.white),
+      SizedBox(height: 8.0),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Icon(Icons.play_circle_filled, size: 20.0, color: Colors.white),
+          SizedBox(width: 4.0),
+          Text(widget.deck.price.toString(),
+            style: TextStyle(fontSize: 20.0, color: Colors.white)
+          )
+        ],
+      )
+    ];
+
+    final iconOverlay = Container(
+      width: 96.0,
+      height: 144.0,
+      alignment: Alignment.center,
+      child: Transform.translate(
+        offset: Offset(0.0, 20 * (1 - _selectionValue)),
+        child: Opacity(
+          opacity: _selectionValue,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: overlayItems
+          )
+        )
+      )
+    );
+
     return Stack(
       children: <Widget>[
         DeckCover(widget.deck),
@@ -134,23 +172,12 @@ class _SelectableDeckState extends State<SelectableDeck>
           color: Colors.black.withOpacity(_selectionValue * 0.5),
           borderRadius: BorderRadius.circular(8.0),
           child: InkResponse(
-            onTap: _toggleSelection,
+            onTap: _onTap,
             onLongPress: widget.onDetails,
             splashColor: Colors.white12,
             highlightShape: BoxShape.rectangle,
             radius: 1000.0,
-            child: Container(
-              width: 96.0,
-              height: 144.0,
-              alignment: Alignment.center,
-              child: Transform.translate(
-                offset: Offset(0.0, 20 * (1 - _selectionValue)),
-                child: Opacity(
-                  opacity: _selectionValue,
-                  child: Icon(Icons.check, color: Colors.white),
-                )
-              )
-            )
+            child: iconOverlay
           )
         )
       ],

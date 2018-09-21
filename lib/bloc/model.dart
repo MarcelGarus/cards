@@ -12,9 +12,10 @@ class Deck {
     @required this.price,
     @required this.probability,
     this.introduction,
-    this.isUnlocked = true,
+    isUnlocked,
     this.isSelected = false
   }) :
+      this.isUnlocked = isUnlocked ?? price == 0,
       assert(id != null),
       assert(file != null),
       assert(name != null),
@@ -22,8 +23,7 @@ class Deck {
       assert(color != null),
       assert(description != null),
       assert(price != null),
-      assert(probability != null),
-      assert(isUnlocked != null);
+      assert(probability != null);
 
   /// The deck's ID.
   final String id;

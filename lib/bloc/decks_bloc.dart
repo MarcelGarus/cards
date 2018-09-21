@@ -7,13 +7,13 @@ import 'model.dart';
 import 'resource_manager.dart';
 
 class DecksBloc {
+  bool showMyDeck = false;
   List<Deck> decks = <Deck>[];
+  List<Deck> get usefulDecks => showMyDeck ? decks : decks.where((d) => d.id != 'my').toList();
   List<Deck> get unlockedDecks => decks.where((d) => d.isUnlocked).toList();
   List<Deck> get selectedDecks => decks.where((d) => d.isSelected).toList();
 
   final decksSubject = BehaviorSubject<List<Deck>>();
-  final unlockedDecksSubject = BehaviorSubject<List<Deck>>();
-  final selectedDecksSubject = BehaviorSubject<List<Deck>>();
 
 
   Future<void> initialize(Locale locale) async {
@@ -22,47 +22,55 @@ class DecksBloc {
     // Load unlocked decks.
     final Set<String> unlocked = await _loadUnlockedDecks();
     for (final deck in loadedDecks) {
-      deck.isUnlocked = unlocked.contains(deck.id);
+      deck.isUnlocked = deck.price == 0 || unlocked.contains(deck.id);
     }
+    print('Loaded unlocked decks: $unlocked');
 
     // Load selected decks.
     final Set<String> selected = await _loadSelectedDecks();
     for (final deck in loadedDecks) {
       deck.isSelected = selected.contains(deck.id);
     }
+    print('Loaded selected decks: $selected');
 
     decks = loadedDecks;
-    decksSubject.add(decks);
-    unlockedDecksSubject.add(unlockedDecks);
-    selectedDecksSubject.add(selectedDecks);
+    _update();
   }
 
   void dispose() {
     decksSubject.close();
-    unlockedDecksSubject.close();
-    selectedDecksSubject.close();
   }
 
+
+  void updateShowMyDeck(bool showMyDeck) {
+    this.showMyDeck = showMyDeck;
+    _update();
+  }
 
   void buy(Deck deck) {
     deck.isUnlocked = true;
     deck.isSelected = true;
-    unlockedDecksSubject.add(unlockedDecks);
-    selectedDecksSubject.add(selectedDecks);
+    _update();
     _saveUnlockedDecks(unlockedDecks);
     _saveSelectedDecks(selectedDecks);
   }
 
   void selectDeck(Deck deck) {
     deck.isSelected = true;
-    selectedDecksSubject.add(selectedDecks);
+    _update();
     _saveSelectedDecks(selectedDecks);
   }
 
   void deselectDeck(Deck deck) {
     deck.isSelected = false;
-    selectedDecksSubject.add(selectedDecks);
+    _update();
     _saveSelectedDecks(selectedDecks);
+  }
+
+  void _update() {
+    final displayedDecks = List.from<Deck>(usefulDecks);
+    displayedDecks.sort((a, b) => a.price.compareTo(b.price));
+    decksSubject.add(displayedDecks);
   }
 
 
@@ -76,17 +84,15 @@ class DecksBloc {
     final root = ResourceManager.getRootDirectory(locale);
     final filename = '$root/decks.yaml';
     final yaml = loadYaml(await rootBundle.loadString(filename));
-    print('Loaded yaml decks are $yaml.');
 
     for (final deck in yaml['decks'] ?? []) {
-      print('Loading deck $deck.');
       decks.add(Deck(
         id: deck['id'] ?? '<no id>',
-        file: '$root/deck_${deck['id'] ?? 'id'}.txt',
+        file: deck['id'] != null ? '$root/deck_${deck['id'] ?? 'id'}.txt' : '<no file>',
         name: deck['name'] ?? '<no name>',
         coverImage: deck['image'] ?? '',
-        color: deck['color'] ?? '<color>',
-        description: deck['description'] ?? '<description>',
+        color: deck['color'] ?? '#ffffff',
+        description: deck['description'] ?? '<no description>',
         price: deck['price'] ?? 0,
         probability: deck['probability'] ?? 1.0
       ));

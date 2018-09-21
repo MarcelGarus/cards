@@ -70,7 +70,6 @@ class Bloc {
   Configuration _configuration;
 
   // Output stream subjects.
-  final _decksSubject = BehaviorSubject<List<Deck>>(seedValue: []);
   final _configurationSubject = BehaviorSubject<Configuration>();
   final _canResumeSubject = BehaviorSubject<bool>(seedValue: false);
 
@@ -78,13 +77,7 @@ class Bloc {
   Stream<Locale> get locale => localeBloc.localeSubject.stream;
   Stream<BigInt> get coins => coinsBloc.coinsSubject.stream;
   Stream<List<String>> get players => playersBloc.playersSubject.stream;
-  Stream<List<Deck>> get decks => _decksSubject.stream;
-  Stream<List<Deck>> get unlockedDecks => decksBloc
-      .unlockedDecksSubject
-      .stream;
-  Stream<List<Deck>> get selectedDecks => decksBloc
-      .selectedDecksSubject
-      .stream;
+  Stream<List<Deck>> get decks => decksBloc.decksSubject.stream;
   Stream<List<MyCard>> get myCards => myCardsBloc.myCardsSubject.stream;
   Stream<Configuration> get configuration => _configurationSubject.stream;
   Stream<bool> get canResume => _canResumeSubject.stream;
@@ -105,17 +98,18 @@ class Bloc {
 
     // Load new decks and stop the game if the locale changes.
     locale.listen((locale) {
-      decksBloc.initialize(locale);
+      decksBloc.initialize(locale).catchError(print);
       gameBloc.stop();
     });
 
-    // Update decks if decks or user-generated cards change.
-    decksBloc.decksSubject.listen((decks) => _updateDecks());
-    myCards.listen((myCards) => _updateDecks());
+    // Update decks if user-generated cards change.
+    myCards.listen((myCards) {
+      decksBloc.updateShowMyDeck(myCardsBloc.providesCardsForGame);
+    });
 
     // Update configuration if players or selected decks change.
     players.listen((players) => _updateConfiguration());
-    selectedDecks.listen((decks) => _updateConfiguration());
+    decks.listen((decks) => _updateConfiguration());
 
     configuration.listen((config) => _updateCanResume());
     frontCard
@@ -130,19 +124,8 @@ class Bloc {
     decksBloc.dispose();
     myCardsBloc.dispose();
 
-    _decksSubject.close();
     _configurationSubject.close();
     _canResumeSubject.close();
-  }
-
-  void _updateDecks() {
-    final decks = List.from<Deck>(decksBloc.decks);
-
-    // TODO: Sort decks according to user's preferences.
-    if (!myCardsBloc.providesCardsForGame) {
-      decks.removeWhere((deck) => deck.id == 'my');
-    }
-    _decksSubject.add(decks);
   }
 
   void _updateConfiguration() {
