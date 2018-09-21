@@ -109,10 +109,18 @@ class _DeckDetailsState extends State<DeckDetails> {
     final button = RaisedButton(
       color: color,
       onPressed: () {},
-      child: Text('BUY FOR ${widget.deck.price} coins'),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text('BUY FOR '),
+          Icon(Icons.play_circle_filled, size: 16.0, color: Colors.black),
+          Text(widget.deck.price.toString())
+        ]
+      ),
     );
 
     final topPart = Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: <Widget>[
         DeckCover(widget.deck),
         SizedBox(width: 16.0),
@@ -121,10 +129,12 @@ class _DeckDetailsState extends State<DeckDetails> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(widget.deck.name,
-                style: TextStyle(fontSize: 28.0, fontFamily: 'Assistant')
+                style: TextStyle(fontSize: 24.0, fontFamily: 'Assistant', height: 0.8)
               ),
               SizedBox(height: 8.0),
-              button
+              button,
+              SizedBox(height: 8.0),
+              Text('n Karten', style: TextStyle(fontSize: 12.0))
             ],
           ),
         )
@@ -144,59 +154,57 @@ class _DeckDetailsState extends State<DeckDetails> {
       }).toList()
     );
 
-    final technicalInformation = Center(
-      child: Text('id: ${widget.deck.id}, ${widget.deck.file}',
-        style: TextStyle(fontSize: 12.0)
-      )
-    );
-
     return Theme(
       data: ThemeData.light(),
       child: Material(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16.0),
         elevation: 16.0,
-        child: Padding(
-          padding: EdgeInsets.symmetric(),
-          child: Stack(
-            children: <Widget>[
-              ListView(
-                padding: EdgeInsets.all(16.0),
-                children: <Widget>[
-                  topPart,
-                  SizedBox(height: 16.0),
-                  Text(widget.deck.description, style: TextStyle(fontSize: 16.0)),
-                  SizedBox(height: 8.0),
-                  sampleCardColumn,
-                  SizedBox(height: 16.0),
-                  technicalInformation
-                ]
-              ),
-              Container(
+        // Stack with the actual list view and two gradient contains creating a
+        // white fade effect hiding the sharp edge when scrolling.
+        child: Stack(
+          children: <Widget>[
+            ListView(
+              padding: EdgeInsets.all(16.0),
+              children: <Widget>[
+                topPart,
+                SizedBox(height: 16.0),
+                Text(widget.deck.description, style: TextStyle(fontSize: 16.0)),
+                SizedBox(height: 8.0),
+                sampleCardColumn,
+                SizedBox(height: 8.0),
+                Align(
+                  alignment: Alignment.center,
+                  child: Text(widget.deck.file, style: TextStyle(fontSize: 12.0))
+                )
+              ]
+            ),
+            // Top fade.
+            Container(
+              height: 16.0,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [ Colors.white, Color(0x00FFFFFF) ]
+                )
+              )
+            ),
+            // Bottom fade.
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
                 height: 16.0,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [ Colors.white, Color(0x00FFFFFF) ]
+                    colors: [ Color(0x00FFFFFF), Colors.white ]
                   )
                 )
-              ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Container(
-                  height: 16.0,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [ Color(0x00FFFFFF), Colors.white ]
-                    )
-                  )
-                )
-              ),
-            ],
-          )
+              )
+            ),
+          ],
         )
       )
     );

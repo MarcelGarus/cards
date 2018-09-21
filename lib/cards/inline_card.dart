@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hex/hex.dart';
 import '../bloc/model.dart';
 import 'raw_card.dart';
 
@@ -73,6 +74,9 @@ class _InlineCardState extends State<InlineCard> {
 
   @override
   Widget build(BuildContext context) {
+    final rgb = HEX.decode(widget.card.color.substring(1));
+    final color = Color.fromARGB(255, rgb[0], rgb[1], rgb[2]);
+
     // List of column widgets, will be filled over time.
     final items = <Widget>[];
 
@@ -82,7 +86,7 @@ class _InlineCardState extends State<InlineCard> {
         labelText: 'Content',
         controller: contentController,
         maxLines: 3,
-      ) : Text(widget.card.content));
+      ) : Text(widget.card.content, style: TextStyle(color: color)));
     }
     
     // Add followup.
@@ -91,7 +95,7 @@ class _InlineCardState extends State<InlineCard> {
         labelText: 'Followup',
         controller: followupController,
         maxLines: 3
-      ) : Text(widget.card.followup));
+      ) : Text(widget.card.followup, style: TextStyle(color: color)));
     }
 
     // Add author.
@@ -103,7 +107,7 @@ class _InlineCardState extends State<InlineCard> {
         maxLines: 1,
       ) : widget.card.hasAuthor ? Text(
         'von ${widget.card.author}',
-        style: TextStyle(fontSize: 16.0)
+        style: TextStyle(fontSize: 16.0, color: color)
       ) : Container());
     }
 
