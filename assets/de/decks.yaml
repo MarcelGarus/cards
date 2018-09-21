@@ -3,43 +3,58 @@ decks:
   - id: 'my'
     name: Meine Karten
     color: '#ffffff'
-    description: Deine eigenen Karten.
+    description: In diesem Deck sind die Karten, die du selbst erstellt hast.
     price: 0
     probability: 0.6
   - id: 'a'
     name: Trinken
     color: '#ffc107'
-    description: Ein einfaches Trinkdeck.
+    description: 'Ein einfaches Deck mit einigen Trinkaufgaben und -regeln.'
     price: 0
     probability: 0.7
   - id: 'b'
     name: Masterdrink
     color: '#00cc68'
-    description: In ein großes Glas in der Mitte wird alles mögliche gemischt.
+    description: 'Für dieses Deck wird ein großes Glas in die Mitte des Tisches
+      gestellt. In diesen "Masterdrink" wird mit der Zeit alles mögliche Ess-
+      und Trinkbare gemischt.'
     price: 5
     probability: 0.3
   - id: 'c'
     name: Persönliche Fragen
     color: '#ffcdd2'
-    description: Intime Fragen, auf die ihr antworten müsst.
+    description: 'In diesem Deck sind einige persönliche Fragen enthalten.
+      Perfekt, um euch besser kennenzulernen.'
     price: 0
     probability: 1.0
   - id: 'd'
     name: Kategorien
     color: '#4a86e8'
-    description: Einige Kategorien.
+    description: 'Dieses Deck testet euer Wissen: Zu einer Kategorie müsst ihr
+      im Uhrzeigersinn Begriffe finden. Die Person, die als erstes nichts mehr
+      findet oder etwas wiederholt, muss eine Strafe über sich ergehen lassen,
+      die ihr vorher gemeinsam aussucht.'
     price: 0
     probability: 0.7
   - id: 'e'
     name: Abstimmungen
     color: '#00ffff'
-    description: Einige Abstimmungen.
+    description: 'In diesem Deck stehen einige Fragen, zu denen ihr eine von
+      zwei Optionen wählen müsst. Ihr stimmt alle gleichzeitig ab und die
+      Leute, die die Option mit weniger Stimmen gewählt haben, müssen eine
+      Strafe über sich ergehen lassen, die ihr vorher gemeinsam aussucht.
+      Perfekt, um euch besser kennenzulernen.'
     price: 1
     probability: 0.7
   - id: 'f'
     name: Fragedame
     color: '#ff00ff'
-    description: Das Fragedame-Spiel.
+    description: 'Diese Deck ernennt jeweils einen von euch zur Fragedame und
+      einen anderen zum Daumenkönig. Der Daumenkönig kann zu einer beliebigen
+      Zeit einen Daumen auf den Tisch legen und alle anderen müssen ihm folgen.
+      Wer als letztes den Daumen auf den Tisch legt, muss eine Strafe über sich
+      ergehen lassen, die ihr vorher gemeinsam aussucht. Antwortet ein Spieler
+      auf eine Frage der Fragedame, geschieht das selbe.'
     price: 2
     probability: 0.1
   #- id: 'e'

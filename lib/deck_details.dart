@@ -6,21 +6,61 @@ import 'bloc/model.dart';
 import 'cards/inline_card.dart';
 import 'deck_selector.dart';
 
-class DeckDetailsScreen extends StatelessWidget {
-  DeckDetailsScreen(this.deck);
-  
-  final Deck deck;
+class DeckDetailsScreen extends StatefulWidget {
+  DeckDetailsScreen(this.decks, this.initialDeck);
+
+  final List<Deck> decks;
+  final Deck initialDeck;
+
+  @override
+  State<StatefulWidget> createState() => _DeckDetailsScreenState();
+}
+
+class _DeckDetailsScreenState extends State<DeckDetailsScreen> {
+  int activeDeck;
+
+  void initState() {
+    super.initState();
+    activeDeck = widget.decks.indexOf(widget.initialDeck);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: ListView(
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.all(16.0),
-            child: DeckDetails(deck)
-          )
-        ],
+    return DefaultTabController(
+      length: widget.decks.length,
+      initialIndex: activeDeck,
+      child: Scaffold(
+        backgroundColor: Colors.black54,
+        bottomNavigationBar: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(widget.decks.length, (i) {
+            return _buildPageDot(i == activeDeck);
+          })
+        ),
+        body: TabBarView(
+          children: widget.decks.map((deck) {
+            return SafeArea(
+              child: Padding(
+                padding: EdgeInsets.all(16.0),
+                child: DeckDetails(deck),
+              )
+            );
+          }).toList()
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPageDot(bool selected) {
+    return AnimatedContainer(
+      duration: Duration(seconds: 1),
+      width: 8.0,
+      height: 8.0,
+      padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(color: Colors.white, width: 2.0),
+        color: selected ? Colors.white : Colors.transparent,
       ),
     );
   }
@@ -52,7 +92,7 @@ class _DeckDetailsState extends State<DeckDetails> {
       players: const [ 'Alice', 'Bob', 'Marcel' ]
     );
 
-    while (sampleCards.length < 3) {
+    while (sampleCards.length < 1) {
       print('Generating card');
       final card = await (Generator()..initialize())
           .generateCard(config, onlyGameCard: true);
@@ -115,6 +155,7 @@ class _DeckDetailsState extends State<DeckDetails> {
       child: Material(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16.0),
+        elevation: 16.0,
         child: Padding(
           padding: EdgeInsets.all(16.0),
           child: Column(

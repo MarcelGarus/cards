@@ -8,10 +8,11 @@ import 'deck_details.dart';
 class DeckSelector extends StatelessWidget {
   DeckSelector();
 
-  void _displayDetails(BuildContext context, Deck deck) {
+  void _displayDetails(BuildContext context, List<Deck> allDecks, Deck deck) {
     Navigator.of(context).push(PageRouteBuilder(
+      opaque: false,
       transitionDuration: const Duration(milliseconds: 200),
-      pageBuilder: (context, _, __) => DeckDetailsScreen(deck),
+      pageBuilder: (context, _, __) => DeckDetailsScreen(allDecks, deck),
       transitionsBuilder: (_, Animation<double> animation, __, Widget child) {
         return FadeTransition(opacity: animation, child: child);
       }
@@ -27,12 +28,17 @@ class DeckSelector extends StatelessWidget {
   }
 
   Widget _buildList(BuildContext context, AsyncSnapshot<List<Deck>> snapshot) {
-    if (!snapshot.hasData) {
+    if (!snapshot.hasData || snapshot.data.length == 0) {
       print('Building no decks');
       return Container(
         height: 128.0,
         alignment: Alignment.center,
-        child: CircularProgressIndicator(),
+        child: Column(
+          children: <Widget>[
+            CircularProgressIndicator(),
+            Text('snapshot.data: ${snapshot.data}')
+          ]
+        )
       );
     }
 
@@ -42,17 +48,17 @@ class DeckSelector extends StatelessWidget {
       padding: EdgeInsets.all(12.0),
       child: Wrap(
         alignment: WrapAlignment.center,
-        children: List.generate(decks.length, (i) {
+        children: decks.map((deck) {
           return Padding(
             padding: EdgeInsets.all(8.0),
             child: SelectableDeck(
-              deck: decks[i],
-              onSelect: () => Bloc.of(context).selectDeck(decks[i]),
-              onDeselect: () => Bloc.of(context).deselectDeck(decks[i]),
-              onDetails: () => _displayDetails(context, decks[i]),
+              deck: deck,
+              onSelect: () => Bloc.of(context).selectDeck(deck),
+              onDeselect: () => Bloc.of(context).deselectDeck(deck),
+              onDetails: () => _displayDetails(context, decks, deck),
             )
           );
-        })
+        }).toList()
       )
     );
   }
