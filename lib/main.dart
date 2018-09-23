@@ -46,102 +46,77 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
+  CardsScaffoldController controller = CardsScaffoldController();
+
   void _showMenu() {
     showModalBottomSheet(context: context, builder: (_) => Menu());
   }
 
-  Widget buildPlaceholder(String name, Color color) => LayoutBuilder(
-    builder: (context, constraints) {
-      print('Building $name');
-      return Stack(
-        children: [ Container(color: color), Placeholder(color: Colors.white) ]
-      );
-    },
-  );
+  void _startGame() {
+    Bloc.of(context).start();
+    controller.show();
+  }
 
   @override
   Widget build(BuildContext context) {
     return CardsScaffold(
+      controller: controller,
       configure: ConfigureScreen(),
-      extendedFab: FloatingActionButton.extended(
-        onPressed: () => print('Starting game'),
-        icon: Icon(Icons.code),
-        label: Text('Start game'),
-      ), //(snapshot),
-      frontCard: _buildCardStreamBuilder(true),
-      backCard: _buildCardStreamBuilder(false),
+      fab: _buildStreamedFab(),
+      frontCard: _buildStreamedCard(true),
+      backCard: _buildStreamedCard(false),
       canStartGame: true,
       canResumeGame: true,
       onMenuTapped: _showMenu,
-      onDismissed: () {},
+      onDismissed: Bloc.of(context).nextCard,
     );
   }
 
-  /*/// Displays a FAB if the game can start, otherwise just an
+  /// Displays a functioning FAB if the game can start, otherwise just an
   /// instructive message.
-  Widget _buildFab(AsyncSnapshot<Configuration> snapshot) {
-    final config = snapshot.data;
+  Widget _buildStreamedFab() {
+    return StreamBuilder(
+      stream: Bloc.of(context).configuration,
+      builder: (context, AsyncSnapshot<Configuration> snapshot) {
+        if (!snapshot.hasData)
+          return Container();
 
-    if (config == null) return Container();
+        if (snapshot.data.isValid) {
+          return FloatingActionButton.extended(
+            icon: Image.asset('graphics/style192.png', width: 24.0, height: 24.0),
+            label: LocalizedText(
+              id: TextId.start_game,
+              style: TextStyle(fontSize: 20.0, letterSpacing: -0.5)
+            ),
+            onPressed: () => _startGame(),
+          );
+        }
 
-    if (config.isValid) {
-      return FloatingActionButton.extended(
-        icon: Image.asset('graphics/style192.png', width: 24.0, height: 24.0),
-        label: LocalizedText(
-          id: TextId.start_game,
-          style: TextStyle(fontSize: 20.0, letterSpacing: -0.5)
-        ),
-        onPressed: () => _start(context),
-      );
-    }
-    
-    final hintText = LocalizedText(
-      id: config == null ? TextId.none :
-          config.isPlayerMissing ? TextId.configuration_player_missing :
-          config.isDeckMissing ? TextId.configuration_deck_missing :
-          TextId.none,
-      style: TextStyle(color: Colors.white)
-    );
+        final hintTextId =
+          snapshot.data.isPlayerMissing ? TextId.configuration_player_missing :
+          snapshot.data.isDeckMissing ? TextId.configuration_deck_missing :
+          TextId.none;
 
-    return Material(
-      shape: StadiumBorder(),
-      elevation: 6.0,
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-        color: Colors.black,
-        child: hintText
-      )
+        return Material(
+          shape: StadiumBorder(),
+          elevation: 6.0,
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            color: Colors.black,
+            child: LocalizedText(id: hintTextId, style: TextStyle(color: Colors.white))
+          )
+        );
+      },
     );
   }
-
-  /// Builds a stack of cards.
-  Widget _buildCardStack(BuildContext context) {
-    
-    return Stack(
-      children: <Widget>[
-          child: StreamBuilder(
-            stream: bloc.canResume,
-            builder: (context, snapshot) {
-              final isGameActive = snapshot.data ?? false;
-              return isGameActive ? GestureDetector(
-                onPanDown: (details) => _handleDragDown(context, details),
-                onPanUpdate: (details) => _handleDragUpdate(context, details),
-                onPanEnd: (details) => _handleDragEnd(context, details),
-                child: frontCard
-              ) : frontCard;
-            },
-          )
-        ),
-      ],
-    );
-  }*/
 
   /// Builds cards from a stream.
-  Widget _buildCardStreamBuilder(bool frontCard) {
+  Widget _buildStreamedCard(bool frontCard) {
     final bloc = Bloc.of(context);
     return StreamBuilder<Card>(
       stream: frontCard ? bloc.frontCard : bloc.backCard,
       builder: (context, snapshot) {
+        print('Building card ${snapshot.data}.');
         return FullscreenCard(
           card: snapshot.data ?? EmptyCard(),
         );

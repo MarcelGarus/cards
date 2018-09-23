@@ -179,13 +179,11 @@ class Bloc {
   void deleteCard(MyCard card) => myCardsBloc.deleteCard(card);
   
   void start() {
-    print('Starting the game.');
+    assert(_configuration.isValid);
 
-    if (_configuration.isValid) {
-      print('Configuration is valid. Starting gameBloc.');
-      gameBloc.start(_configuration);
-      _updateCanResume();
-    }
+    print('Starting the game.');
+    gameBloc.start(_configuration);
+    _updateCanResume();
   }
   
   void nextCard() => gameBloc.nextCard(_configuration);

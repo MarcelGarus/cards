@@ -17,7 +17,7 @@ class _GestureStackTesterState extends State<GestureStackTester> {
     home: Scaffold(
       body: CardsScaffold(
         configure: buildPlaceholder('backdrop', Colors.red),
-        extendedFab: FloatingActionButton.extended(
+        fab: FloatingActionButton.extended(
           onPressed: () => print('Starting game'),
           icon: Icon(Icons.code),
           label: Text('Start game'),
@@ -43,9 +43,20 @@ class _GestureStackTesterState extends State<GestureStackTester> {
 
 
 
+class CardsScaffoldController {
+  VoidCallback _onShow, _onHide;
+
+  _bind(VoidCallback onShow, VoidCallback onHide) {
+    _onShow = onShow;
+    _onHide = onHide;
+  }
+  show() => _onShow();
+  hide() => _onHide();
+}
+
 /// A custom version of a Scaffold, adding the basic structure of this app.
 /// 
-/// There are customary [configure], [extendedFab], [frontCard] and [backCard]
+/// There are customary [configure], [fab], [frontCard] and [backCard]
 /// properties, that display all the widgets in the right position.
 /// 
 /// A bottom app bar is automatically created with the given FAB, a menu button
@@ -60,8 +71,9 @@ class _GestureStackTesterState extends State<GestureStackTester> {
 ///   invoked.
 class CardsScaffold extends StatefulWidget {
   CardsScaffold({
+    this.controller,
     @required this.configure,
-    @required this.extendedFab,
+    @required this.fab,
     @required this.frontCard,
     @required this.backCard,
     @required this.canStartGame,
@@ -70,7 +82,7 @@ class CardsScaffold extends StatefulWidget {
     @required this.onDismissed
   }) :
       assert(configure != null),
-      assert(extendedFab != null),
+      assert(fab != null),
       assert(frontCard != null),
       assert(backCard != null),
       assert(canStartGame != null),
@@ -78,11 +90,14 @@ class CardsScaffold extends StatefulWidget {
       assert(onMenuTapped != null),
       assert(onDismissed != null);
   
+  /// The controller that can extend / hide the stack.
+  final CardsScaffoldController controller;
+
   /// The configure screen in the background.
   final Widget configure;
 
   /// The floating action button at the bottom center.
-  final FloatingActionButton extendedFab;
+  final Widget fab;
 
   /// The front card.
   final Widget frontCard;
@@ -134,6 +149,7 @@ class _CardsScaffoldState extends State<CardsScaffold>
   /// Initializes the animation controllers.
   void initState() {
     super.initState();
+    _bindController();
     
     final duration = Duration(seconds: 2);
 
@@ -151,7 +167,7 @@ class _CardsScaffoldState extends State<CardsScaffold>
           card = Offset.zero;
           if (cardWasDismissed) widget.onDismissed();
         }
-      });;
+      });
   }
 
   /// Disposes the animation controllers.
@@ -159,6 +175,14 @@ class _CardsScaffoldState extends State<CardsScaffold>
     stackController.dispose();
     cardController.dispose();
     super.dispose();
+  }
+
+  /// Binds the controller.
+  void _bindController() {
+    widget.controller?._bind(
+      () => _animateStack(1.0),
+      () => _animateStack(0.0)
+    );
   }
 
 
@@ -276,36 +300,41 @@ class _CardsScaffoldState extends State<CardsScaffold>
 
   @override
   Widget build(BuildContext context) {
-    // Row of icons on the first card that allow the stack to be dragged.
-    final stackDragger = GestureDetector(
-      onPanDown: _onStackDragDown,
-      onPanUpdate: _onStackDragUpdate,
-      onPanEnd: _onStackDragEnd,
-      child: Container(color: Colors.black38, child: buildIconOverlay())
+    _bindController();
+
+    // Back card. On top of it is a row of icons.
+    final backCard = Stack(
+      children: <Widget>[ widget.backCard, buildIconOverlay() ]
     );
 
-    // Draggable front card.
-    final draggableFrontCard = GestureDetector(
-      onPanDown: _onCardDragDown,
-      onPanUpdate: _onCardDragUpdate,
-      onPanEnd: _onCardDragEnd,
-      child: widget.frontCard
-    );
-
-    // The full front card including transformation and icon row for dragging
-    // the stack on top.
+    // Draggable front card. On top of it is a draggable row of icons.
     final frontCard = Transform(
       transform: Matrix4.translationValues(card.dx, card.dy, 0.0)
           ..rotateZ(rotation),
       origin: rotationOrigin,
-      child: Stack(children: [ draggableFrontCard, stackDragger ])
+      child: Stack(
+        children: [
+          GestureDetector(
+            onPanDown: _onCardDragDown,
+            onPanUpdate: _onCardDragUpdate,
+            onPanEnd: _onCardDragEnd,
+            child: widget.frontCard
+          ),
+          GestureDetector(
+            onPanDown: _onStackDragDown,
+            onPanUpdate: _onStackDragUpdate,
+            onPanEnd: _onStackDragEnd,
+            child: Container(color: Colors.black38, child: buildIconOverlay())
+          )
+        ]
+      )
     );
 
     // The stack of cards, translated relative to the top of the bottom part
     // (top of FAB).
     final cardStack = Transform.translate(
       offset: cardStackOffset,
-      child: Stack(children: [ widget.backCard, frontCard ])
+      child: Stack(children: [ backCard, frontCard ])
     );
 
     // The FAB.
@@ -317,13 +346,14 @@ class _CardsScaffoldState extends State<CardsScaffold>
         alignment: Alignment.center,
         child: Opacity(
           opacity: fabOpacity,
+          child: widget.fab,
           // If the FAB is pressed and the game can be started, animate the
           // stack. Then, call the FAB's original onPressed callback.
-          child: copyFabWithCallback(widget.extendedFab, () {
+          /*child: copyFabWithCallback(widget.extendedFab, () {
             if (widget.canStartGame)
               _animateStack(1.0);
             widget.extendedFab.onPressed();
-          })
+          })*/
         )
       )
     );
@@ -372,45 +402,7 @@ class _CardsScaffoldState extends State<CardsScaffold>
 
     return Column(
       mainAxisSize: MainAxisSize.min,
-      children: [
-        SizedBox(height: safeAreaSize),
-        Row(children: items)
-      ]
-    );
-  }
-
-
-  /// Litterally copies a FAB but replaces the onPressed callback with the
-  /// given one.
-  FloatingActionButton copyFabWithCallback(
-    FloatingActionButton fab,
-    VoidCallback onPressed
-  ) {
-    Widget icon;
-    Widget label;
-    try {
-      dynamic dynamicFab = fab;
-      final rowItems = (dynamicFab.child.child as Row).children;
-      icon = rowItems[1];
-      label = rowItems[3];
-    } catch (e) {
-      print('Error: Make sure your provided an extended FAB: $e');
-    }
-    return FloatingActionButton.extended(
-      //child: fab.child,
-      tooltip: fab.tooltip,
-      foregroundColor: fab.foregroundColor,
-      backgroundColor: fab.backgroundColor,
-      heroTag: fab.heroTag,
-      elevation: fab.elevation,
-      highlightElevation: fab.highlightElevation,
-      onPressed: onPressed,
-      //mini: fab.mini,
-      shape: fab.shape,
-      isExtended: fab.isExtended,
-      materialTapTargetSize: fab.materialTapTargetSize,
-      icon: icon,
-      label: label,
+      children: [ SizedBox(height: safeAreaSize), Row(children: items) ]
     );
   }
 }
