@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../bloc/model.dart';
 import '../cards/inline_card.dart';
 import '../utils.dart';
@@ -9,6 +10,16 @@ class PublishCardScreen extends StatelessWidget {
   PublishCardScreen({ @required this.card }) : assert(card != null);
   
   final MyCard card;
+
+  void _publish() {
+    
+    Firestore.instance.collection('suggestions').document().setData({
+      'content': card.gameCard.content ?? '',
+      'followup': card.gameCard.followup ?? '',
+      'author': card.gameCard.author ?? '',
+      'mail': 'marcel.garus@gmail.com'
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +69,7 @@ class PublishCardScreen extends StatelessWidget {
         icon: Icon(Icons.cloud_upload),
         label: Text('Publish'),
         elevation: 12.0,
-        onPressed: () {},
+        onPressed: _publish,
       )
     ));
 
@@ -66,11 +77,7 @@ class PublishCardScreen extends StatelessWidget {
       data: Utils.buildLightTheme(),
       child: Scaffold(
         appBar: AppBar(title: Text('Publish card')),
-        body: SafeArea(
-          child: ListView(
-            children: content
-          )
-        )
+        body: SafeArea(child: ListView(children: content))
       ),
     );
   }

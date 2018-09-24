@@ -1,13 +1,14 @@
 import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:rxdart/subjects.dart';
-import 'model.dart';
 import 'coins_bloc.dart';
-import 'locale_bloc.dart';
-import 'players_bloc.dart';
 import 'decks_bloc.dart';
-import 'my_cards_bloc.dart';
 import 'game_bloc.dart';
+import 'locale_bloc.dart';
+import 'model.dart';
+import 'my_cards_bloc.dart';
+import 'players_bloc.dart';
+import 'resource_manager.dart';
 
 enum TextId {
   none,
@@ -187,6 +188,15 @@ class Bloc {
   }
   
   void nextCard() => gameBloc.nextCard(_configuration);
+
+  void publish(MyCard card) {
+    ResourceManager.writeToFirestore('suggestions', {
+      'content': card.gameCard.content,
+      'followup': card.gameCard.followup,
+      'author': card.gameCard.author,
+      'mail': 'marcel.garus@gmail.com' // TODO: do not hardcode
+    });
+  }
 }
 
 class BlocProvider extends StatelessWidget {

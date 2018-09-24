@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/widgets.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ResourceMissingError implements Error {
@@ -34,5 +35,21 @@ abstract class ResourceManager {
 
   static String getRootDirectory(Locale locale) {
     return 'assets/${locale.languageCode}';
+  }
+
+  static Future<bool> writeToFirestore(
+    String collection,
+    Map<String, dynamic> data
+  ) async {
+    try {
+      await Firestore.instance
+        .collection(collection)
+        .document()
+        .setData(data);
+    } catch (e) {
+      print('Warning: Storing of $data in collection $collection failed.');
+      return false;
+    }
+    return true;
   }
 }
