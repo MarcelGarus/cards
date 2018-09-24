@@ -98,10 +98,10 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
         return Material(
           shape: StadiumBorder(),
+          color: Colors.black,
           elevation: 6.0,
-          child: Container(
+          child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-            color: Colors.black,
             child: LocalizedText(id: hintTextId, style: TextStyle(color: Colors.white))
           )
         );
