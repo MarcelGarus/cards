@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/widgets.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:rxdart/subjects.dart';
 import 'coins_bloc.dart';
 import 'decks_bloc.dart';
@@ -196,6 +197,20 @@ class Bloc {
       'author': card.gameCard.author,
       'mail': 'marcel.garus@gmail.com' // TODO: do not hardcode
     });
+  }
+
+  Future<bool> signIn() async {
+    GoogleSignIn _googleSignIn = GoogleSignIn(
+      scopes: [ 'email', 'https://www.googleapis.com/auth/drive.appdata' ]
+    );
+    try {
+      final data = await _googleSignIn.signIn();
+      print(data);
+    } catch (error) {
+      print(error);
+      return false;
+    }
+    return true;
   }
 }
 

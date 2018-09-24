@@ -6,6 +6,10 @@ import 'my_cards/cards_list.dart';
 import 'settings.dart';
 
 class Menu extends StatelessWidget {
+  void _logIn(BuildContext context) {
+    Bloc.of(context).signIn();
+  }
+
   void _goToMyCards(BuildContext context) {
     Navigator.of(context).push(MaterialPageRoute(
       builder: (context) => CardsListScreen()
@@ -43,7 +47,7 @@ class Menu extends StatelessWidget {
           leading: Icon(Icons.verified_user, color: Colors.black),
           title: LocalizedText(id: TextId.menu_log_in),
           subtitle: LocalizedText(id: TextId.menu_log_in_text),
-          onTap: () {},
+          onTap: () => _logIn(context),
         ),
         ListTile(
           leading: Icon(Icons.wb_iridescent, color: Colors.black),
