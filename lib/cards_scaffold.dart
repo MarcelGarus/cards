@@ -293,6 +293,10 @@ class _CardsScaffoldState extends State<CardsScaffold>
   double get fabScale => 1 - stack;
   double get fabOpacity => 1 - stack;
 
+  // Properties of the menu button.
+  double get menuOpacity => 1 - stack;
+  bool get showMenu => menuOpacity > 0;
+
   // Border radius of the front card.
   BorderRadius get borderRadius => BorderRadius.circular(
     (card.distance / 100).clamp(0.0, 1.0) * 32.0
@@ -389,16 +393,23 @@ class _CardsScaffoldState extends State<CardsScaffold>
 
   /// Builds the icon overlay, including the safe area.
   Widget buildIconOverlay() {
-    final items = <Widget>[
-      IconButton(
-        icon: Icon(Icons.menu),
-        color: Colors.white,
-        onPressed: widget.onMenuTapped
-      ),
-      Spacer(),
-    ];
+    final items = <Widget>[];
 
-    // Display an arrow button if the game can be resumed.
+    // Show a menu button if the stack is not fully expanded.
+    if (showMenu) {
+      items.add(Opacity(
+        opacity: menuOpacity,
+        child: IconButton(
+          icon: Icon(Icons.menu),
+          color: Colors.white,
+          onPressed: widget.onMenuTapped
+        )
+      ));
+    }
+
+    items.add(Spacer());
+
+    // Show an arrow button if the game can be resumed.
     if (widget.canResumeGame) {
       final shouldExpand = stack == 0;
       items.add(IconButton(
