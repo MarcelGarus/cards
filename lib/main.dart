@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart' hide Card;
 import 'bloc/bloc.dart';
 import 'bloc/model.dart';
@@ -119,6 +118,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         print('Building card ${snapshot.data}.');
         return FullscreenCard(
           card: snapshot.data ?? EmptyCard(),
+          safeAreaTop: MediaQuery.of(context).padding.top + 48.0,
         );
       }
     );

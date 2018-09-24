@@ -259,6 +259,15 @@ class _CardsScaffoldState extends State<CardsScaffold>
     // Once the animation is completed, the BLoC will be notified.
   }
 
+  void _dismissByTapping() {
+    final target = Offset(
+      (Random().nextBool() ? 1 : -1) * screen.longestSide,
+      0.0
+    );
+    cardWasDismissed = true;
+    _animateCard(target, velocity: 2.0);
+  }
+
 
   // The position of the bottom part (stack + FAB). Effectively top of FAB.
   Offset get bottomPartResting {
@@ -318,6 +327,7 @@ class _CardsScaffoldState extends State<CardsScaffold>
             onPanDown: _onCardDragDown,
             onPanUpdate: _onCardDragUpdate,
             onPanEnd: _onCardDragEnd,
+            onTap: _dismissByTapping,
             child: widget.frontCard
           ),
           GestureDetector(

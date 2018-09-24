@@ -73,7 +73,7 @@ class LocaleBloc {
   }
 
 
-  static Future<void> _saveLocale(Locale locale) {
+  static void _saveLocale(Locale locale) {
     ResourceManager.saveString('locale', locale.languageCode).catchError((e) {
       print('An error occured while saving $locale as the locale: $e');
     });

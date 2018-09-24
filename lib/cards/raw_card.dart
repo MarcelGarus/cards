@@ -7,8 +7,6 @@ class RawCard extends StatelessWidget {
     this.borderRadius,
     this.safeAreaTop = 0.0,
     this.expand = true,
-    this.topBarLeading,
-    this.topBarTailing,
     this.bottomBarLeading,
     this.bottomBarTailing,
     this.onTap,
@@ -21,9 +19,7 @@ class RawCard extends StatelessWidget {
   final double safeAreaTop;
   final bool expand;
 
-  // Widgets that can customize the top and bottom bars.
-  final Widget topBarLeading;
-  final Widget topBarTailing;
+  // Widgets that can customize the bottom bar.
   final Widget bottomBarLeading;
   final Widget bottomBarTailing;
 
@@ -35,15 +31,6 @@ class RawCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // The card's top bar.
-    final topBar = Row(
-      children: <Widget>[
-        topBarLeading ?? Container(),
-        Spacer(),
-        topBarTailing ?? Container()
-      ],
-    );
-
     // The card's bottom bar.
     final bottomBar = Row(
       children: <Widget>[
@@ -59,7 +46,6 @@ class RawCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         SizedBox(height: safeAreaTop),
-        topBar,
         child,
         bottomBar
       ]

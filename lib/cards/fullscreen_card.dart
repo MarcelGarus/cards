@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart' hide Card;
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:hex/hex.dart';
 import '../bloc/model.dart';
 import 'raw_card.dart';
@@ -9,8 +10,6 @@ class FullscreenCard extends StatelessWidget {
     @required this.card,
     this.borderRadius = BorderRadius.zero,
     this.safeAreaTop = 0.0,
-    this.topBarLeading,
-    this.topBarTailing
   }) :
       assert(card != null),
       assert(safeAreaTop != null);
@@ -18,12 +17,9 @@ class FullscreenCard extends StatelessWidget {
   /// The card to display.
   final Card card;
 
-  /// The border radius of the material.
+  /// Properties of the material card.
   final BorderRadius borderRadius;
   final double safeAreaTop;
-
-  final Widget topBarLeading;
-  final Widget topBarTailing;
 
 
   @override
@@ -44,8 +40,6 @@ class FullscreenCard extends StatelessWidget {
     return RawCard(
       borderRadius: borderRadius,
       safeAreaTop: safeAreaTop,
-      topBarLeading: topBarLeading,
-      topBarTailing: topBarTailing,
       child: Expanded(child: RepaintBoundary(child: Column(children: children))),
     );
   }
@@ -71,14 +65,17 @@ class FullscreenCard extends StatelessWidget {
       Expanded(
         child: Padding(
           padding: EdgeInsets.all(16.0),
-          child: FittedText(
-            text: card.content,
-            style: TextStyle(color: color)
+          child: Center(
+            child: AutoSizeText(
+              card.content,
+              style: TextStyle(color: color, fontSize: 48.0),
+              stepGranularity: 4.0,
+            )
           )
         )
       ),
       Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
@@ -102,64 +99,5 @@ class FullscreenCard extends StatelessWidget {
       Text(card.text, style: TextStyle(color: Colors.white)),
       Expanded(child: Container()),
     ];
-  }
-}
-
-
-/// Tries to change the font size of the given style to match the text in the
-/// widget's constraints, while displaying it as large as possible and ahering
-/// to material design standards.
-class FittedText extends StatefulWidget {
-  FittedText({
-    @required this.text,
-    @required this.style
-  }) :
-      assert(text != null),
-      assert(style != null);
-
-  /// The text to be displayed.
-  final String text;
-
-  /// The style of the text. The style's fontSize property will be overwritten.
-  final TextStyle style;
-
-  @override
-  _FittedTextState createState() => _FittedTextState();
-}
-
-class _FittedTextState extends State<FittedText> {
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) {
-        final size = Size(
-          constraints.maxWidth,
-          constraints.maxHeight * 0.9
-        );
-        return Center(
-          child: Text(
-            widget.text,
-            style: _styleToFitTextInSize(size),
-            overflow: TextOverflow.fade,
-          )
-        );
-      }
-    );
-  }
-
-  // Starts with a large font size, then decreases it and returns a style with
-  // the first size which makes the text fit in the size.
-  TextStyle _styleToFitTextInSize(Size size) {
-    for (double fontSize = 48.0; fontSize > 4; fontSize -= 4) {
-      final textStyle = widget.style.copyWith(fontSize: fontSize);
-      final textSpan = TextSpan(text: widget.text, style: textStyle);
-      final richText = RichText(text: textSpan);
-      final renderObject = richText.createRenderObject(context);
-      final textHeight = renderObject.getMaxIntrinsicHeight(size.width);
-
-      if (textHeight <= size.height) {
-        return textStyle.copyWith(fontSize: fontSize - 4);
-      }
-    }
   }
 }
