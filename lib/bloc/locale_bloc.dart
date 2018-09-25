@@ -3,8 +3,36 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/widgets.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:yaml/yaml.dart';
-import 'bloc.dart';
 import 'resource_manager.dart';
+
+enum TextId {
+  none,
+  app_title,
+
+  add_player_label,
+  add_player_hint,
+  add_player_error,
+
+  configuration_player_missing,
+  configuration_deck_missing,
+  start_game,
+
+  beta_box_title,
+  beta_box_body,
+  beta_box_action,
+
+  menu_log_in,
+  menu_log_in_text,
+  menu_my_cards,
+  menu_settings,
+  menu_feedback,
+
+  mail_subject,
+  mail_body,
+
+  coin_card,
+  game_card_author
+}
 
 abstract class TextIds {
   static TextId fromString(String id) {

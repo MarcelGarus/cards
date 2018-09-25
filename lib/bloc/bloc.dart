@@ -11,34 +11,8 @@ import 'my_cards_bloc.dart';
 import 'players_bloc.dart';
 import 'resource_manager.dart';
 
-enum TextId {
-  none,
-  app_title,
-
-  add_player_label,
-  add_player_hint,
-  add_player_error,
-
-  configuration_player_missing,
-  configuration_deck_missing,
-  start_game,
-
-  beta_box_title,
-  beta_box_body,
-  beta_box_action,
-
-  menu_log_in,
-  menu_log_in_text,
-  menu_my_cards,
-  menu_settings,
-  menu_feedback,
-
-  mail_subject,
-  mail_body,
-
-  coin_card,
-  game_card_author
-}
+export 'locale_bloc.dart';
+export 'account_bloc.dart';
 
 
 /// The gateway between Flutter Widgets and actual business logic.
@@ -78,6 +52,7 @@ class Bloc {
 
   // Actual output streams. Some have subjects above.
   Stream<Locale> get locale => localeBloc.localeSubject.stream;
+  Stream<AccountState> get account => accountBloc.accountSubject.stream;
   Stream<BigInt> get coins => coinsBloc.coinsSubject.stream;
   Stream<List<String>> get players => playersBloc.playersSubject.stream;
   Stream<List<Deck>> get decks => decksBloc.decksSubject.stream;
@@ -95,6 +70,7 @@ class Bloc {
 
     // Initialize all the sub-blocs.
     localeBloc.initialize().catchError(print);
+    accountBloc.initialize().catchError(print);
     coinsBloc.initialize().catchError(print);
     playersBloc.initialize().catchError(print);
     decksBloc.initialize(localeBloc.locale).catchError(print);
@@ -121,12 +97,16 @@ class Bloc {
         .listen((card) => coinsBloc.findCoin());
   }
 
+
   /// Closes all subjects.
   void dispose() {
     localeBloc.dispose();
+    accountBloc.dispose();
+    coinsBloc.dispose();
     playersBloc.dispose();
     decksBloc.dispose();
     myCardsBloc.dispose();
+    gameBloc.dispose();
 
     _configurationSubject.close();
     _canResumeSubject.close();
@@ -154,7 +134,16 @@ class Bloc {
 
   void updateLocale(Locale locale) => localeBloc.updateLocale(locale);
 
+  // TODO: provide text provider instead.
   String getText(TextId id) => localeBloc.getText(id);
+
+  void signIn() => accountBloc.signIn().catchError((e) {
+    print('Oops! An error occurred while signing in: $e');
+  });
+
+  void signOut() => accountBloc.signOut().catchError((e) {
+    print('Oops! An error occurred while signing in: $e');
+  });
 
   void canBuy(Deck deck) => coinsBloc.canBuy(deck);
 
@@ -199,14 +188,6 @@ class Bloc {
       'mail': 'marcel.garus@gmail.com' // TODO: do not hardcode
     });
   }
-
-  void signIn() => accountBloc.signIn().catchError((e) {
-    print('Oops! An error occurred while signing in: $e');
-  });
-
-  void signOut() => accountBloc.signOut().catchError((e) {
-    print('Oops! An error occurred while signing in: $e');
-  });
 }
 
 class BlocProvider extends StatelessWidget {
