@@ -3,7 +3,6 @@ import 'package:flutter_mailer/flutter_mailer.dart';
 import 'bloc/bloc.dart';
 import 'localize.dart';
 import 'my_cards/cards_list.dart';
-import 'settings.dart';
 
 class Menu extends StatelessWidget {
   void _goToMyCards(BuildContext context) {
@@ -11,12 +10,6 @@ class Menu extends StatelessWidget {
       builder: (context) => CardsListScreen()
     ));
   }
-
-  /*void _goToSettings(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => SettingsScreen()
-    ));
-  }*/
 
   void _giveFeedback(BuildContext context) async {
     print('Mailing');
@@ -46,11 +39,6 @@ class Menu extends StatelessWidget {
           title: LocalizedText(id: TextId.menu_my_cards),
           onTap: () => _goToMyCards(context)
         ),
-        /*ListTile(
-          leading: Icon(Icons.settings, color: Colors.black),
-          title: LocalizedText(id: TextId.menu_settings),
-          onTap: () => _goToSettings(context)
-        ),*/
         ListTile(
           leading: Icon(Icons.feedback, color: Colors.black),
           title: LocalizedText(id: TextId.menu_feedback),
@@ -58,7 +46,7 @@ class Menu extends StatelessWidget {
         ),
         /*Row(
           children: <Widget>[
-            Text('Open-source licenses'),
+            Text('Open-source licenses'),as well as
             Text('Privacy Policy'),
             Text('Terms of Service'),
           ],
@@ -76,6 +64,14 @@ class Menu extends StatelessWidget {
   }
 }
 
+
+/// A widget displaying the account state.
+/// 
+/// If signed in, the user's photo and some data will be displayed, as well as
+/// a button to sign out.
+/// 
+/// If signed out, an encouraging text will be displayed as well as a button to
+/// sign in.
 class Account extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -99,7 +95,7 @@ class Account extends StatelessWidget {
     );
   }
 
-  _buildSignedIn(BuildContext context, AccountSnapshot snapshot, bool signingOut) {
+  _buildSignedIn(BuildContext context, AccountSnapshot snapshot, bool isSigningOut) {
     return Padding(
       padding: EdgeInsets.all(16.0),
       child: Row(
@@ -116,16 +112,19 @@ class Account extends StatelessWidget {
             ],
           ),
           Spacer(),
-          OutlineButton(
-            onPressed: Bloc.of(context).signOut,
-            child: Text(signingOut ? 'Signing out' : 'Sign out'),
+          _buildButtonIfNotBusy(
+            button: OutlineButton(
+              onPressed: Bloc.of(context).signOut,
+              child: Text(isSigningOut ? 'Signing out' : 'Sign out'),
+            ),
+            busy: isSigningOut
           ),
         ],
       )
     );
   }
 
-  _buildSignedOut(BuildContext context, bool signingIn) {
+  _buildSignedOut(BuildContext context, bool isSigningIn) {
     return Padding(
       padding: EdgeInsets.all(16.0),
       child: Column(
@@ -143,15 +142,30 @@ class Account extends StatelessWidget {
                 child: Text('Also, you\'ll be able to synchronize your progress among multiple devices.')
               ),
               SizedBox(width: 16.0),
-              RaisedButton(
-                color: Theme.of(context).primaryColor,
-                onPressed: Bloc.of(context).signIn,
-                child: Text(signingIn ? 'Signing in' : 'Sign in'),
-              ),
+              _buildButtonIfNotBusy(
+                button: RaisedButton(
+                  color: Theme.of(context).primaryColor,
+                  onPressed: Bloc.of(context).signIn,
+                  child: Text(isSigningIn ? 'Signing in' : 'Sign in'),
+                ),
+                busy: isSigningIn
+              )
             ],
           ),
         ],
       )
     );
+  }
+
+  _buildButtonIfNotBusy({ Widget button, bool busy }) {
+    if (busy) {
+      return Container(
+        width: 24.0,
+        height: 24.0,
+        child: CircularProgressIndicator()
+      );
+    }
+
+    return button;
   }
 }

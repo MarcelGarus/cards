@@ -15,7 +15,7 @@ class ConfigureScreen extends StatelessWidget {
         children: <Widget>[
           Spacer(),
           Image.asset('graphics/style384.png', width: 48.0, height: 48.0),
-          Text('Cards', style: TextStyle(fontSize: 24.0)),
+          Text('Cards', style: TextStyle(fontSize: 24.0, fontFamily: 'Signature')),
           Spacer(),
           CoinCounter()
         ]

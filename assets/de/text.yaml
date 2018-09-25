@@ -7,7 +7,7 @@ add_player_error: Du hast bereits $author hinzugefügt.
 
 configuration_player_missing: Füge einen Spieler hinzu
 configuration_deck_missing: Wähle mindestens ein Deck aus
-start_game: Spiel starten
+start_game: Karten mischen
 
 beta_box_title: Danke für's Beta-Testen!
 beta_box_body: "Wie du siehst, funktioniert die grundlegende Spielmechanik

@@ -48,7 +48,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   CardsScaffoldController controller = CardsScaffoldController();
 
   void _showMenu() {
-    
     showModalBottomSheet(context: context, builder: (_) => Menu());
   }
 
@@ -86,7 +85,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             icon: Image.asset('graphics/style192.png', width: 24.0, height: 24.0),
             label: LocalizedText(
               id: TextId.start_game,
-              style: TextStyle(fontSize: 20.0, letterSpacing: -0.5)
+              style: TextStyle(fontSize: 20.0, letterSpacing: -0.5, fontFamily: 'Signature')
             ),
             onPressed: () => _startGame(),
           );
