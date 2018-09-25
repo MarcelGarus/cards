@@ -12,7 +12,6 @@ class PublishCardScreen extends StatelessWidget {
   final MyCard card;
 
   void _publish() {
-    
     Firestore.instance.collection('suggestions').document().setData({
       'content': card.gameCard.content ?? '',
       'followup': card.gameCard.followup ?? '',

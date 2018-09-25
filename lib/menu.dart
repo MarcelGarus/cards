@@ -43,12 +43,7 @@ class Menu extends StatelessWidget {
     final column = Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        ListTile(
-          leading: Icon(Icons.verified_user, color: Colors.black),
-          title: LocalizedText(id: TextId.menu_log_in),
-          subtitle: LocalizedText(id: TextId.menu_log_in_text),
-          onTap: () => _logIn(context),
-        ),
+        _buildAccountPart(),
         ListTile(
           leading: Icon(Icons.wb_iridescent, color: Colors.black),
           title: LocalizedText(id: TextId.menu_my_cards),
@@ -80,6 +75,19 @@ class Menu extends StatelessWidget {
         onTap: () {},
         child: column
       )
+    );
+  }
+
+  _buildAccountPart() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        Text(
+          'Sign in to publish your cards to the whole world',
+          style: TextStyle(fontSize: 24.0, fontFamily: 'Signature')
+        ),
+        Text('Also, youll be able to synchronize your progress among multiple devices.')        
+      ],
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mailer/flutter_mailer.dart';
+import 'account.dart';
 import 'bloc/bloc.dart';
 import 'deck_selector.dart';
 import 'localize.dart';
@@ -13,6 +14,7 @@ class ConfigureScreen extends StatelessWidget {
       padding: EdgeInsets.all(8.0),
       child: Row(
         children: <Widget>[
+          AccountButton(),
           Spacer(),
           Image.asset('graphics/style384.png', width: 48.0, height: 48.0),
           Text('Cards', style: TextStyle(fontSize: 24.0)),
@@ -43,10 +45,34 @@ class ConfigureScreen extends StatelessWidget {
             topPart,
             DeckSelector(),
             //BetaBox(),
-            SizedBox(height: 48.0 + 24.0)
+            SizedBox(height: 48.0 + 24.0),
           ],
         ),
       )
+    );
+  }
+}
+
+
+
+/// The account button.
+class AccountButton extends StatelessWidget {
+  void _showAccountScreen(BuildContext context) {
+    Navigator.of(context).push(PageRouteBuilder(
+      opaque: false,
+      transitionDuration: const Duration(milliseconds: 200),
+      pageBuilder: (context, _, __) => AccountScreen(),
+      transitionsBuilder: (_, Animation<double> animation, __, Widget child) {
+        return FadeTransition(opacity: animation, child: child);
+      }
+    ));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: Icon(Icons.person_outline, color: Colors.black),
+      onPressed: () => _showAccountScreen(context),
     );
   }
 }

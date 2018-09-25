@@ -84,12 +84,12 @@ class RawCard extends StatelessWidget {
           ),
         ),
         textTheme: TextTheme(
-          body1: TextStyle(color: Colors.white, fontFamily: 'Assistant', fontSize: 24.0),
-          body2: TextStyle(color: Colors.white, fontFamily: 'Assistant'),
-          display1: TextStyle(color: Colors.white, fontFamily: 'Assistant'),
-          display2: TextStyle(color: Colors.white, fontFamily: 'Assistant'),
-          display3: TextStyle(color: Colors.white, fontFamily: 'Assistant'),
-          display4: TextStyle(color: Colors.white, fontFamily: 'Assistant'),
+          body1: TextStyle(color: Colors.white),
+          body2: TextStyle(color: Colors.white),
+          display1: TextStyle(color: Colors.white),
+          display2: TextStyle(color: Colors.white),
+          display3: TextStyle(color: Colors.white),
+          display4: TextStyle(color: Colors.white),
         ),
       ),
       child: Material(

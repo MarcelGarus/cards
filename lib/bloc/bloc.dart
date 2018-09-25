@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/widgets.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:rxdart/subjects.dart';
+import 'account_bloc.dart';
 import 'coins_bloc.dart';
 import 'decks_bloc.dart';
 import 'game_bloc.dart';
@@ -62,6 +62,7 @@ class Bloc {
 
   // The blocs.
   final localeBloc = LocaleBloc();
+  final accountBloc = AccountBloc();
   final coinsBloc = CoinsBloc();
   final playersBloc = PlayersBloc();
   final decksBloc = DecksBloc();
@@ -199,19 +200,13 @@ class Bloc {
     });
   }
 
-  Future<bool> signIn() async {
-    GoogleSignIn _googleSignIn = GoogleSignIn(
-      scopes: [ 'email', 'https://www.googleapis.com/auth/drive.appdata' ]
-    );
-    try {
-      final data = await _googleSignIn.signIn();
-      print(data);
-    } catch (error) {
-      print(error);
-      return false;
-    }
-    return true;
-  }
+  void signIn() => accountBloc.signIn().catchError((e) {
+    print('Oops! An error occurred while signing in: $e');
+  });
+
+  void signOut() => accountBloc.signOut().catchError((e) {
+    print('Oops! An error occurred while signing in: $e');
+  });
 }
 
 class BlocProvider extends StatelessWidget {

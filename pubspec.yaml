@@ -12,6 +12,7 @@ dependencies:
   auto_size_text: ^0.2.0
   cloud_firestore: ^0.8.0
   flutter_mailer: ^0.1.0
+  firebase_auth: any
   google_sign_in: ^3.0.5
   hex: ^0.1.1
   rxdart: ^0.18.0
@@ -25,12 +26,12 @@ flutter:
   uses-material-design: true
 
   fonts:
-    - family: Bitter
+    - family: Signature
       fonts:
-        - asset: fonts/Bitter-Regular.ttf
-    - family: Assistant
-      fonts:
-        - asset: fonts/Assistant-ExtraBold.ttf
+        - asset: fonts/Ubuntu-Regular.ttf
+          weight: 400
+        - asset: fonts/Ubuntu-Bold.ttf
+          weight: 700
 
   assets:
     - assets/de/

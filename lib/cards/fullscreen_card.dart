@@ -68,7 +68,7 @@ class FullscreenCard extends StatelessWidget {
           child: Center(
             child: AutoSizeText(
               card.content,
-              style: TextStyle(color: color, fontSize: 48.0),
+              style: TextStyle(color: color, fontSize: 48.0, fontFamily: 'Signature', fontWeight: FontWeight.w900),
               stepGranularity: 4.0,
             )
           )
@@ -79,7 +79,7 @@ class FullscreenCard extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Text(card.hasAuthor ? 'von ${card.author}' : '',
+            Text(card.hasAuthor ? 'by ${card.author}' : '',
               style: TextStyle(color: color, fontSize: 16.0)
             ),
             Text(card.id,
