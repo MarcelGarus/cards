@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hex/hex.dart';
 import '../bloc/model.dart';
 import 'raw_card.dart';
@@ -20,7 +21,7 @@ class InlineCard extends StatefulWidget {
     this.showFollowup = true,
     this.showAuthor = true,
     this.bottomBarLeading,
-    this.bottmoBarTailing,
+    this.bottomBarTailing,
     this.onTap,
     this.onEdited
   });
@@ -35,7 +36,8 @@ class InlineCard extends StatefulWidget {
 
   /// A widget inserted at the start of the bottom bar.
   final Widget bottomBarLeading;
-  final Widget bottmoBarTailing;
+  final Widget bottomBarTailing;
+  bool get hasBottomBar => bottomBarLeading != null || bottomBarTailing != null;
 
   // Callbacks for taps and changes (if editable).
   final VoidCallback onTap;
@@ -64,7 +66,7 @@ class _InlineCardState extends State<InlineCard> {
   }
 
   // Once one of the property is edited, call the provided callback with all of
-  // the user-provided content.
+  // the user-provided content. This happens every time the content changes.
   void _onEdited() => widget.onEdited(
     context,
     contentController.text,
@@ -111,6 +113,17 @@ class _InlineCardState extends State<InlineCard> {
       ) : Container());
     }
 
+    // Add bottom bar.
+    if (widget.hasBottomBar) {
+      items.add(Row(
+        children: <Widget>[
+          widget.bottomBarLeading ?? Container(),
+          Spacer(),
+          widget.bottomBarTailing ?? Container()
+        ],
+      ));
+    }
+
     return RawCard(
       heroTag: widget.card.id,
       borderRadius: BorderRadius.circular(8.0),
@@ -146,6 +159,11 @@ class CardInput extends StatelessWidget {
       padding: EdgeInsets.only(bottom: 16.0),
       child: TextField(
         controller: controller,
+        inputFormatters: [
+          BlacklistingTextInputFormatter('|'),
+          BlacklistingTextInputFormatter.singleLineFormatter,
+          LengthLimitingTextInputFormatter(1000)
+        ],
         maxLines: maxLines,
         keyboardType: TextInputType.text,
         decoration: InputDecoration(
@@ -156,6 +174,8 @@ class CardInput extends StatelessWidget {
           )
         ),
         style: Theme.of(context).textTheme.body2.copyWith(
+          fontFamily: 'Signature',
+          fontWeight: FontWeight.w700,
           color: Colors.white,
           fontSize: 24.0
         ),

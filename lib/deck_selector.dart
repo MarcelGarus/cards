@@ -91,7 +91,7 @@ class _SelectableDeckState extends State<SelectableDeck>
     super.initState();
     _selectionValue = _defaultValue;
     _selectController = AnimationController(
-      duration: Duration(seconds: 2),
+      duration: Duration(milliseconds: 200),
       vsync: this,
     )..addListener(() => setState(() {
       _selectionValue = _selectAnimation?.value ?? _defaultValue;

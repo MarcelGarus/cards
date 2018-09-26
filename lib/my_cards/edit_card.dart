@@ -44,6 +44,7 @@ class _EditCardScreenState extends State<EditCardScreen> {
     ));
   }
 
+  /// Creates a card from the current content, followup and author.
   MyCard _createEditedCard() {
     return MyCard(
       gameCard: GameCard(
@@ -76,10 +77,21 @@ class _EditCardScreenState extends State<EditCardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    
     final materialCard = Padding(
       padding: EdgeInsets.all(16.0),
-      child: InlineCard(widget.card.gameCard, onEdited: _onChanged)
+      child: InlineCard(widget.card.gameCard,
+        onEdited: _onChanged,
+        bottomBarTailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text('Tap to publish', style: TextStyle(color: Colors.white)),
+            IconButton(
+              icon: Icon(Icons.cloud_upload, color: Colors.white),
+              onPressed: () => _goToPublishScreen(context),
+            )
+          ]
+        )
+      )
     );
 
     return Theme(
@@ -90,12 +102,6 @@ class _EditCardScreenState extends State<EditCardScreen> {
           actions: <Widget>[
             IconButton(icon: Icon(Icons.delete), onPressed: () {})
           ],
-        ),
-        floatingActionButton: FloatingActionButton.extended(
-          icon: Icon(Icons.cloud_upload),
-          label: Text('Publish'),
-          elevation: 12.0,
-          onPressed: () => _goToPublishScreen(context),
         ),
         body: SafeArea(
           child: ListView(

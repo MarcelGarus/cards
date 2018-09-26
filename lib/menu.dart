@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mailer/flutter_mailer.dart';
 import 'bloc/bloc.dart';
 import 'localize.dart';
-import 'my_cards/cards_list.dart';
+import 'my_cards/my_cards.dart';
 
 class Menu extends StatelessWidget {
   void _goToMyCards(BuildContext context) {
     Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => CardsListScreen()
+      builder: (context) => MyCardsScreen()
     ));
   }
 
