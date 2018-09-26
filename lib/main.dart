@@ -115,7 +115,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     return StreamBuilder<Card>(
       stream: frontCard ? bloc.frontCard : bloc.backCard,
       builder: (context, snapshot) {
-        print('Building card ${snapshot.data}.');
         return FullscreenCard(
           card: snapshot.data ?? EmptyCard(),
           safeAreaTop: MediaQuery.of(context).padding.top + 48.0,

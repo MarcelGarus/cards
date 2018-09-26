@@ -24,16 +24,15 @@ class DecksBloc {
     for (final deck in loadedDecks) {
       deck.isUnlocked = deck.price == 0 || unlocked.contains(deck.id);
     }
-    print('Loaded unlocked decks: $unlocked');
 
     // Load selected decks.
     final Set<String> selected = await _loadSelectedDecks();
     for (final deck in loadedDecks) {
       deck.isSelected = selected.contains(deck.id);
     }
-    print('Loaded selected decks: $selected');
 
     decks = loadedDecks;
+    print('Loaded decks: Unlocked: $unlocked, selected: $selected');
     _update();
   }
 
@@ -71,7 +70,6 @@ class DecksBloc {
     final displayedDecks = List.from<Deck>(usefulDecks);
     displayedDecks.sort((a, b) => a.price.compareTo(b.price));
     decksSubject.add(displayedDecks);
-    print('Currently selected decks are $selectedDecks.');
   }
 
 

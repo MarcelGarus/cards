@@ -27,7 +27,6 @@ class CoinsBloc {
     coins += BigInt.one;
     coinsSubject.add(coins);
     _saveCoins(coins);
-    print('Got $coins coins now.');
   }
 
   bool canBuy(Deck deck) {
@@ -45,7 +44,7 @@ class CoinsBloc {
 
   static void _saveCoins(BigInt coins) {
     ResourceManager.saveString('coins', coins.toString()).catchError((e) {
-      print('An error occured while saving $coins as coins: $e');
+      print('Error while saving $coins coins: $e');
     });
   }
 

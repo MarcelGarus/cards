@@ -43,8 +43,10 @@ class AccountBloc {
   Future<void> initialize() async {
     _account = await _googleSignIn.signInSilently();
 
-    if (_account != null)
-      _update(AccountConnectionState.SIGNED_IN);
+    _update((_account == null)
+      ? AccountConnectionState.SIGNED_OUT
+      : AccountConnectionState.SIGNED_IN
+    );
   }
 
   void dispose() {

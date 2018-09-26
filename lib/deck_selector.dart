@@ -29,21 +29,19 @@ class DeckSelector extends StatelessWidget {
 
   Widget _buildList(BuildContext context, AsyncSnapshot<List<Deck>> snapshot) {
     if (!snapshot.hasData || snapshot.data.length == 0) {
-      print('Building no decks');
       return Container(
         height: 128.0,
         alignment: Alignment.center,
         child: Column(
           children: <Widget>[
             CircularProgressIndicator(),
-            Text('snapshot.data: ${snapshot.data}')
+            Text('snapshot.data: ${snapshot.data}') // TODO: do more elegantly
           ]
         )
       );
     }
 
     final decks = snapshot.data;
-    print('Building ${decks.length} decks.');
     return Padding(
       padding: EdgeInsets.all(12.0),
       child: Wrap(
