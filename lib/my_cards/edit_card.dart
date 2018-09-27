@@ -91,7 +91,7 @@ class _EditCardScreenState extends State<EditCardScreen> {
     );
 
     return Theme(
-      data: Utils.mainTheme,
+      data: Utils.myCardsTheme,
       child: Scaffold(
         appBar: AppBar(
           title: Text('Edit card'),

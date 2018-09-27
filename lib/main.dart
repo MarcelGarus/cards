@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'bloc/bloc.dart';
 import 'bloc/model.dart';
 import 'cards/fullscreen_card.dart';
-import 'configure.dart';
+import 'configure/configure.dart';
 import 'localize.dart';
 import 'menu.dart';
 import 'utils.dart';

@@ -75,7 +75,7 @@ class PublishCardScreen extends StatelessWidget {
     ));
 
     return Theme(
-      data: Utils.mainTheme,
+      data: Utils.myCardsTheme,
       child: Scaffold(
         appBar: AppBar(title: Text('Publish card')),
         body: SafeArea(child: ListView(children: content))

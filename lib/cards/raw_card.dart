@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils.dart';
 
 /// A widget that displays a card in the game.
 class RawCard extends StatelessWidget {
@@ -76,22 +77,7 @@ class RawCard extends StatelessWidget {
 
     // The themed material card.
     Widget card = Theme(
-      data: ThemeData(
-        hintColor: Colors.white,
-        inputDecorationTheme: InputDecorationTheme(
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.amber)
-          ),
-        ),
-        textTheme: TextTheme(
-          body1: TextStyle(color: Colors.white),
-          body2: TextStyle(color: Colors.white),
-          display1: TextStyle(color: Colors.white),
-          display2: TextStyle(color: Colors.white),
-          display3: TextStyle(color: Colors.white),
-          display4: TextStyle(color: Colors.white),
-        ),
-      ),
+      data: Utils.cardTheme,
       child: Material(
         color: Colors.black,
         borderRadius: borderRadius,
