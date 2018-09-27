@@ -182,7 +182,8 @@ class GameCard extends Card {
     color: color
   );
 
-  String toString() => '$id: "$content" by $author';
+  String toString() => '$id:'
+    '"$content" by ${hasAuthor ? author : 'anonymous'}';
 }
 
 
@@ -225,4 +226,8 @@ class MyCard extends Card {
   bool get includeInGame => isEnabled && isValid;
 
   bool isPublished;
+
+  String toString() => 'MyCard($gameCard, '
+    '${isEnabled ? 'enabled' : 'disabled'}, '
+    '${isPublished ? 'published' : 'local'})';
 }

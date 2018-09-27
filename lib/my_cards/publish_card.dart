@@ -13,6 +13,14 @@ class PublishCardScreen extends StatelessWidget {
   final MyCard card;
   final AccountState account;
 
+  void _publish(BuildContext context) {
+    Bloc.of(context).publishCard(card).then((success) {
+      if (success) {
+        Navigator.pop(context);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final content = <Widget>[];
@@ -52,13 +60,7 @@ class PublishCardScreen extends StatelessWidget {
         textAlign: TextAlign.justify,
       ),
       SizedBox(height: 16.0),
-      Center(
-        child: FloatingActionButton.extended(
-          icon: Icon(Icons.cloud_upload),
-          label: LocalizedText(TextId.publish_action),
-          onPressed: () => Bloc.of(context).publishCard(card),
-        )
-      )
+      Center(child: PublishButton(onPublish: () => _publish(context)))
     ]);
 
     return Theme(
@@ -66,12 +68,38 @@ class PublishCardScreen extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(title: LocalizedText(TextId.publish_title)),
         body: SafeArea(
-          child: ListView(
-            padding: EdgeInsets.all(16.0),
-            children: content
-          )
+          child: ListView(padding: EdgeInsets.all(16.0), children: content)
         )
       ),
+    );
+  }
+}
+
+
+class PublishButton extends StatefulWidget {
+  PublishButton({ @required this.onPublish });
+
+  final VoidCallback onPublish;
+
+  @override
+  _PublishButtonState createState() => _PublishButtonState();
+}
+
+class _PublishButtonState extends State<PublishButton> {
+  bool clicked = false;
+
+  @override
+  Widget build(BuildContext context) {
+    if (clicked)
+      return CircularProgressIndicator();
+
+    return FloatingActionButton.extended(
+      icon: Icon(Icons.cloud_upload),
+      label: LocalizedText(TextId.publish_action),
+      onPressed: () {
+        clicked = true;
+        widget.onPublish();
+      },
     );
   }
 }

@@ -7,6 +7,7 @@ import '../menu.dart';
 import '../utils.dart';
 import 'guidelines.dart';
 import 'publish_card.dart';
+import 'published_card.dart';
 
 /// Screen for editing a card.
 class EditCardScreen extends StatefulWidget {
@@ -28,6 +29,18 @@ class _EditCardScreenState extends State<EditCardScreen> {
     content = widget.card.gameCard.content;
     followup = widget.card.gameCard.followup;
     author = widget.card.gameCard.author;
+
+    Bloc.of(context).myCards.listen((myCards) {
+      final card = myCards
+          .singleWhere((card) => card.gameCard.id == widget.card.gameCard.id);
+
+      if (card.isPublished) {
+        Navigator.of(context).pop();
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => PublishedCardScreen(card: card)
+        ));
+      }
+    });
   }
 
   /// Shows the menu with a prompt to sign in.

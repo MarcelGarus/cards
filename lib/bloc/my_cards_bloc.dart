@@ -40,8 +40,7 @@ class MyCardsBloc {
     );
 
     myCards.add(card);
-    myCardsSubject.add(myCards);
-    _saveMyCards(myCards);
+    _updateSubject();
     return card;
   }
 
@@ -51,23 +50,35 @@ class MyCardsBloc {
 
     myCards.remove(oldVersion);
     myCards.add(card);
-    myCardsSubject.add(myCards);
-    _saveMyCards(myCards);
+    _updateSubject();
   }
 
   void delete(MyCard card) {
     myCards.remove(card);
-    myCardsSubject.add(myCards);
-    _saveMyCards(myCards);
+    _updateSubject();
   }
 
-  void publish(MyCard card, String email) {
-    ResourceManager.writeToFirestore('suggestions', {
+  Future<bool> publish(MyCard card, String email) async {
+    assert(!card.isPublished);
+
+    final res = await ResourceManager.writeToFirestore('suggestions', {
       'content': card.gameCard.content,
       'followup': card.gameCard.followup,
       'author': card.gameCard.author,
       'mail': email // TODO: do not hardcode
     });
+    print('Card ${res ? '' : 'not '}published.');
+
+    if (res)
+      myCards.singleWhere((c) => c.gameCard.id == card.gameCard.id).isPublished = true;
+
+    _updateSubject();
+    return res;
+  }
+
+  void _updateSubject() {
+    myCardsSubject.add(myCards);
+    _saveMyCards(myCards);
   }
 
 

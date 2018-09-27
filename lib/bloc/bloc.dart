@@ -33,7 +33,7 @@ class Bloc {
 
   static const version = '0.0.1';
 
-  // The blocs.
+  // The BLoCs.
   final localeBloc = LocaleBloc();
   final accountBloc = AccountBloc();
   final coinsBloc = CoinsBloc();
@@ -175,8 +175,8 @@ class Bloc {
   MyCard createCard() => myCardsBloc.create();
   void updateCard(MyCard card) => myCardsBloc.update(card);
   void deleteCard(MyCard card) => myCardsBloc.delete(card);
-  void publishCard(MyCard card) {
-    myCardsBloc.publish(card, accountBloc.account.email);
+  Future<bool> publishCard(MyCard card) async {
+    return await myCardsBloc.publish(card, accountBloc.account.email);
   }
 }
 

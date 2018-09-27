@@ -46,6 +46,8 @@ enum TextId {
   publish_time,
   publish_conditions,
   publish_action,
+  published_title,
+  published_body,
 
   guidelines,
 

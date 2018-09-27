@@ -54,6 +54,8 @@ publish_conditions: "Sobald du auf den Knopf zum Veröffentlichen drückst,
   Nachdem du die Karte veröffentlichst, wirst du sie nicht mehr bearbeiten
   können."
 publish_action: Veröffentlichen
+published_title: Veröffentlicht
+published_body: Diese Karte ist veröffentlicht.
 
 guidelines:
   - title: Spieler einbinden
