@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../bloc/bloc.dart';
 import '../bloc/model.dart';
 import '../cards/inline_card.dart';
+import '../menu.dart';
 import '../utils.dart';
 import 'guidelines.dart';
 import 'publish_card.dart';
@@ -28,18 +29,20 @@ class _EditCardScreenState extends State<EditCardScreen> {
     author = widget.card.gameCard.author;
   }
 
+  /// Shows the menu with a prompt to sign in.
+  void _showSignInMenu() {
+    showModalBottomSheet(context: context, builder: (_) => SignInMenu());
+  }
+
   /// Animates to the publish screen.
-  void _goToPublishScreen(BuildContext context) {
+  void _goToPublishScreen() {
     Navigator.of(context).push(PageRouteBuilder(
       transitionDuration: const Duration(milliseconds: 200),
       pageBuilder: (BuildContext context, _, __) {
         return PublishCardScreen(card: _createEditedCard());
       },
       transitionsBuilder: (_, Animation<double> animation, __, Widget child) {
-        return FadeTransition(
-          opacity: animation,
-          child: child
-        );
+        return FadeTransition(opacity: animation, child: child);
       }
     ));
   }
@@ -65,8 +68,10 @@ class _EditCardScreenState extends State<EditCardScreen> {
     String followup,
     String author
   ) {
-    print('Saving card with content: $content, followup: $followup, author: '
-        '$author');
+    print(
+      'Saving card with content: $content, followup: $followup, author: '
+      '$author'
+    );
 
     this.content = content;
     this.followup = followup;
@@ -81,16 +86,7 @@ class _EditCardScreenState extends State<EditCardScreen> {
       padding: EdgeInsets.all(16.0),
       child: InlineCard(widget.card.gameCard,
         onEdited: _onChanged,
-        bottomBarTailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Text('Tap to publish', style: TextStyle(color: Colors.white)),
-            IconButton(
-              icon: Icon(Icons.cloud_upload, color: Colors.white),
-              onPressed: () => _goToPublishScreen(context),
-            )
-          ]
-        )
+        bottomBarTailing: _buildPublishStatus()
       )
     );
 
@@ -119,6 +115,36 @@ class _EditCardScreenState extends State<EditCardScreen> {
           )
         ),
       )
+    );
+  }
+
+  Widget _buildPublishStatus() {
+    return StreamBuilder(
+      stream: Bloc.of(context).account,
+      builder: (context, AsyncSnapshot<AccountState> snapshot) {
+        if (!snapshot.hasData)
+          return Container();
+        
+        final account = snapshot.data;
+        final isSignedIn = account.connectionState == AccountConnectionState.SIGNED_IN;
+        final text = Text(
+          isSignedIn ? 'Tap to publish' : 'Sign in to publish',
+          style: TextStyle(color: Colors.white)
+        );
+
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            text,
+            IconButton(
+              icon: Icon(Icons.cloud_upload, color: Colors.white),
+              onPressed: () => isSignedIn
+                  ? _goToPublishScreen()
+                  : _showSignInMenu(),
+            )
+          ]
+        );
+      },
     );
   }
 }

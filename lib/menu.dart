@@ -1,9 +1,12 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_mailer/flutter_mailer.dart';
 import 'bloc/bloc.dart';
 import 'localize.dart';
 import 'my_cards/my_cards.dart';
 
+/// The full menu with the account state, as well as further buttons for
+/// writing own cards, giving feedback etc.
 class Menu extends StatelessWidget {
   void _goToMyCards(BuildContext context) {
     Navigator.of(context).push(MaterialPageRoute(
@@ -29,36 +32,46 @@ class Menu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final column = Column(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        Account(),
-        Divider(),
-        ListTile(
-          leading: Icon(Icons.wb_iridescent, color: Colors.black),
-          title: LocalizedText(id: TextId.menu_my_cards),
-          onTap: () => _goToMyCards(context)
-        ),
-        ListTile(
-          leading: Icon(Icons.feedback, color: Colors.black),
-          title: LocalizedText(id: TextId.menu_feedback),
-          onTap: () => _giveFeedback(context)
-        ),
-        /*Row(
-          children: <Widget>[
-            Text('Open-source licenses'),as well as
-            Text('Privacy Policy'),
-            Text('Terms of Service'),
-          ],
-        )*/
-      ],
-    );
+    final items = [
+      Account(),
+      Divider(),
+      ListTile(
+        leading: Icon(Icons.wb_iridescent, color: Colors.black),
+        title: LocalizedText(id: TextId.menu_my_cards),
+        onTap: () => _goToMyCards(context)
+      ),
+      ListTile(
+        leading: Icon(Icons.feedback, color: Colors.black),
+        title: LocalizedText(id: TextId.menu_feedback),
+        onTap: () => _giveFeedback(context)
+      )
+    ];
     
     return Material(
       child: GestureDetector(
         // Prevents accidental taps from closing the bottom sheet.
         onTap: () {},
-        child: column
+        child: Column(mainAxisSize: MainAxisSize.min, children: items)
+      )
+    );
+  }
+}
+
+
+/// A menu with only the account displayed. Once the user logs in, the menu
+/// automatically disappears.
+class SignInMenu extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      child: GestureDetector(
+        // Prevents accidental taps from closing the bottom sheet.
+        onTap: () {},
+        child: Account(onSignedIn: () {
+          Future.delayed(Duration(seconds: 1), () {
+            Navigator.of(context).pop();
+          });
+        })
       )
     );
   }
@@ -73,6 +86,10 @@ class Menu extends StatelessWidget {
 /// If signed out, an encouraging text will be displayed as well as a button to
 /// sign in.
 class Account extends StatelessWidget {
+  Account({ this.onSignedIn });
+
+  final VoidCallback onSignedIn;
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
@@ -83,6 +100,8 @@ class Account extends StatelessWidget {
 
         switch (snapshot.data.connectionState) {
           case AccountConnectionState.SIGNED_IN:
+            if (onSignedIn != null)
+              onSignedIn();
             return _buildSignedIn(context, snapshot.data.snapshot, false);
           case AccountConnectionState.SIGNED_OUT:
             return _buildSignedOut(context, false);
