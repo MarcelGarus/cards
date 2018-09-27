@@ -39,10 +39,10 @@ edit_card_content: Inhalt
 edit_card_followup: Folgekarte
 edit_card_author: Autor
 edit_card_sign_in: Zum Veröffentlichen einloggen
-edit_card_publish: Zum Veröffentlichen tippen
+edit_card_publish: Veröffentlichen
 publish_title: Veröffentlichen
-publish_body: Schau dir deine Karten nochmal an und stelle sicher, dass sie die
-  Richtlinien erfüllt.
+publish_body: Stelle sicher, dass alle Richtlinien erfüllt werden.
+publish_time: Nach einiger Zeit...
 publish_conditions: "Sobald du auf den Knopf zum Veröffentlichen drückst,
   stimmst du dem folgenden Vorgehen zu: Die Karteninhalte (Inhalt, Folgekarte
   und Autor) und deine E-Mail-Adresse werden auf Google-Server hochgeladen und
@@ -51,9 +51,56 @@ publish_conditions: "Sobald du auf den Knopf zum Veröffentlichen drückst,
   Garus. Dieser wird sie manuell überprüfen und nach seinen Belieben der
   Kartendatenbank hinzufügen. Falls er Fragen hat, schickt er dir vielleicht
   eine E-Mail. Du bestätigst, dass die Karteninhalte die Richtlinien erfüllen.
-  Nachdem du die Karte veröffentlichst, wirst du die Karte nicht mehr editieren
+  Nachdem du die Karte veröffentlichst, wirst du sie nicht mehr bearbeiten
   können."
 publish_action: Veröffentlichen
+
+guidelines:
+  - title: Spieler einbinden
+    body: Verwende $a, $b etc. als Platzhalter für Namen. Während des Spiels
+      werden diese mit tatsächlichen Namen ausgetauscht.
+    positive:
+      - text: $a, tu etwas.
+      - text: $b, mach etwas.
+    negative:
+      - text: Alice, do something.
+  - title: Direkte Ansprache
+    body: Bevorzug die erste Person Singular gegenüber der dritten. Die Spieler
+      werden dadurch mehr eingebunden. Eine Ausnahme ist, wenn alle Spieler
+      eingebunden werden.
+    positive:
+      - text: $a, tu etwas.
+      - text: Alle machen etwas.
+    negative:
+      - text: $a muss etwas tun.
+  - title: Punkt bevorzugen
+    body: Benutz auch in Aufforderungen einen Punkt statt einem Ausrufezeichen.
+      Bei so vielen Aufforderungen würden sich die Spieler sonst angeschrien
+      fühlen. Ausrufe sind von dieser Richtlinie ausgenommen.
+    positive:
+      - text: $a, tu etwas.
+      - text: Prost! $a, trink einen Schluck.
+    negative:
+      - text: $a, tu etwas!
+      - text: $b, mach etwas!
+  - title: Optionales e weglassen
+    body: Lass optionale e bei Verben weg. Ein Apostroph brauchst du dabei
+      nicht verwenden.
+    positive:
+      - text: Alle tun etwas.
+      - text: $a, mach etwas.
+      - text: $b, trink etwas.
+    negative:
+      - text: Alle tuen etwas.
+      - text: $a, mach' etwas.
+      - text: $b, trinke etwas.
+  - title: Zahlen als Ziffern schreiben
+    body: Schreib alle Zahlen außer eins als Ziffern.
+    positive:
+      - text: $a, tu 2 Dinge.
+      - text: $a, trink einen Schluck.
+    negative:
+      - text: $a, tu zwei Dinge.
 
 mail_subject: Feedback zu Cards
 mail_body: 'Nicht löschen: Version $version\n\nHi Marcel,\n'

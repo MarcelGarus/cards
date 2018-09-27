@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import '../bloc/account_bloc.dart';
+import '../bloc/bloc.dart';
 import '../bloc/model.dart';
 import '../cards/inline_card.dart';
+import '../localize.dart';
 import '../utils.dart';
 import 'guidelines.dart';
 
@@ -13,21 +13,12 @@ class PublishCardScreen extends StatelessWidget {
   final MyCard card;
   final AccountState account;
 
-  void _publish() {
-    Firestore.instance.collection('suggestions').document().setData({
-      'content': card.gameCard.content ?? '',
-      'followup': card.gameCard.followup ?? '',
-      'author': card.gameCard.author ?? '',
-      'mail': 'marcel.garus@gmail.com'
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final content = <Widget>[];
 
     content.addAll([
-      Text('Review your card.', style: TextStyle(fontSize: 24.0)),
+      LocalizedText(TextId.publish_body, style: TextStyle(fontSize: 24.0)),
       SizedBox(height: 16.0),
       InlineCard(card.gameCard, showFollowup: false)
     ]);
@@ -42,7 +33,7 @@ class PublishCardScreen extends StatelessWidget {
             shape: StadiumBorder(),
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
-              child: Text('Then, after some time:')
+              child: LocalizedText(TextId.publish_time)
             )
           )
         ),
@@ -55,19 +46,8 @@ class PublishCardScreen extends StatelessWidget {
       SizedBox(height: 16.0),
       Guidelines(),
       SizedBox(height: 16.0),
-      Text(
-        'Once you click the publish button, you agree to the following '
-        'process: '
-        'The card\'s "input" (content, followup and author) as well as your '
-        'email address will be uploaded to and permanently stored on '
-        'Google\'s servers. By publishing the card, you automatically '
-        'transfer the input\'s copyright to this app\'s creator Marcel Garus, '
-        'who will review it manually and - to his liking - add it to the '
-        'database of cards. If he has any questions, he may mail you for '
-        'clarification. '
-        'You confirm that the input adheres to the guidelines stated above. '
-        'After publishing the card, you will not be able to edit or delete '
-        'the card any more.',
+      LocalizedText(
+        TextId.publish_conditions,
         style: TextStyle(fontSize: 10.0),
         textAlign: TextAlign.justify,
       ),
@@ -75,8 +55,8 @@ class PublishCardScreen extends StatelessWidget {
       Center(
         child: FloatingActionButton.extended(
           icon: Icon(Icons.cloud_upload),
-          label: Text('Publish'),
-          onPressed: _publish,
+          label: LocalizedText(TextId.publish_action),
+          onPressed: () => Bloc.of(context).publishCard(card),
         )
       )
     ]);
@@ -84,7 +64,7 @@ class PublishCardScreen extends StatelessWidget {
     return Theme(
       data: Utils.myCardsTheme,
       child: Scaffold(
-        appBar: AppBar(title: Text('Publish card')),
+        appBar: AppBar(title: LocalizedText(TextId.publish_title)),
         body: SafeArea(
           child: ListView(
             padding: EdgeInsets.all(16.0),

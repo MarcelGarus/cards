@@ -1,48 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 
-class GestureStackTester extends StatefulWidget {
-  @override
-  _GestureStackTesterState createState() => _GestureStackTesterState();
-}
-
-class _GestureStackTesterState extends State<GestureStackTester> {
-  bool isVisible = false;
-
-  void toggle() => setState(() => isVisible = !isVisible);
-
-  @override
-  Widget build(BuildContext context) => MaterialApp(
-    title: 'Gesture Stack Test',
-    home: Scaffold(
-      body: CardsScaffold(
-        configure: buildPlaceholder('backdrop', Colors.red),
-        fab: FloatingActionButton.extended(
-          onPressed: () => print('Starting game'),
-          icon: Icon(Icons.code),
-          label: Text('Start game'),
-        ),
-        frontCard: buildPlaceholder('content', Colors.lightGreen),
-        backCard: buildPlaceholder('back card', Colors.blue),
-        canStartGame: true,
-        canResumeGame: true,
-        onMenuTapped: () => print('Menu opened'),
-        onDismissed: () => print('Card dismissed'),
-      )
-    )
-  );
-  Widget buildPlaceholder(String name, Color color) => LayoutBuilder(
-    builder: (context, constraints) {
-      print('Building $name');
-      return Stack(
-        children: [ Container(color: color), Placeholder(color: Colors.white) ]
-      );
-    },
-  );
-}
-
-
-
 class CardsScaffoldController {
   VoidCallback _onShow, _onHide;
 

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hex/hex.dart';
+import '../bloc/bloc.dart';
 import '../bloc/model.dart';
+import '../localize.dart';
 import 'raw_card.dart';
 
 /// Listener that listens for changes to either the content, followup or author
@@ -81,7 +83,8 @@ class _InlineCardState extends State<InlineCard> {
     final signatureStyle = TextStyle(
       color: color,
       fontFamily: 'Signature',
-      fontSize: 24.0
+      fontSize: 24.0,
+      fontWeight: FontWeight.w700
     );
     final normalStyle = TextStyle(color: color, fontSize: 16.0);
 
@@ -90,32 +93,48 @@ class _InlineCardState extends State<InlineCard> {
 
     // Add content.
     if (widget.showContent) {
-      items.add(widget.editable ? CardInput(
-        labelText: 'Content',
-        controller: contentController,
-        maxLines: 4,
+      items.add(widget.editable ? Localized(
+        builder: (context, localizer) {
+          return CardInput(
+            labelText: localizer.getItem(TextId.edit_card_content) ?? '',
+            controller: contentController,
+            maxLines: 4
+          );
+        },
       ) : Text(widget.card.content, style: signatureStyle));
     }
     
     // Add followup.
     if (widget.showFollowup && widget.card.hasFollowup || widget.editable) {
-      items.add(widget.editable ? CardInput(
-        labelText: 'Followup',
-        controller: followupController,
-        maxLines: 4
+      items.add(widget.editable ? Localized(
+        builder: (context, localizer) {
+          return CardInput(
+            labelText: localizer.getItem(TextId.edit_card_followup) ?? '',
+            controller: followupController,
+            maxLines: 4
+          );
+        },
       ) : Text(widget.card.followup, style: signatureStyle));
     }
 
     // Add author.
     if (widget.showAuthor) {
       items.add(widget.editable
-      ? CardInput(
-        labelText: 'Author',
-        controller: authorController,
-        maxLines: 1,
-      ) : widget.card.hasAuthor ? Text(
-        'von ${widget.card.author}',
-        style: normalStyle
+      ? Localized(
+        builder: (context, localizer) {
+          return CardInput(
+            labelText: localizer.getItem(TextId.edit_card_author) ?? '',
+            controller: authorController,
+            maxLines: 1,
+          );
+        }
+      ) : widget.card.hasAuthor ? Localized(
+        builder: (context, localizer) {
+          return Text(
+            (localizer.getItem(TextId.game_card_author) as String ?? '')
+                .replaceAll('\$author', widget.card.author),
+            style: normalStyle);
+        }
       ) : Container());
     }
 

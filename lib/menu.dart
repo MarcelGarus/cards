@@ -16,19 +16,7 @@ class Menu extends StatelessWidget {
   }
 
   void _giveFeedback(BuildContext context) async {
-    print('Mailing');
-    final version = Bloc.version;
-
-    final MailOptions mailOptions = MailOptions(
-      subject: Bloc.of(context).getText(TextId.mail_subject),
-      recipients: [ 'marcel.garus@gmail.com' ],
-      body: Bloc
-          .of(context)
-          .getText(TextId.mail_body)
-          .replaceFirst('\$version', version),
-    );
-
-    await FlutterMailer.send(mailOptions);
+    print('TODO: give feedback');
   }
 
   @override
@@ -38,12 +26,12 @@ class Menu extends StatelessWidget {
       Divider(),
       ListTile(
         leading: Icon(Icons.wb_iridescent),
-        title: LocalizedText(id: TextId.menu_my_cards),
+        title: LocalizedText(TextId.menu_my_cards),
         onTap: () => _goToMyCards(context)
       ),
       ListTile(
         leading: Icon(Icons.feedback),
-        title: LocalizedText(id: TextId.menu_feedback),
+        title: LocalizedText(TextId.menu_feedback),
         onTap: () => _giveFeedback(context)
       )
     ];
@@ -129,7 +117,9 @@ class AccountTile extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text(snapshot.name, style: TextStyle(fontFamily: 'Signature', fontWeight: FontWeight.w700)),
+              Text(snapshot.name,
+                style: TextStyle(fontFamily: 'Signature', fontWeight: FontWeight.w700)
+              ),
               SizedBox(height: 4.0),
               Text(snapshot.email)
             ],
@@ -138,7 +128,7 @@ class AccountTile extends StatelessWidget {
           _buildButtonIfNotBusy(
             button: OutlineButton(
               onPressed: Bloc.of(context).signOut,
-              child: Text(isSigningOut ? 'Signing out' : 'Sign out'),
+              child: LocalizedText(TextId.sign_out_action),
             ),
             busy: isSigningOut
           ),
@@ -153,23 +143,21 @@ class AccountTile extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Text(
-            'Sign in to publish your cards to the whole world',
+          LocalizedText(
+            TextId.sign_in,
             style: TextStyle(fontSize: 24.0, fontFamily: 'Signature')
           ),
           SizedBox(height: 16.0),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Expanded(
-                child: Text('Also, you\'ll be able to synchronize your progress among multiple devices.')
-              ),
+              Expanded(child: LocalizedText(TextId.sign_in_body)),
               SizedBox(width: 16.0),
               _buildButtonIfNotBusy(
                 button: RaisedButton(
-                  color: Theme.of(context).primaryColor,
+                  color: Theme.of(context).accentColor,
                   onPressed: Bloc.of(context).signIn,
-                  child: Text(isSigningIn ? 'Signing in' : 'Sign in'),
+                  child: LocalizedText(TextId.sign_in_action),
                 ),
                 busy: isSigningIn
               )

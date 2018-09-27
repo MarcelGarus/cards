@@ -82,8 +82,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         if (snapshot.data.isValid) {
           return FloatingActionButton.extended(
             icon: Image.asset('graphics/style192.png', width: 24.0, height: 24.0),
-            label: LocalizedText(
-              id: TextId.start_game,
+            label: LocalizedText(TextId.start_game,
               style: TextStyle(fontSize: 20.0, letterSpacing: -0.5, fontFamily: 'Signature')
             ),
             onPressed: () => _startGame(),
@@ -101,7 +100,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           elevation: 6.0,
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-            child: LocalizedText(id: hintTextId, style: TextStyle(color: Colors.white))
+            child: LocalizedText(hintTextId, style: TextStyle(color: Colors.white))
           )
         );
       },

@@ -9,7 +9,6 @@ import 'locale_bloc.dart';
 import 'model.dart';
 import 'my_cards_bloc.dart';
 import 'players_bloc.dart';
-import 'resource_manager.dart';
 
 export 'locale_bloc.dart';
 export 'account_bloc.dart';
@@ -51,7 +50,7 @@ class Bloc {
   final _canResumeSubject = BehaviorSubject<bool>(seedValue: false);
 
   // Actual output streams. Some have subjects above.
-  Stream<Locale> get locale => localeBloc.localeSubject.stream;
+  Stream<Localizer> get localizer => localeBloc.localizerSubject.stream.distinct();
   Stream<AccountState> get account => accountBloc.accountSubject.stream;
   Stream<BigInt> get coins => coinsBloc.coinsSubject.stream;
   Stream<List<String>> get players => playersBloc.playersSubject.stream;
@@ -77,8 +76,8 @@ class Bloc {
     myCardsBloc.initialize().catchError(print);
 
     // Load new decks and stop the game if the locale changes.
-    locale.listen((locale) {
-      decksBloc.initialize(locale).catchError(print);
+    localizer.listen((localizer) {
+      decksBloc.initialize(localizer.locale).catchError(print);
       gameBloc.stop();
     });
 
@@ -134,8 +133,6 @@ class Bloc {
 
   // Managing the locale.
   void updateLocale(Locale locale) => localeBloc.updateLocale(locale);
-  // TODO: provide text provider instead.
-  String getText(TextId id) => localeBloc.getText(id);
 
   // Managing the account.
   void signIn() => accountBloc.signIn().catchError((e) {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../bloc/bloc.dart';
 import '../bloc/model.dart';
 import '../cards/inline_card.dart';
+import '../localize.dart';
 import '../menu.dart';
 import '../utils.dart';
 import 'guidelines.dart';
@@ -81,7 +82,7 @@ class _EditCardScreenState extends State<EditCardScreen> {
   @override
   Widget build(BuildContext context) {
     final appBar = AppBar(
-      title: Text('Edit card'),
+      title: LocalizedText(TextId.edit_card_title),
       actions: <Widget>[
         IconButton(
           icon: Icon(Icons.delete),
@@ -125,22 +126,21 @@ class _EditCardScreenState extends State<EditCardScreen> {
         
         final account = snapshot.data;
         final isSignedIn = account.signInState == SignInState.SIGNED_IN;
-        final text = Text(
-          isSignedIn ? 'Tap to publish' : 'Sign in to publish',
+        final text = LocalizedText(
+          isSignedIn ? TextId.edit_card_publish : TextId.edit_card_sign_in,
           style: TextStyle(color: Colors.white)
         );
 
-        return Row(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            text,
-            IconButton(
-              icon: Icon(Icons.cloud_upload, color: Colors.white),
-              onPressed: () => isSignedIn
-                  ? _goToPublishScreen()
-                  : _showSignInMenu(),
-            )
-          ]
+        return FlatButton(
+          onPressed: isSignedIn ? _goToPublishScreen : _showSignInMenu,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              text,
+              SizedBox(width: 8.0),
+              Icon(Icons.cloud_upload, color: Colors.white),
+            ]
+          )
         );
       },
     );

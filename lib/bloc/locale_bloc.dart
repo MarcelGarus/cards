@@ -43,8 +43,11 @@ enum TextId {
   edit_card_publish,
   publish_title,
   publish_body,
+  publish_time,
   publish_conditions,
   publish_action,
+
+  guidelines,
 
   mail_subject,
   mail_body,
@@ -61,21 +64,39 @@ abstract class _TextIdConverter {
   }
 }
 
+class Localizer {
+  static Localizer get empty => Localizer(Locale(''), Map());
+
+  Localizer(this.locale, this._items);
+
+  final Locale locale;
+  final Map<TextId, dynamic> _items;
+
+  dynamic getItem(TextId id) {
+    if (_items.containsKey(id))
+      return _items[id];
+
+    if (locale.languageCode != '')
+      print('Item $id missing for locale $locale.');
+    return null;
+  }
+
+  operator ==(Object other) => other is Localizer && locale == other.locale;
+}
+
 class LocaleBloc {
   Locale locale;
+  Map<TextId, dynamic> _items = Map();
 
-  final localeSubject = BehaviorSubject<Locale>();
-  Map<TextId, String> _textItems = Map();
+  final localizerSubject = BehaviorSubject<Localizer>();
 
 
   Future<void> initialize() async {
-    locale = await _loadLocale();
-    _textItems = await _loadText(locale);
-    localeSubject.add(locale);
+    updateLocale(await _loadLocale());
     print('Loaded locale: $locale');
   }
 
-  void dispose() => localeSubject.close();
+  void dispose() => localizerSubject.close();
 
 
   Future<void> updateLocale(Locale locale) async {
@@ -85,13 +106,8 @@ class LocaleBloc {
       return;
     
     this.locale = locale;
-    _textItems = await _loadText(locale);
-    localeSubject.add(locale);
+    localizerSubject.add(Localizer(locale, await _loadItems(locale)));
     _saveLocale(locale);
-  }
-
-  String getText(TextId id) {
-    return _textItems?.containsKey(id) ?? false ? _textItems[id] : '$id missing';
   }
 
 
@@ -105,7 +121,7 @@ class LocaleBloc {
     return Locale(await ResourceManager.loadString('locale') ?? 'de');
   }
 
-  static Future<Map<TextId, String>> _loadText(Locale locale) async {
+  static Future<Map<TextId, dynamic>> _loadItems(Locale locale) async {
     if (locale == null)
       return Map();
 
@@ -113,11 +129,11 @@ class LocaleBloc {
     final filename = '$root/text.yaml';
     final yaml = loadYaml(await rootBundle.loadString(filename)) as YamlMap;
 
-    final texts = Map<TextId, String>();
+    final texts = Map<TextId, dynamic>();
     texts[TextId.none] = '<None>';
 
     for (final MapEntry entry in yaml.entries) {
-      texts[_TextIdConverter.fromString(entry.key.toString())] = entry.value.toString();
+      texts[_TextIdConverter.fromString(entry.key.toString())] = entry.value;
     }
 
     return texts;

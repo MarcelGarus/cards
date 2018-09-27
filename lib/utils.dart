@@ -15,7 +15,18 @@ abstract class Utils {
 
   static ThemeData myCardsTheme = mainTheme.copyWith(
     primaryColor: Colors.amber,
+    primaryTextTheme: TextTheme(
+      title: TextStyle(color: Colors.black),
+      body1: TextStyle(color: Colors.black),
+    ),
+    primaryIconTheme: IconThemeData(
+      color: Colors.black
+    )
   );
+  
+  /*ThemeData(
+    primarySwatch: Colors.amber
+  );*/
 
   static ThemeData cardTheme = ThemeData(
     hintColor: Colors.white,
@@ -26,11 +37,7 @@ abstract class Utils {
     ),
     textTheme: TextTheme(
       body1: TextStyle(color: Colors.white),
-      body2: TextStyle(color: Colors.white),
-      display1: TextStyle(color: Colors.white),
-      display2: TextStyle(color: Colors.white),
-      display3: TextStyle(color: Colors.white),
-      display4: TextStyle(color: Colors.white),
-    ),
+      body2: TextStyle(color: Colors.white)
+    )
   );
 }
