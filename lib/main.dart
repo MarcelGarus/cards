@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart' hide Card;
+import 'package:flutter/services.dart';
 import 'bloc/bloc.dart';
 import 'bloc/model.dart';
 import 'cards/fullscreen_card.dart';
@@ -20,18 +21,16 @@ class _CardsGameState extends State<CardsGame> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
+      statusBarIconBrightness: Brightness.light
+    ));
+
     return BlocProvider(
       bloc: bloc,
       child: MaterialApp(
         title: 'Cards',
-        theme: ThemeData(
-          primaryColor: Colors.amber,
-          brightness: Brightness.dark,
-        ),
-        home: Theme(
-          data: Utils.buildLightTheme(),
-          child: MainPage()
-        ),
+        theme: Utils.mainTheme,
+        home: MainPage()
       )
     );
   }

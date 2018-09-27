@@ -358,17 +358,7 @@ class _CardsScaffoldState extends State<CardsScaffold>
       child: Container(
         height: fabHeight,
         alignment: Alignment.center,
-        child: Opacity(
-          opacity: fabOpacity,
-          child: widget.fab,
-          // If the FAB is pressed and the game can be started, animate the
-          // stack. Then, call the FAB's original onPressed callback.
-          /*child: copyFabWithCallback(widget.extendedFab, () {
-            if (widget.canStartGame)
-              _animateStack(1.0);
-            widget.extendedFab.onPressed();
-          })*/
-        )
+        child: Opacity(opacity: fabOpacity, child: widget.fab)
       )
     );
 

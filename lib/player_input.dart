@@ -133,7 +133,6 @@ class _NameInputState extends State<NameInput> {
           controller: _controller,
           focusNode: _focusNode,
           decoration: InputDecoration(
-            border: OutlineInputBorder(),
             labelText: Bloc.of(context).getText(TextId.add_player_label),
             hintText: Bloc.of(context).getText(TextId.add_player_hint),
             errorText: errorText

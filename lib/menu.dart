@@ -4,6 +4,7 @@ import 'package:flutter_mailer/flutter_mailer.dart';
 import 'bloc/bloc.dart';
 import 'localize.dart';
 import 'my_cards/my_cards.dart';
+import 'utils.dart';
 
 /// The full menu with the account state, as well as further buttons for
 /// writing own cards, giving feedback etc.
@@ -32,26 +33,29 @@ class Menu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final items = [
-      Account(),
+    final items = <Widget>[
+      AccountTile(),
       Divider(),
       ListTile(
-        leading: Icon(Icons.wb_iridescent, color: Colors.black),
+        leading: Icon(Icons.wb_iridescent),
         title: LocalizedText(id: TextId.menu_my_cards),
         onTap: () => _goToMyCards(context)
       ),
       ListTile(
-        leading: Icon(Icons.feedback, color: Colors.black),
+        leading: Icon(Icons.feedback),
         title: LocalizedText(id: TextId.menu_feedback),
         onTap: () => _giveFeedback(context)
       )
     ];
     
-    return Material(
-      child: GestureDetector(
-        // Prevents accidental taps from closing the bottom sheet.
-        onTap: () {},
-        child: Column(mainAxisSize: MainAxisSize.min, children: items)
+    return Theme(
+      data: Utils.mainTheme,
+      child: Material(
+        child: GestureDetector(
+          // Prevents accidental taps from closing the bottom sheet.
+          onTap: () {},
+          child: Column(mainAxisSize: MainAxisSize.min, children: items)
+        )
       )
     );
   }
@@ -67,7 +71,7 @@ class SignInMenu extends StatelessWidget {
       child: GestureDetector(
         // Prevents accidental taps from closing the bottom sheet.
         onTap: () {},
-        child: Account(onSignedIn: () {
+        child: AccountTile(onSignedIn: () {
           Future.delayed(Duration(seconds: 1), () {
             Navigator.of(context).pop();
           });
@@ -85,8 +89,8 @@ class SignInMenu extends StatelessWidget {
 /// 
 /// If signed out, an encouraging text will be displayed as well as a button to
 /// sign in.
-class Account extends StatelessWidget {
-  Account({ this.onSignedIn });
+class AccountTile extends StatelessWidget {
+  AccountTile({ this.onSignedIn });
 
   final VoidCallback onSignedIn;
 
@@ -98,23 +102,23 @@ class Account extends StatelessWidget {
         if (!snapshot.hasData)
           return Container();
 
-        switch (snapshot.data.connectionState) {
-          case AccountConnectionState.SIGNED_IN:
+        switch (snapshot.data.signInState) {
+          case SignInState.SIGNED_IN:
             if (onSignedIn != null)
               onSignedIn();
-            return _buildSignedIn(context, snapshot.data.snapshot, false);
-          case AccountConnectionState.SIGNED_OUT:
+            return _buildSignedIn(context, snapshot.data.account, false);
+          case SignInState.SIGNED_OUT:
             return _buildSignedOut(context, false);
-          case AccountConnectionState.SIGNING_IN:
+          case SignInState.SIGNING_IN:
             return _buildSignedOut(context, true);
-          case AccountConnectionState.SIGNING_OUT:
-            return _buildSignedIn(context, snapshot.data.snapshot, true);
+          case SignInState.SIGNING_OUT:
+            return _buildSignedIn(context, snapshot.data.account, true);
         }
       },
     );
   }
 
-  _buildSignedIn(BuildContext context, AccountSnapshot snapshot, bool isSigningOut) {
+  _buildSignedIn(BuildContext context, Account snapshot, bool isSigningOut) {
     return Padding(
       padding: EdgeInsets.all(16.0),
       child: Row(

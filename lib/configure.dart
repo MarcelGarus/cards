@@ -23,30 +23,22 @@ class ConfigureScreen extends StatelessWidget {
     );
 
     final topPart = Material(
-      color: Colors.white,
       elevation: 2.0,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
+          SizedBox(height: MediaQuery.of(context).padding.top),
           appBar,
-          PlayerInput(),
+          PlayerInput()
         ],
       )
     );
 
-    return Theme(
-      data: Theme.of(context).copyWith(primaryColor: Colors.black),
-      child: Container(
-        color: Colors.white,
-        child: ListView(
-          children: <Widget>[
-            topPart,
-            DeckSelector(),
-            //BetaBox(),
-            SizedBox(height: 48.0 + 24.0),
-          ],
-        ),
-      )
+    return Container(
+      child: ListView(
+        padding: EdgeInsets.only(top: 0.0, bottom: 48.0 + 24.0),
+        children: <Widget>[ topPart, DeckSelector() ],
+      ),
     );
   }
 }

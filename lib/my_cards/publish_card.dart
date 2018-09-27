@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../bloc/account_bloc.dart';
 import '../bloc/model.dart';
 import '../cards/inline_card.dart';
 import '../utils.dart';
@@ -7,9 +8,10 @@ import 'guidelines.dart';
 
 /// The screen for publishing the card.
 class PublishCardScreen extends StatelessWidget {
-  PublishCardScreen({ @required this.card }) : assert(card != null);
+  PublishCardScreen({ @required this.card, this.account }) : assert(card != null);
   
   final MyCard card;
+  final AccountState account;
 
   void _publish() {
     Firestore.instance.collection('suggestions').document().setData({
@@ -73,7 +75,7 @@ class PublishCardScreen extends StatelessWidget {
     ));
 
     return Theme(
-      data: Utils.buildLightTheme(),
+      data: Utils.mainTheme,
       child: Scaffold(
         appBar: AppBar(title: Text('Publish card')),
         body: SafeArea(child: ListView(children: content))

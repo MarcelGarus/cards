@@ -91,7 +91,7 @@ class _EditCardScreenState extends State<EditCardScreen> {
     );
 
     return Theme(
-      data: Utils.buildLightTheme(),
+      data: Utils.mainTheme,
       child: Scaffold(
         appBar: AppBar(
           title: Text('Edit card'),
@@ -126,7 +126,7 @@ class _EditCardScreenState extends State<EditCardScreen> {
           return Container();
         
         final account = snapshot.data;
-        final isSignedIn = account.connectionState == AccountConnectionState.SIGNED_IN;
+        final isSignedIn = account.signInState == SignInState.SIGNED_IN;
         final text = Text(
           isSignedIn ? 'Tap to publish' : 'Sign in to publish',
           style: TextStyle(color: Colors.white)
