@@ -1,0 +1,87 @@
+app_title: Cards
+
+players_empty: Pretty empty in here...
+add_player_label: Add player
+add_player_hint: Enter the name
+add_player_error: You already added $author.
+
+configuration_player_missing: Add a player
+configuration_deck_missing: Select at least one deck
+start_game: Shuffle cards
+
+coin_card: You found a coin!
+game_card_author: by $author
+
+beta_box_title: <<<TODO>>> Danke für's Beta-Testen!
+beta_box_body: "<<<TODO>>> Wie du siehst, funktioniert die grundlegende Spielmechanik
+  bereits, allerdings mangelt es noch sehr an Inhalten, bislang gibt es nämlich
+  nur 100 Karten.\nDeshalb wäre es nett, wenn du neue Karten erstellst (dazu
+  unten auf's Menü gehen) und veröffentlichst. Als Gegenleistung kannst du
+  deinen Namen auch auf den veröffentlichten Karten verewigen lassen.\nOh, und
+  falls du Bugs findest, Ideen für neue Kartendecks oder für einen besseren
+  App-Namen als \"Cards\" hast oder wenn du einfach Feedback geben willst,
+  schreib mir ruhig."
+beta_box_action: Send feedback
+
+sign_in: Sign in to share your cards with the whole world
+sign_in_body: Also, you'll be able to synchronize your progress among multiple
+  devices.
+sign_in_action: Sign in
+sign_out_action: Sign out
+menu_my_cards: My cards
+menu_feedback: Feedback
+
+my_cards_title: Your cards
+my_cards_empty: Pretty empty here...
+my_cards_add: Add new card
+my_card_edit_title: Edit card
+my_card_content: Content
+my_card_followup: Followup
+my_card_author: Author
+my_card_sign_in: Sign in to publish
+my_card_publish: Tap to publish
+publish_title: Publish
+publish_body: Review your card.
+publish_conditions: "Once you click the publish button, you agree to the
+  following process: The card\'s "input" (content, followup and author) as well
+  as your email address will be uploaded to and permanently stored on Google\'s
+  servers. By publishing the card, you automatically transfer the input\'s
+  copyright to this app\'s creator Marcel Garus, who will review it manually
+  and - to his liking - add it to the database of cards. If he has any
+  questions, he may mail you for clarification. You confirm that the input
+  adheres to the guidelines stated above. After publishing the card, you will
+  not be able to edit the card any more."
+publish_action: Publish
+
+guidelines:
+  - title: How to include players
+    body: You can use $a, $b etc. as placeholders for names. During the game,
+      these will be replaced by actual names.
+    positive:
+      - text: $a, do something.
+      - text: $b, do something.
+    negative:
+      - text: Alice, do something.
+  - title: First person speech
+    body: Favor first person speech over third person speech whenever possible
+      in order to make your card more engaging.
+    positive:
+      - text: $a, do something.
+    negative:
+      - text: $a has to do something.
+  - title: Punctuation
+    body: Even in imperative sentences, use a period instead of an exclamation
+      mark. Otherwise, players would feel like being shouted at all the time.
+    positive:
+      - text: $a, do something.
+    negative:
+      - text: $a, do something!
+  - title: Numbers
+    body: Write all numbers larger than one as digits.
+    positive:
+      - text: $a, do 3 things.
+    negative:
+      - text: $a, do three things.
+
+mail_subject: Feedback for Cards
+mail_body: 'Do not delete: Version $version\n\nHi Marcel,\n'

@@ -97,7 +97,7 @@ class _PublishButtonState extends State<PublishButton> {
       icon: Icon(Icons.cloud_upload),
       label: LocalizedText(TextId.publish_action),
       onPressed: () {
-        clicked = true;
+        setState(() => clicked = true);
         widget.onPublish();
       },
     );
