@@ -132,44 +132,39 @@ class Bloc {
 
   // The following methods are entry-points for the UI.
 
+  // Managing the locale.
   void updateLocale(Locale locale) => localeBloc.updateLocale(locale);
-
   // TODO: provide text provider instead.
   String getText(TextId id) => localeBloc.getText(id);
 
+  // Managing the account.
   void signIn() => accountBloc.signIn().catchError((e) {
     print('Oops! An error occurred while signing in: $e');
   });
-
   void signOut() => accountBloc.signOut().catchError((e) {
     print('Oops! An error occurred while signing in: $e');
   });
 
-  void canBuy(Deck deck) => coinsBloc.canBuy(deck);
+  // Managing the players.
+  void addPlayer(String player) => playersBloc.addPlayer(player);
+  void removePlayer(String player) => playersBloc.removePlayer(player);
+  bool isPlayerInputErroneous(String player) {
+    return playersBloc.isPlayerInputErroneous(player);
+  }
+  bool isPlayerInputValid(String player) {
+    return playersBloc.isPlayerInputValid(player);
+  }
 
+  // Managing the decks.
+  void canBuy(Deck deck) => coinsBloc.canBuy(deck);
   void buy(Deck deck) {
     coinsBloc.buy(deck);
     decksBloc.buy(deck);
   }
-
-  bool isPlayerInputErroneous(String player) => playersBloc.isPlayerInputErroneous(player);
-
-  bool isPlayerInputValid(String player) => playersBloc.isPlayerInputValid(player);
-
-  void addPlayer(String player) => playersBloc.addPlayer(player);
-  
-  void removePlayer(String player) => playersBloc.removePlayer(player);
-  
   void selectDeck(Deck deck) => decksBloc.selectDeck(deck);
-  
   void deselectDeck(Deck deck) => decksBloc.deselectDeck(deck);
   
-  MyCard createNewCard() => myCardsBloc.createNewCard();
-  
-  void updateCard(MyCard card) => myCardsBloc.updateCard(card);
-  
-  void deleteCard(MyCard card) => myCardsBloc.deleteCard(card);
-  
+  // Playing the game.
   void start() {
     assert(_configuration.isValid);
 
@@ -177,16 +172,14 @@ class Bloc {
     gameBloc.start(_configuration);
     _updateCanResume();
   }
-  
   void nextCard() => gameBloc.nextCard(_configuration);
 
-  void publish(MyCard card) {
-    ResourceManager.writeToFirestore('suggestions', {
-      'content': card.gameCard.content,
-      'followup': card.gameCard.followup,
-      'author': card.gameCard.author,
-      'mail': 'marcel.garus@gmail.com' // TODO: do not hardcode
-    });
+  // Management of user-generated cards.
+  MyCard createCard() => myCardsBloc.create();
+  void updateCard(MyCard card) => myCardsBloc.update(card);
+  void deleteCard(MyCard card) => myCardsBloc.delete(card);
+  void publishCard(MyCard card) {
+    myCardsBloc.publish(card, accountBloc.account.email);
   }
 }
 

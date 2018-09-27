@@ -68,10 +68,8 @@ class _EditCardScreenState extends State<EditCardScreen> {
     String followup,
     String author
   ) {
-    print(
-      'Saving card with content: $content, followup: $followup, author: '
-      '$author'
-    );
+    print('Saving card with content: $content, followup: $followup, author: '
+      '$author');
 
     this.content = content;
     this.followup = followup;
@@ -82,7 +80,20 @@ class _EditCardScreenState extends State<EditCardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final materialCard = Padding(
+    final appBar = AppBar(
+      title: Text('Edit card'),
+      actions: <Widget>[
+        IconButton(
+          icon: Icon(Icons.delete),
+          onPressed: () {
+            Bloc.of(context).deleteCard(widget.card);
+            Navigator.of(context).pop();
+          },
+        )
+      ],
+    );
+
+    final card = Padding(
       padding: EdgeInsets.all(16.0),
       child: InlineCard(widget.card.gameCard,
         onEdited: _onChanged,
@@ -90,33 +101,20 @@ class _EditCardScreenState extends State<EditCardScreen> {
       )
     );
 
+    final guidelines = Padding(
+      padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+      child: Guidelines()
+    );
+
     return Theme(
       data: Utils.myCardsTheme,
       child: Scaffold(
-        appBar: AppBar(
-          title: Text('Edit card'),
-          actions: <Widget>[
-            IconButton(icon: Icon(Icons.delete), onPressed: () {})
-          ],
-        ),
-        body: SafeArea(
-          child: ListView(
-            children: [
-              materialCard,
-              Padding(
-                padding: EdgeInsets.only(
-                  left: 16.0,
-                  right: 16.0,
-                  bottom: 16.0 + 48.0 + 16.0
-                ),
-                child: Guidelines()
-              )
-            ]
-          )
-        ),
+        appBar: appBar,
+        body: SafeArea(child: ListView( children: [ card, guidelines ])),
       )
     );
   }
+
 
   Widget _buildPublishStatus() {
     return StreamBuilder(

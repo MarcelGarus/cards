@@ -26,7 +26,7 @@ class MyCardsBloc {
   }
 
   /// Creates a new card for the user to fill with content.
-  MyCard createNewCard() {
+  MyCard create() {
     final myCardIds = myCards.map((card) => card.gameCard.id).toSet();
     var id;
     for (int i = 0;; i++) {
@@ -45,7 +45,7 @@ class MyCardsBloc {
     return card;
   }
 
-  void updateCard(MyCard card) {
+  void update(MyCard card) {
     final oldVersion = myCards
         .singleWhere((myCard) => myCard.gameCard.id == card.gameCard.id);
 
@@ -55,10 +55,19 @@ class MyCardsBloc {
     _saveMyCards(myCards);
   }
 
-  void deleteCard(MyCard card) {
+  void delete(MyCard card) {
     myCards.remove(card);
     myCardsSubject.add(myCards);
     _saveMyCards(myCards);
+  }
+
+  void publish(MyCard card, String email) {
+    ResourceManager.writeToFirestore('suggestions', {
+      'content': card.gameCard.content,
+      'followup': card.gameCard.followup,
+      'author': card.gameCard.author,
+      'mail': email // TODO: do not hardcode
+    });
   }
 
 

@@ -9,6 +9,7 @@ enum TextId {
   none,
   app_title,
 
+  players_empty,
   add_player_label,
   add_player_hint,
   add_player_error,
@@ -17,51 +18,44 @@ enum TextId {
   configuration_deck_missing,
   start_game,
 
+  coin_card,
+  game_card_author,
+
   beta_box_title,
   beta_box_body,
   beta_box_action,
 
-  menu_log_in,
-  menu_log_in_text,
+  sign_in,
+  sign_in_body,
+  sign_in_action,
+  sign_out_action,
   menu_my_cards,
-  menu_settings,
   menu_feedback,
+
+  my_cards_title,
+  my_cards_empty,
+  my_cards_add,
+  edit_card_title,
+  edit_card_content,
+  edit_card_followup,
+  edit_card_author,
+  edit_card_sign_in,
+  edit_card_publish,
+  publish_title,
+  publish_body,
+  publish_conditions,
+  publish_action,
 
   mail_subject,
   mail_body,
-
-  coin_card,
-  game_card_author
 }
 
-abstract class TextIds {
+abstract class _TextIdConverter {
   static TextId fromString(String id) {
-    switch (id) {
-      case 'app_title': return TextId.app_title;
-
-      case 'add_player_label': return TextId.add_player_label;
-      case 'add_player_hint': return TextId.add_player_hint;
-      case 'add_player_error': return TextId.add_player_error;
-
-      case 'configuration_player_missing': return TextId.configuration_player_missing;
-      case 'configuration_deck_missing': return TextId.configuration_deck_missing;
-      case 'start_game': return TextId.start_game;
-
-      case 'beta_box_title': return TextId.beta_box_title;
-      case 'beta_box_body': return TextId.beta_box_body;
-      case 'beta_box_action': return TextId.beta_box_action;
-
-      case 'menu_log_in': return TextId.menu_log_in;
-      case 'menu_log_in_text': return TextId.menu_log_in_text;
-      case 'menu_my_cards': return TextId.menu_my_cards;
-      case 'menu_settings': return TextId.menu_settings;
-      case 'menu_feedback': return TextId.menu_feedback;
-
-      case 'mail_subject': return TextId.mail_subject;
-      case 'mail_body': return TextId.mail_body;
-
-      case 'coin_card': return TextId.coin_card;
-      case 'game_card_author': return TextId.game_card_author;
+    for (final textId in TextId.values) {
+      final strId = textId.toString();
+      if (strId.substring(strId.indexOf('.') + 1) == id)
+        return textId;
     }
     return TextId.none;
   }
@@ -123,7 +117,7 @@ class LocaleBloc {
     texts[TextId.none] = '<None>';
 
     for (final MapEntry entry in yaml.entries) {
-      texts[TextIds.fromString(entry.key.toString())] = entry.value.toString();
+      texts[_TextIdConverter.fromString(entry.key.toString())] = entry.value.toString();
     }
 
     return texts;

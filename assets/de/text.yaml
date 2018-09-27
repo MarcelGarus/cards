@@ -9,6 +9,9 @@ configuration_player_missing: Füge einen Spieler hinzu
 configuration_deck_missing: Wähle mindestens ein Deck aus
 start_game: Karten mischen
 
+coin_card: Du hast eine Münze gefunden!
+game_card_author: von $author
+
 beta_box_title: Danke für's Beta-Testen!
 beta_box_body: "Wie du siehst, funktioniert die grundlegende Spielmechanik
   bereits, allerdings mangelt es noch sehr an Inhalten, bislang gibt es nämlich
@@ -20,15 +23,37 @@ beta_box_body: "Wie du siehst, funktioniert die grundlegende Spielmechanik
   schreib mir ruhig."
 beta_box_action: Feedback senden
 
-menu_log_in: Einloggen
-menu_log_in_text: 'Logge dich ein, um deinen Fortschritt zu synchronisieren und
-  eigene Karten zu veröffentlichen.'
+sign_in: Logge dich ein, um deine Karten zu veröffentlichen
+sign_in_body: Außerdem kannst du dann deinen Fortschritt auf mehreren Geräten
+  synchronisieren.
+sign_in_action: Einloggen
+sign_out_action: Ausloggen
 menu_my_cards: Meine Karten
-menu_settings: Einstellungen
 menu_feedback: Feedback
+
+my_cards_title: Meine Karten
+my_cards_empty: Ziemlich leer hier...
+my_cards_add: Neue Karte
+edit_card_title: Karte bearbeiten
+edit_card_content: Inhalt
+edit_card_followup: Folgekarte
+edit_card_author: Autor
+edit_card_sign_in: Zum Veröffentlichen einloggen
+edit_card_publish: Zum Veröffentlichen tippen
+publish_title: Veröffentlichen
+publish_body: Schau dir deine Karten nochmal an und stelle sicher, dass sie die
+  Richtlinien erfüllt.
+publish_conditions: "Sobald du auf den Knopf zum Veröffentlichen drückst,
+  stimmst du dem folgenden Vorgehen zu: Die Karteninhalte (Inhalt, Folgekarte
+  und Autor) und deine E-Mail-Adresse werden auf Google-Server hochgeladen und
+  dort permanent gespeichert. Indem du die Karte veröffentlichst, überträgst du
+  das Urheberrecht der Karteninhalte auf den Entwickler dieser App, Marcel
+  Garus. Dieser wird sie manuell überprüfen und nach seinen Belieben der
+  Kartendatenbank hinzufügen. Falls er Fragen hat, schickt er dir vielleicht
+  eine E-Mail. Du bestätigst, dass die Karteninhalte die Richtlinien erfüllen.
+  Nachdem du die Karte veröffentlichst, wirst du die Karte nicht mehr editieren
+  können."
+publish_action: Veröffentlichen
 
 mail_subject: Feedback zu Cards
 mail_body: 'Nicht löschen: Version $version\n\nHi Marcel,\n'
-
-coin_card: Du hast eine Münze gefunden!
-game_card_author: von $author

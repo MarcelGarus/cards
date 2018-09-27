@@ -78,6 +78,12 @@ class _InlineCardState extends State<InlineCard> {
   Widget build(BuildContext context) {
     final rgb = HEX.decode(widget.card.color.substring(1));
     final color = Color.fromARGB(255, rgb[0], rgb[1], rgb[2]);
+    final signatureStyle = TextStyle(
+      color: color,
+      fontFamily: 'Signature',
+      fontSize: 24.0
+    );
+    final normalStyle = TextStyle(color: color, fontSize: 16.0);
 
     // List of column widgets, will be filled over time.
     final items = <Widget>[];
@@ -87,8 +93,8 @@ class _InlineCardState extends State<InlineCard> {
       items.add(widget.editable ? CardInput(
         labelText: 'Content',
         controller: contentController,
-        maxLines: 3,
-      ) : Text(widget.card.content, style: TextStyle(color: color)));
+        maxLines: 4,
+      ) : Text(widget.card.content, style: signatureStyle));
     }
     
     // Add followup.
@@ -96,8 +102,8 @@ class _InlineCardState extends State<InlineCard> {
       items.add(widget.editable ? CardInput(
         labelText: 'Followup',
         controller: followupController,
-        maxLines: 3
-      ) : Text(widget.card.followup, style: TextStyle(color: color)));
+        maxLines: 4
+      ) : Text(widget.card.followup, style: signatureStyle));
     }
 
     // Add author.
@@ -109,7 +115,7 @@ class _InlineCardState extends State<InlineCard> {
         maxLines: 1,
       ) : widget.card.hasAuthor ? Text(
         'von ${widget.card.author}',
-        style: TextStyle(fontSize: 16.0, color: color)
+        style: normalStyle
       ) : Container());
     }
 

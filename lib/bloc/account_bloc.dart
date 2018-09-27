@@ -34,16 +34,16 @@ class AccountBloc {
     scopes: [ 'email', 'https://www.googleapis.com/auth/drive.appdata' ]
   );
 
-  GoogleSignInAccount _account;
+  GoogleSignInAccount account;
   SignInState _connectionState = SignInState.SIGNED_OUT;
 
   final accountSubject = BehaviorSubject<AccountState>();
 
 
   Future<void> initialize() async {
-    _account = await _googleSignIn.signInSilently();
+    account = await _googleSignIn.signInSilently();
 
-    _update((_account == null)
+    _update((account == null)
       ? SignInState.SIGNED_OUT
       : SignInState.SIGNED_IN
     );
@@ -59,9 +59,9 @@ class AccountBloc {
 
     try {
       // Sign in.
-      _account = await _googleSignIn.signIn();
+      account = await _googleSignIn.signIn();
 
-      print('Successfully signed in: $_account');
+      print('Successfully signed in: $account');
       _update(SignInState.SIGNED_IN);
     } catch (error) {
       print('Error while signing in: $error');
@@ -83,10 +83,10 @@ class AccountBloc {
     accountSubject.add(
       AccountState(
         signInState: _connectionState,
-        account: _account == null ? null : Account(
-          name: _account.displayName,
-          email: _account.email,
-          photoUrl: _account.photoUrl
+        account: account == null ? null : Account(
+          name: account.displayName,
+          email: account.email,
+          photoUrl: account.photoUrl
         )
       )
     );
