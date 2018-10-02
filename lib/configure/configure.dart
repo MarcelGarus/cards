@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mailer/flutter_mailer.dart';
 import '../bloc/bloc.dart';
-import 'deck_selector.dart';
+import '../feedback.dart';
 import '../localize.dart';
+import 'deck_selector.dart';
 import 'player_input.dart';
 
 /// The configuration page.
@@ -69,17 +69,10 @@ class CoinCounter extends StatelessWidget {
 
 /// A greeting to beta testers.
 class BetaBox extends StatelessWidget {
-  void _giveFeedback() async {
-    print('Mailing');
-    final version = Bloc.version;
-    final MailOptions mailOptions = MailOptions(
-      body: 'Nicht löschen: Version $version\n\nHi Marcel,\n',
-      subject: 'Feedback zu Cards',
-      recipients: [ 'marcel.garus@gmail.com' ],
-    );
-
-    await FlutterMailer.send(mailOptions);
-    print('Mail sent');
+  void _giveFeedback(BuildContext context) async {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => FeedbackScreen()
+    ));
   }
 
   @override
@@ -104,7 +97,7 @@ class BetaBox extends StatelessWidget {
                 alignment: Alignment.centerRight,
                 child: RaisedButton(
                   color: Colors.red,
-                  onPressed: _giveFeedback,
+                  onPressed: () => _giveFeedback(context),
                   child: Text(
                     'Feedback senden',
                     style: TextStyle(color: Colors.white)

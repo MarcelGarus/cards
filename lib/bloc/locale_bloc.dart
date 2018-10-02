@@ -51,8 +51,8 @@ enum TextId {
 
   guidelines,
 
-  mail_subject,
-  mail_body,
+  feedback_title,
+  feedback_hint
 }
 
 abstract class _TextIdConverter {

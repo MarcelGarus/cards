@@ -24,9 +24,16 @@ abstract class Utils {
     )
   );
   
-  /*ThemeData(
-    primarySwatch: Colors.amber
-  );*/
+  static ThemeData feedbackTheme = mainTheme.copyWith(
+    primaryColor: Colors.amber,
+    primaryTextTheme: TextTheme(
+      title: TextStyle(color: Colors.black),
+      body1: TextStyle(color: Colors.black),
+    ),
+    primaryIconTheme: IconThemeData(
+      color: Colors.black
+    )
+  );
 
   static ThemeData cardTheme = ThemeData(
     hintColor: Colors.white,

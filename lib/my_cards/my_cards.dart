@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../bloc/bloc.dart';
-import '../bloc/model.dart';
 import '../cards/inline_card.dart';
 import '../localize.dart';
 import '../utils.dart';
@@ -64,7 +63,11 @@ class _MyCardsScreenState extends State<MyCardsScreen> {
         child: InlineCard(card.gameCard,
           showFollowup: false,
           showAuthor: false,
-          onTap: () => _openDetails(context, card)
+          onTap: () => _openDetails(context, card),
+          bottomBarTailing: Icon(
+            card.isPublished ? Icons.cloud_done : Icons.cloud_off,
+            color: Colors.white
+          ),
         )
       ));
     }

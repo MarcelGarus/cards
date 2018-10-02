@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hex/hex.dart';
 import '../bloc/bloc.dart';
-import '../bloc/model.dart';
 import 'deck_details.dart';
 
 /// A list of selectable decks.

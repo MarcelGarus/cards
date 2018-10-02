@@ -2,8 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart' hide Card;
 import 'package:hex/hex.dart';
 import '../bloc/bloc.dart';
-import '../bloc/game_bloc.dart';
-import '../bloc/model.dart';
 import '../cards/inline_card.dart';
 import 'deck_selector.dart';
 

@@ -9,9 +9,12 @@ import 'locale_bloc.dart';
 import 'model.dart';
 import 'my_cards_bloc.dart';
 import 'players_bloc.dart';
+import 'resource_manager.dart';
 
-export 'locale_bloc.dart';
 export 'account_bloc.dart';
+export 'game_bloc.dart';
+export 'locale_bloc.dart';
+export 'model.dart';
 
 
 /// The gateway between Flutter Widgets and actual business logic.
@@ -177,6 +180,14 @@ class Bloc {
   void deleteCard(MyCard card) => myCardsBloc.delete(card);
   Future<bool> publishCard(MyCard card) async {
     return await myCardsBloc.publish(card, accountBloc.account.email);
+  }
+
+  // Feedback.
+  Future<bool> sendFeedback(String feedback) async {
+    return await ResourceManager.writeToFirestore('feedback', {
+      'feedback': feedback,
+      'mail': accountBloc.account?.email ?? '<not signed in>'
+    });
   }
 }
 

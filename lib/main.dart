@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter/services.dart';
 import 'bloc/bloc.dart';
-import 'bloc/model.dart';
 import 'cards/fullscreen_card.dart';
 import 'configure/configure.dart';
 import 'localize.dart';

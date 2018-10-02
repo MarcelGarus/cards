@@ -55,7 +55,8 @@ publish_conditions: "Sobald du auf den Knopf zum Veröffentlichen drückst,
   können."
 publish_action: Veröffentlichen
 published_title: Veröffentlicht
-published_body: Diese Karte ist veröffentlicht.
+published_body: Diese Karte ist veröffentlicht und kann nicht mehr bearbeitet
+  werden.
 
 guidelines:
   - title: Spieler einbinden
@@ -104,5 +105,5 @@ guidelines:
     negative:
       - text: $a, tu zwei Dinge.
 
-mail_subject: Feedback zu Cards
-mail_body: 'Nicht löschen: Version $version\n\nHi Marcel,\n'
+feedback_title: Feedback
+feedback_hint: Gib dein Feedback ein.

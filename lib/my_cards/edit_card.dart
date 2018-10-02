@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../bloc/bloc.dart';
-import '../bloc/model.dart';
 import '../cards/inline_card.dart';
 import '../localize.dart';
 import '../menu.dart';

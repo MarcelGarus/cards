@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hex/hex.dart';
 import '../bloc/bloc.dart';
-import '../bloc/model.dart';
 import '../localize.dart';
 import 'raw_card.dart';
 

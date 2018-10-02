@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_mailer/flutter_mailer.dart';
 import 'bloc/bloc.dart';
+import 'feedback.dart';
 import 'localize.dart';
 import 'my_cards/my_cards.dart';
 import 'utils.dart';
@@ -16,7 +16,9 @@ class Menu extends StatelessWidget {
   }
 
   void _giveFeedback(BuildContext context) async {
-    print('TODO: give feedback');
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => FeedbackScreen()
+    ));
   }
 
   @override
@@ -113,18 +115,20 @@ class AccountTile extends StatelessWidget {
         children: <Widget>[
           CircleAvatar(backgroundImage: NetworkImage(snapshot.photoUrl)),
           SizedBox(width: 16.0),
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(snapshot.name,
-                style: TextStyle(fontFamily: 'Signature', fontWeight: FontWeight.w700)
-              ),
-              SizedBox(height: 4.0),
-              Text(snapshot.email)
-            ],
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(snapshot.name,
+                  style: TextStyle(fontFamily: 'Signature', fontWeight: FontWeight.w700)
+                ),
+                SizedBox(height: 4.0),
+                Text(snapshot.email)
+              ],
+            )
           ),
-          Spacer(),
+          SizedBox(width: 8.0),
           _buildButtonIfNotBusy(
             button: OutlineButton(
               onPressed: Bloc.of(context).signOut,
