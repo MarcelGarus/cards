@@ -23,7 +23,6 @@ enum TextId {
 
   beta_box_title,
   beta_box_body,
-  beta_box_action,
 
   sign_in,
   sign_in_body,

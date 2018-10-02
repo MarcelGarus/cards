@@ -13,15 +13,11 @@ coin_card: Du hast eine Münze gefunden!
 game_card_author: von $author
 
 beta_box_title: Danke für's Beta-Testen!
-beta_box_body: "Wie du siehst, funktioniert die grundlegende Spielmechanik
-  bereits, allerdings mangelt es noch sehr an Inhalten, bislang gibt es nämlich
-  nur 100 Karten.\nDeshalb wäre es nett, wenn du neue Karten erstellst (dazu
-  unten auf's Menü gehen) und veröffentlichst. Als Gegenleistung kannst du
-  deinen Namen auch auf den veröffentlichten Karten verewigen lassen.\nOh, und
-  falls du Bugs findest, Ideen für neue Kartendecks oder für einen besseren
-  App-Namen als \"Cards\" hast oder wenn du einfach Feedback geben willst,
-  schreib mir ruhig."
-beta_box_action: Feedback senden
+beta_box_body: "Weil es noch sehr an Inhalten mangelt, wäre es nett, wenn du
+  neue Karten erstellst (Menü unten) und veröffentlichst (deinen Namen kannst
+  du dabei auch verewigen lassen). Oh, und gib mir ruhig Feedback (auch im
+  Menü) bei Bugs, Ideen (z.B. für neue Kartendecks, einen besseren App-Namen
+  oder sonst was) oder einfach so."
 
 sign_in: Logge dich ein, um deine Karten zu veröffentlichen
 sign_in_body: Außerdem kannst du dann deinen Fortschritt auf mehreren Geräten

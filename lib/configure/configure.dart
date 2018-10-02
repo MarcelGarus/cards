@@ -37,7 +37,17 @@ class ConfigureScreen extends StatelessWidget {
     return Container(
       child: ListView(
         padding: EdgeInsets.only(top: 0.0, bottom: 48.0 + 24.0),
-        children: <Widget>[ topPart, DeckSelector() ],
+        children: <Widget>[
+          topPart,
+          BetaBox(),
+          Text('Press long on any deck for more details.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 12.0
+            ),
+          ),
+          DeckSelector()
+        ],
       ),
     );
   }
@@ -68,46 +78,53 @@ class CoinCounter extends StatelessWidget {
 
 
 /// A greeting to beta testers.
-class BetaBox extends StatelessWidget {
-  void _giveFeedback(BuildContext context) async {
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => FeedbackScreen()
-    ));
-  }
+class BetaBox extends StatefulWidget {
+  _BetaBoxState createState() => _BetaBoxState();
+}
+
+class _BetaBoxState extends State<BetaBox> {
+  bool isExpanded = false;
+
+  void _toggle(_, oldValue) => setState(() {
+    isExpanded = !oldValue;
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
-      child: Material(
-        elevation: 2.0,
-        borderRadius: BorderRadius.all(Radius.circular(16.0)),
-        child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              LocalizedText(TextId.beta_box_title,
-                style: TextStyle(color: Colors.red, fontSize: 16.0, fontFamily: 'Assistant')
-              ),
-              SizedBox(height: 16.0),
-              LocalizedText(TextId.beta_box_body),
-              SizedBox(height: 16.0),
-              Align(
-                alignment: Alignment.centerRight,
-                child: RaisedButton(
-                  color: Colors.red,
-                  onPressed: () => _giveFeedback(context),
-                  child: Text(
-                    'Feedback senden',
-                    style: TextStyle(color: Colors.white)
-                  ),
-                )
-              ),
-            ],
+      padding: EdgeInsets.all(16.0),
+      child: ExpansionPanelList(
+        expansionCallback: _toggle,
+        children: [
+          ExpansionPanel(
+            isExpanded: isExpanded,
+            headerBuilder: _buildHeader,
+            body: _buildBody()
           )
+        ]
+      )
+    );
+  }
+
+  Widget _buildHeader(BuildContext context, bool isExpanded) {
+    return Container(
+      alignment: Alignment.centerLeft,
+      padding: EdgeInsets.only(left: 16.0),
+      child: LocalizedText(TextId.beta_box_title,
+        style: TextStyle(
+          color: Colors.red,
+          fontSize: 16.0,
+          fontFamily: 'Signature',
+          fontWeight: FontWeight.w700
         )
       )
+    );
+  }
+
+  Widget _buildBody() {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+      child: LocalizedText(TextId.beta_box_body),
     );
   }
 }

@@ -38,7 +38,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
             padding: EdgeInsets.all(16.0),
             child: Localized(
               builder: (context, localizer) {
-                TextField(
+                return TextField(
                   controller: controller,
                   autofocus: true,
                   onChanged: (text) => setState(() {}),
