@@ -34,7 +34,7 @@ class DeckSelector extends StatelessWidget {
         child: Column(
           children: <Widget>[
             CircularProgressIndicator(),
-            Text('snapshot.data: ${snapshot.data}') // TODO: do more elegantly
+            Text('data of deck snapshot: ${snapshot.data}') // TODO: do more elegantly
           ]
         )
       );

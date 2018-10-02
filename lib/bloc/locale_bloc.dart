@@ -14,6 +14,8 @@ enum TextId {
   add_player_hint,
   add_player_error,
 
+  decks_hint_for_details,
+
   configuration_player_missing,
   configuration_deck_missing,
   start_game,

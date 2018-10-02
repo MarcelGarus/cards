@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../bloc/bloc.dart';
-import '../feedback.dart';
 import '../localize.dart';
 import 'deck_selector.dart';
 import 'player_input.dart';
@@ -40,7 +39,7 @@ class ConfigureScreen extends StatelessWidget {
         children: <Widget>[
           topPart,
           BetaBox(),
-          Text('Press long on any deck for more details.',
+          LocalizedText(TextId.decks_hint_for_details,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 12.0

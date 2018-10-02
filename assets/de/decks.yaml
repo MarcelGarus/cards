@@ -37,7 +37,7 @@ decks:
       findet oder etwas wiederholt, muss eine Strafe über sich ergehen lassen,
       die ihr vorher gemeinsam aussucht.'
   - id: 'e'
-    name: Abstimmungen
+    name: Abstimmen
     color: '#aeea00'
     price: 1
     probability: 0.7
